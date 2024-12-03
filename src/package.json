@@ -1,0 +1,19 @@
+{
+    "name": "devtab",
+    "version": "1.0.0",
+    "description": "A devloper home page",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "author": "Mohamed Halith",
+    "license": "ISC",
+    "devDependencies": {
+        "vite": "^6.0.2"
+    },
+    "dependencies": {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    }
+}
