@@ -1,11 +1,19 @@
 import React from 'react'
+import Clock from './components/Clock'
+import SocialPopover from './components/SocialPopover'
+import ProgressBars from './components/ProgressBars'
+import Weather from './components/Weather'
 
 function App() {
   return (
-    <div className=''>
-      <h1 className="text-3xl font-bold text-gray-50">
-        DevTab
-      </h1>
+    <div className='mx-14'>
+      {/* Timer / profile */}
+      <div className='flex justify-between mt-14'>
+        <Clock />
+        <SocialPopover/>
+      </div>
+      <ProgressBars/>
+      <Weather/>
     </div>
   )
 }
