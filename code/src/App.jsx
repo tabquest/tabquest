@@ -13,7 +13,6 @@ function App() {
         <SocialPopover/>
       </div>
       <ProgressBars/>
-      <Weather/>
     </div>
   )
 }

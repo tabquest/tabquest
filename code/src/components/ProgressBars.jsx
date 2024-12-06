@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import Weather from './Weather'
 
 const ProgressBars = () => {
     const [progress, setProgress] = React.useState({ year: 0, day: 0 });
@@ -26,31 +27,46 @@ const ProgressBars = () => {
     }, []);
 
     return (
-        <div className="space-y-6 py-4 mt-6 w-[25%]">
-            <div className="space-y-2">
-                <div className="flex justify-between">
-                    <span className="text-sm font-medium text-gray-200">Year in progress</span>
-                    <span className="text-sm font-medium text-gray-200">{progress.year}%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-gray-700">
-                    <div
-                        className="h-2 rounded-full bg-blue-500 transition-all duration-500"
-                        style={{ width: `${progress.year}%` }}
-                    />
+        <div className="grid grid-cols-3 gap-4 items-start">
+            {/* Left column - Progress bars */}
+            <div className="w-[75%]">
+                <div className="space-y-6 py-4 mt-6">
+                    <div className="space-y-2">
+                        <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-200">Year in progress</span>
+                            <span className="text-sm font-medium text-gray-200">{progress.year}%</span>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-gray-700">
+                            <div
+                                className="h-2 rounded-full bg-blue-500 transition-all duration-500"
+                                style={{ width: `${progress.year}%` }}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <div className="flex justify-between">
+                            <span className="text-sm font-medium text-gray-200">Day in progress</span>
+                            <span className="text-sm font-medium text-gray-200">{progress.day}%</span>
+                        </div>
+                        <div className="h-2 w-full rounded-full bg-gray-700">
+                            <div
+                                className="h-2 rounded-full bg-green-500 transition-all duration-500"
+                                style={{ width: `${progress.day}%` }}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="space-y-2">
-                <div className="flex justify-between">
-                    <span className="text-sm font-medium text-gray-200">Day in progress</span>
-                    <span className="text-sm font-medium text-gray-200">{progress.day}%</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-gray-700">
-                    <div
-                        className="h-2 rounded-full bg-green-500 transition-all duration-500"
-                        style={{ width: `${progress.day}%` }}
-                    />
-                </div>
+
+            <div className="flex justify-center items-center my-auto">
+                <Weather />
+            </div>
+
+            {/* Right column - Container */}
+            <div className="text-gray-200">
+                {/* conatiner */}
             </div>
         </div>
     );
