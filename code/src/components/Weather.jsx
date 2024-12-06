@@ -22,7 +22,7 @@ const Weather = () => {
     if (!weatherData) return <div className="text-white">Loading...</div>;
 
     return (
-        <div className="backdrop-blur-md rounded-2xl p-4 mt-4 w-80 border border-white/10">
+        <div className="bg-gradient-to-br from-purple-900/30 backdrop-blur-md rounded-2xl p-4 mt-4 w-80 border border-white/10">
             
             
             <div className="flex items-center justify-between">

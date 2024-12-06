@@ -2,7 +2,7 @@ import React from 'react'
 import Clock from './components/Clock'
 import SocialPopover from './components/SocialPopover'
 import ProgressBars from './components/ProgressBars'
-import Weather from './components/Weather'
+import SearchBar from './components/SearchBar'
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
         <SocialPopover/>
       </div>
       <ProgressBars/>
+      <SearchBar/>
     </div>
   )
 }
