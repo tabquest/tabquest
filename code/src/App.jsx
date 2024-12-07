@@ -3,6 +3,7 @@ import Clock from './components/Clock'
 import SocialPopover from './components/SocialPopover'
 import ProgressBars from './components/ProgressBars'
 import SearchBar from './components/SearchBar'
+import BookmarkBar from './components/BookmarkBar'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       </div>
       <ProgressBars/>
       <SearchBar/>
+      <BookmarkBar/>
     </div>
   )
 }
