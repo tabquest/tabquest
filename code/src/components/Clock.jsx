@@ -14,16 +14,16 @@ const Clock = () => {
     return (
         <div>
             <h1 className='text-6xl'>
-                <span className='text-green-400'>{time.getHours()}</span>
-                :
-                <span>{time.getMinutes()}</span>
-                :
+                <span className='text-green-400'>{String(time.getHours()).padStart(2, '0')}</span>
+                <span className='animate-pulse'>:</span>
+                <span>{String(time.getMinutes()).padStart(2, '0')}</span>
+                <span className='animate-pulse'>:</span>
                 <span>{String(time.getSeconds()).padStart(2, '0')}</span>
 
                 <span className='pl-3 text-2xl'>{time.getHours() >= 12 ? 'PM' : 'AM'}</span>
 
             </h1>
-            <h2 className='pt-4 pl-4 text-xl'>
+            <h2 className='pt-4 pl-1 text-xl'>
                 <span>{time.toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
