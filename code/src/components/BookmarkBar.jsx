@@ -5,13 +5,13 @@ const BookmarkBar = () => {
   const [cachedIcons, setCachedIcons] = useState({});
 
   const bookmarks = [
-    { url: 'https://github.com', name: 'GitHub' },
-    { url: 'https://twitter.com', name: 'Twitter' },
-    { url: 'https://linkedin.com', name: 'LinkedIn' },
-    { url: 'https://facebook.com', name: 'Facebook' },
+    { url: 'https://claude.ai/new', name: 'Claude AI' },
+    { url: 'https://www.eraser.io/', name: 'Eraser' },
+    { url: 'https://gamma.app', name: 'Gamma' },
     { url: 'https://youtube.com', name: 'YouTube' },
-    { url: 'https://instagram.com', name: 'Instagram' },
-    { url: 'https://google.com', name: 'Google' }
+    { url: 'https://leetcode.com/', name: 'Leetcode' },
+    { url: 'https://excalidraw.com/', name: 'Excalidraw' },
+    { url: 'https://chromewebstore.google.com/', name: 'Web Store' }
   ];
 
   const getFaviconUrl = (url) => `https://www.google.com/s2/favicons?domain=${url}&sz=64`;
@@ -35,11 +35,12 @@ const BookmarkBar = () => {
 
         // If not in cache, fetch and cache it
         const faviconUrl = getFaviconUrl(url);
-        const response = await fetch(faviconUrl);
+        const response = await fetch(faviconUrl, { mode: 'cors' });
         const blob = await response.blob();
         
         // Store in cache
-        await cache.put(cacheKey, new Response(blob));
+        const responseToCache = new Response(blob);
+        await cache.put(cacheKey, responseToCache);
         
         // Return object URL
         return URL.createObjectURL(blob);
@@ -72,7 +73,7 @@ const BookmarkBar = () => {
         }
       });
     };
-  }, []);
+  }, [bookmarks]);
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-4xl mx-auto p-4">

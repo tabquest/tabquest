@@ -23,7 +23,7 @@ const Clock = () => {
                 <span className='pl-3 text-2xl'>{time.getHours() >= 12 ? 'PM' : 'AM'}</span>
 
             </h1>
-            <h2 className='pt-4 pl-1 text-xl'>
+            <h2 className='pt-4 pl-2 text-xl'>
                 <span>{time.toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
