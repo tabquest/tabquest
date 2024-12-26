@@ -13,6 +13,5 @@
         "newtab": "index.html"
     },
     "permissions": ["tabs"],
-    
     "author": "mohamedhalith.smh@gmail.com"
 }

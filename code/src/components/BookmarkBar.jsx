@@ -25,7 +25,6 @@ const BookmarkBar = () => {
             <a
               key={index}
               href={bookmark.url}
-              target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col items-center flex-1"
             >
