@@ -61,7 +61,8 @@ const ProgressBars = () => {
 
 
             <div className="flex justify-center items-center my-auto">
-                <Weather />
+                {/* <Weather /> */}
+                {/* <h1>DevTab</h1> */}
             </div>
 
             {/* Right column - Container */}
