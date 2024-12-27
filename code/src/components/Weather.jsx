@@ -97,7 +97,7 @@ const Weather = () => {
           {kelvinToCelsius(weatherData.main.temp)}°C
         </span>
       </div>
-      <span className="flex justify-evenly items-center text-md text-white/70">
+      <span className="flex justify-evenly items-center text-[16px] text-white/70">
         <MapPin size={18}/>
         <span className='pl-1'>{weatherData.name}</span>, 
         <span className='pl-1'>{weatherData.sys.country}</span>

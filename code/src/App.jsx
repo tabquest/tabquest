@@ -4,7 +4,7 @@ import SocialPopover from './components/SocialPopover'
 import ProgressBars from './components/ProgressBars'
 import SearchBar from './components/SearchBar'
 import BookmarkBar from './components/BookmarkBar'
-import IntegratedSearch from './components/IntegratedSearch'
+// import IntegratedSearch from './components/IntegratedSearch'
 
 function App() {
   return (

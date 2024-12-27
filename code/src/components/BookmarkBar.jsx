@@ -10,11 +10,11 @@ const BookmarkBar = () => {
   const bookmarks = [
     { url: 'https://claude.ai/new', name: 'Claude AI' },
     { url: 'https://www.eraser.io', name: 'Eraser' },
-    { url: 'https://gamma.app', name: 'Gamma' },
+    { url: 'https://www.netflix.com', name: 'Netflix' },
     { url: 'https://youtube.com', name: 'YouTube' },
     { url: 'https://leetcode.com', name: 'Leetcode' },
     { url: 'https://excalidraw.com', name: 'Excalidraw' },
-    { url: 'https://chromewebstore.google.com', name: 'Web Store' }
+    { url: 'https://gamma.app', name: 'Gamma' },
   ];
 
   return (

@@ -67,7 +67,7 @@ const SearchBar = ({ onSearch }) => {
                   ) : (
                     <Youtube size={20} className="text-white" />
                   )}
-                  <span className="text-white font-medium">
+                  <span className="text-white  text-[16px] font-medium">
                     {searchEngine === 'google' ? 'Google' : 'YouTube'}
                   </span>
                 </div>
@@ -88,7 +88,7 @@ const SearchBar = ({ onSearch }) => {
                       setSearchEngine('google');
                       setIsDropdownOpen(false);
                     }}
-                    className="flex items-center gap-2 w-full px-4 py-3 
+                    className="flex text-lg items-center gap-2 w-full px-4 py-3 
                       text-white hover:bg-white/10 transition-all duration-200"
                   >
                     <Globe size={16} />
@@ -100,7 +100,7 @@ const SearchBar = ({ onSearch }) => {
                       setSearchEngine('youtube');
                       setIsDropdownOpen(false);
                     }}
-                    className="flex items-center gap-2 w-full px-4 py-3 
+                    className="flex text-lg items-center gap-2 w-full px-4 py-3 
                       text-white hover:bg-white/10 transition-all duration-200"
                   >
                     <Youtube size={16} />
@@ -116,7 +116,7 @@ const SearchBar = ({ onSearch }) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="flex-1 px-4 py-4 bg-white/10 backdrop-blur-md
+              className="flex-1 text-lg px-4 py-4 bg-white/10 backdrop-blur-md
                 text-white placeholder-gray-400
                 focus:outline-none focus:ring-0 focus:ring-purple-500/50"
             />

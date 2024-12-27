@@ -1,5 +1,5 @@
 import React from "react";
-import { Copy, ExternalLink, User, Check } from "lucide-react";
+import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
 
 const SocialPopover = () => {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -60,6 +60,8 @@ const SocialPopover = () => {
 
     return (
         <div className="relative inline-block">
+
+
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
@@ -67,6 +69,13 @@ const SocialPopover = () => {
             >
                 <User className="h-4 w-4 text-white/70" />
                 <span className="text-white">halith_smh</span>
+                {!navigator.onLine ? (
+                    <span><WifiOff size={17} className="text-red-400 inline-block ml-2" /> </span>
+                ) :
+                    (
+                        <span><Wifi size={17} className="text-green-400 inline-block ml-2" /> </span>
+                    )
+                }
             </button>
 
             {isOpen && (
@@ -79,9 +88,12 @@ const SocialPopover = () => {
                         <div className="flex items-center justify-between border-b border-white/10 pb-2">
                             <div>
                                 <h3 className="text-sm font-medium text-white">halith_smh</h3>
-                                <p className="text-xs text-white/70">Student</p>
+                                <p className="text-xs text-white/70 mt-1">Student</p>
                             </div>
                             <div className="flex gap-1">
+                                <a href="https://mail.google.com/" className="rounded-md p-1.5 text-white/70 hover:bg-white/10 transition-colors">
+                                    <Mail className="h-3.5 w-3.5" />
+                                </a>
                                 <button
                                     onClick={() => copyToClipboard('https://halith.dev')}
                                     className="rounded-md p-1.5 text-white/70 hover:bg-white/10 transition-colors"
@@ -89,9 +101,9 @@ const SocialPopover = () => {
                                 >
                                     <Copy className="h-3.5 w-3.5" />
                                 </button>
+
                                 <a
                                     href="https://halith.dev"
-                                    target="_blank"
                                     rel="noopener noreferrer"
                                     className="rounded-md p-1.5 text-white/70 hover:bg-white/10 transition-colors"
                                     title="Open profile"
@@ -103,7 +115,7 @@ const SocialPopover = () => {
 
                         <div className="mt-2 space-y-0.5">
                             {socialLinks.map((social) => (
-                                <div key={social.name} className="group relative flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-white/10">
+                                <div key={social.name} className="group relative flex items-center justify-between rounded-lg px-2 py-2.5 transition-colors hover:bg-white/10">
                                     <a
                                         href={social.url}
                                         target="_blank"
