@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, WifiOff, MapPin } from 'lucide-react';
+import { Cloud, WifiOff, MapPin, AlertCircle } from 'lucide-react';
 import { OPENWEATHER_API_URL } from '../utils/constants';
+import { useSelector } from 'react-redux';
 
 const Weather = () => {
+  const city = useSelector((state) => state.settings.weatherLocation);
+
   const [weatherData, setWeatherData] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [error, setError] = useState(null);
 
-  const API_URL = OPENWEATHER_API_URL + 'chennai';
+  const API_URL = `${OPENWEATHER_API_URL}${city}`;
 
   const getCacheKey = () => {
     const today = new Date().toISOString().split('T')[0];
-    return `weather_cache_${today}`;
+    return `weather_cache_${today}_${city}`;
   };
 
   const getCache = () => {
@@ -29,7 +32,7 @@ const Weather = () => {
   const setCache = (data) => {
     const cacheData = {
       data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
     localStorage.setItem(getCacheKey(), JSON.stringify(cacheData));
   };
@@ -43,13 +46,13 @@ const Weather = () => {
         return;
       }
       const result = await fetch(API_URL);
-      if (!result.ok) throw new Error(`HTTP error! status: ${result.status}`);
+      if (!result.ok) throw new Error(`City not found`);
       const data = await result.json();
       setWeatherData(data);
       setCache(data);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching weather data:', err);
+      setWeatherData(null);
     }
   };
 
@@ -65,44 +68,47 @@ const Weather = () => {
   }, []);
 
   useEffect(() => {
-    if (!weatherData && isOnline) {
-      fetchWeatherInfo();
-    }
-  }, [isOnline]);
+    if (isOnline) fetchWeatherInfo();
+  }, [city, isOnline]);
 
   const kelvinToCelsius = (kelvin) => Math.round(kelvin - 273.15);
 
-  if (!isOnline) {
-    const cachedData = getCache();
-    if (!cachedData) return null;
-    return (
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Cloud className="w-6 h-6 text-white" />
-          <span className="text-sm font-semibold text-white">
-            {kelvinToCelsius(cachedData.main.temp)}°
+  return (
+    <div className="relative w-full max-w-3xl mx-auto px-4">
+      {error && (
+        <div className="absolute top-4 right-4 bg-red-600 text-white text-sm p-3 rounded-md shadow-lg flex items-center gap-2 z-50">
+          <AlertCircle size={16} />
+          {error}
+        </div>
+      )}
+
+      {!isOnline ? (
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Cloud className="w-6 h-6 text-white" />
+            <span className="text-sm font-semibold text-white">
+              {kelvinToCelsius(getCache()?.main?.temp || 0)}°
+            </span>
+          </div>
+          <WifiOff className="w-4 h-4 text-white/70" />
+        </div>
+      ) : weatherData ? (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Cloud className="w-6 h-6 text-white" />
+            <span className="text-2xl font-semibold text-white">
+              {kelvinToCelsius(weatherData.main.temp)}°C
+            </span>
+          </div>
+          <span className="flex justify-evenly items-center text-[16px] text-white/70">
+            <MapPin size={18} />
+            <span className="pl-1">{weatherData.name}</span>,{' '}
+            <span className="pl-1">{weatherData.sys.country}</span>
           </span>
         </div>
-        <WifiOff className="w-4 h-4 text-white/70" />
-      </div>
-    );
-  }
-
-  if (error || !weatherData) return null;
-
-  return (
-    <div className="flex items-center justify-between w-full max-w-3xl mx-auto px-4">
-      <div className="flex items-center gap-2">
-        <Cloud className="w-6 h-6 text-white" />
-        <span className="text-2xl font-semibold text-white">
-          {kelvinToCelsius(weatherData.main.temp)}°C
-        </span>
-      </div>
-      <span className="flex justify-evenly items-center text-[16px] text-white/70">
-        <MapPin size={18}/>
-        <span className='pl-1'>{weatherData.name}</span>, 
-        <span className='pl-1'>{weatherData.sys.country}</span>
-      </span>
+      ) : (
+        <div className="text-lg text-white animate-pulse">. . . .</div>
+      )}
     </div>
   );
 };

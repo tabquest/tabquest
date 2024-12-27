@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Youtube, Globe, ChevronDown } from 'lucide-react';
 import Weather from './Weather';
+import { useSelector } from 'react-redux';
 
 const SearchBar = ({ onSearch }) => {
+  const SearchEngineName = useSelector((state) => state.settings.searchEngine);
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchEngine, setSearchEngine] = useState('google');
+  const [searchEngine, setSearchEngine] = useState('webSearch'); // Default to webSearch
   const [isTyping, setIsTyping] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -27,9 +30,14 @@ const SearchBar = ({ onSearch }) => {
     if (!searchTerm.trim()) return;
 
     const searchQuery = encodeURIComponent(searchTerm);
-    const url = searchEngine === 'google'
-      ? `https://www.google.com/search?q=${searchQuery}`
-      : `https://www.youtube.com/results?search_query=${searchQuery}`;
+    const url =
+      searchEngine === 'webSearch'
+        ? SearchEngineName === 'Google'
+          ? `https://www.google.com/search?q=${searchQuery}`
+          : SearchEngineName === 'DuckDuckGo'
+          ? `https://duckduckgo.com/?q=${searchQuery}`
+          : `https://www.bing.com/search?q=${searchQuery}`
+        : `https://www.youtube.com/results?search_query=${searchQuery}`;
     window.location.href = url;
   };
 
@@ -62,18 +70,18 @@ const SearchBar = ({ onSearch }) => {
                   hover:bg-white/20 transition-all duration-200"
               >
                 <div className="flex items-center gap-2">
-                  {searchEngine === 'google' ? (
+                  {searchEngine === 'webSearch' ? (
                     <Globe size={20} className="text-white" />
                   ) : (
                     <Youtube size={20} className="text-white" />
                   )}
-                  <span className="text-white  text-[16px] font-medium">
-                    {searchEngine === 'google' ? 'Google' : 'YouTube'}
+                  <span className="text-white text-[16px] font-medium">
+                    {searchEngine === 'webSearch' ? `${SearchEngineName}` : 'YouTube'}
                   </span>
                 </div>
-                <ChevronDown 
-                  size={16} 
-                  className={`text-white transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                <ChevronDown
+                  size={16}
+                  className={`text-white transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
@@ -85,14 +93,14 @@ const SearchBar = ({ onSearch }) => {
                   <button
                     type="button"
                     onClick={() => {
-                      setSearchEngine('google');
+                      setSearchEngine('webSearch');
                       setIsDropdownOpen(false);
                     }}
                     className="flex text-lg items-center gap-2 w-full px-4 py-3 
                       text-white hover:bg-white/10 transition-all duration-200"
                   >
                     <Globe size={16} />
-                    Google
+                    {SearchEngineName}
                   </button>
                   <button
                     type="button"
@@ -131,11 +139,10 @@ const SearchBar = ({ onSearch }) => {
               <Search size={20} className="text-white" />
             </button>
           </form>
-          
         </div>
         <div className="mt-4">
-            <Weather />
-          </div>
+          <Weather />
+        </div>
       </div>
     </div>
   );

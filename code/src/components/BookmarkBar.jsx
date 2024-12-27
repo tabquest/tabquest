@@ -1,21 +1,23 @@
 import React from 'react';
 import { Globe } from 'lucide-react';
 import { FAVICON_URL } from '../utils/constants';
+import { useSelector } from 'react-redux';
 
 const getFaviconUrl = (url) => {
   return FAVICON_URL + new URL(url).hostname;
 };
 
 const BookmarkBar = () => {
-  const bookmarks = [
-    { url: 'https://claude.ai/new', name: 'Claude AI' },
-    { url: 'https://www.eraser.io', name: 'Eraser' },
-    { url: 'https://www.netflix.com', name: 'Netflix' },
-    { url: 'https://youtube.com', name: 'YouTube' },
-    { url: 'https://leetcode.com', name: 'Leetcode' },
-    { url: 'https://excalidraw.com', name: 'Excalidraw' },
-    { url: 'https://gamma.app', name: 'Gamma' },
-  ];
+  const bookmarks = useSelector((state) => state.settings.bookmarks);
+  // const bookmarks = [
+  //   { url: 'https://claude.ai/new', name: 'Claude AI' },
+  //   { url: 'https://www.eraser.io', name: 'Eraser' },
+  //   { url: 'https://www.netflix.com', name: 'Netflix' },
+  //   { url: 'https://youtube.com', name: 'YouTube' },
+  //   { url: 'https://leetcode.com', name: 'Leetcode' },
+  //   { url: 'https://excalidraw.com', name: 'Excalidraw' },
+  //   { url: 'https://gamma.app', name: 'Gamma' },
+  // ];
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-4xl mx-auto px-4">
@@ -37,7 +39,7 @@ const BookmarkBar = () => {
                     <img
                       src={getFaviconUrl(bookmark.url)}
                       alt={bookmark.name}
-                      className="relative w-10 h-10 transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+                      className="relative rounded w-10 h-10 transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.nextElementSibling.style.display = 'block';
