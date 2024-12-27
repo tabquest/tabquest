@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, WifiOff, MapPin } from 'lucide-react';
+import { OPENWEATHER_API_URL } from '../utils/constants';
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [error, setError] = useState(null);
 
-  const API_URL = 'https://api.openweathermap.org/data/2.5/weather?q=Chennai&APPID=9f54dfbb87f696b1730f1a1d791e4d57';
+  const API_URL = OPENWEATHER_API_URL + 'chennai';
 
   const getCacheKey = () => {
     const today = new Date().toISOString().split('T')[0];
