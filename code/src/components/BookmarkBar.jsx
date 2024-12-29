@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Globe } from 'lucide-react';
-import { FAVICON_URL } from '../utils/constants';
 import { useSelector } from 'react-redux';
+import { FAVICON_URL } from '../utils/constants';
 
 const getFaviconUrl = (url) => {
   return FAVICON_URL + new URL(url).hostname;
@@ -9,54 +10,93 @@ const getFaviconUrl = (url) => {
 
 const BookmarkBar = () => {
   const bookmarks = useSelector((state) => state.settings.bookmarks);
-  // const bookmarks = [
-  //   { url: 'https://claude.ai/new', name: 'Claude AI' },
-  //   { url: 'https://www.eraser.io', name: 'Eraser' },
-  //   { url: 'https://www.netflix.com', name: 'Netflix' },
-  //   { url: 'https://youtube.com', name: 'YouTube' },
-  //   { url: 'https://leetcode.com', name: 'Leetcode' },
-  //   { url: 'https://excalidraw.com', name: 'Excalidraw' },
-  //   { url: 'https://gamma.app', name: 'Gamma' },
-  // ];
+
+  const containerWidth = useMemo(() => {
+    const itemWidth = 80;
+    const minWidth = 320;
+    const maxWidth = 1200;
+    const calculatedWidth = bookmarks.length * itemWidth;
+
+    return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+  }, [bookmarks.length]);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-4xl mx-auto px-4">
-      <div className="relative backdrop-blur-xl bg-black/30 rounded-3xl p-6 shadow-2xl border border-white/10 before:absolute before:inset-0 before:rounded-3xl before:backdrop-blur-xl before:bg-gradient-to-b before:from-white/5 before:to-transparent before:opacity-50">
-        <div className="relative flex items-center justify-between gap-4 z-10">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="fixed bottom-4 left-0 right-0 mx-auto w-fit px-4"
+      style={{
+        minWidth: 'min(90vw, 320px)',
+        maxWidth: 'min(90vw, 1200px)',
+      }}
+    >
+      <motion.div
+        className="relative backdrop-blur-xl bg-black/20 rounded-2xl py-4 px-6 shadow-lg border border-white/10"
+        whileHover={{ scale: 1.01 }}
+        transition={{ duration: 0.2 }}
+      >
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/5 to-transparent opacity-50" />
+
+        {/* Grid for bookmarks */}
+        <div
+          className="relative grid auto-cols-min gap-7 z-10"
+          style={{
+            gridTemplateColumns: `repeat(${bookmarks.length}, minmax(60px, 1fr))`,
+            width: 'fit-content',
+          }}
+        >
           {bookmarks.map((bookmark, index) => (
-            <div
+            <motion.a
               key={index}
-              onClick={() => window.location.href = bookmark.url}
-              rel="noopener"
-              className="group cursor-pointer flex flex-col items-center flex-1 transition-transform duration-300 hover:translate-y-2"
+              href={bookmark.url}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="group flex flex-col items-center gap-2"
+              whileTap={{ scale: 0.95 }} // Add tap scale effect
             >
-              <div className="relative w-16 h-16 mb-3">
-                <div className="absolute inset-0 rounded-2xl bg-black/40 transform transition-all duration-500 group-hover:scale-110 group-hover:bg-black/60 border border-white/10 group-hover:border-white/20" />
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
-                    <img
-                      src={getFaviconUrl(bookmark.url)}
-                      alt={bookmark.name}
-                      className="relative rounded w-10 h-10 transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextElementSibling.style.display = 'block';
-                      }}
-                    />
-                    <Globe className="w-10 h-10 text-white/70 hidden" />
-                  </div>
+              <motion.div
+                className="relative flex items-center justify-center w-12 h-12"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                {/* Icon background */}
+                <div className="absolute inset-0 rounded-xl bg-black/40 border border-white/10 group-hover:border-white/20 transition-all duration-300" />
+
+                <div className="relative">
+                  {/* Glow effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-emerald-500/10 blur-md rounded-full"
+                    initial={{ scale: 0 }}
+                    whileHover={{ scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                  />
+
+                  {/* Icon */}
+                  <img
+                    src={getFaviconUrl(bookmark.url)}
+                    alt={bookmark.name}
+                    className="relative w-6 h-6 sm:w-8 sm:h-8 rounded transition-all duration-300 group-hover:brightness-110"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextElementSibling.style.display = 'block';
+                    }}
+                  />
+                  <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-white/70 hidden" />
                 </div>
-              </div>
-              <span className="text-sm font-medium text-white/70 group-hover:text-white transition-all duration-300 transform group-hover:translate-y-1">
-                {bookmark.name}
+              </motion.div>
+
+              {/* Label */}
+              <span className="text-xs font-medium text-white/70 group-hover:text-white transition-colors duration-200 text-center truncate w-full px-1">
+                {bookmark.name.length > 8 ? `${bookmark.name.slice(0, 8)}...` : bookmark.name}
               </span>
-            </div>
+            </motion.a>
           ))}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

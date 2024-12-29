@@ -1,5 +1,6 @@
-import React, { useEffect } from "react"
-import Weather from './Weather'
+import React, { useEffect } from "react";
+import { motion } from "framer-motion";
+import Weather from './Weather';
 
 const ProgressBars = () => {
     const [progress, setProgress] = React.useState({ year: 0, day: 0 });
@@ -27,19 +28,27 @@ const ProgressBars = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-3 gap-4 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             {/* Left column - Progress bars */}
-            <div className="w-[75%]">
-                <div className="space-y-6 py-4 mt-6">
+            <div className="w-full md:w-[75%]">
+                <motion.div
+                    className="space-y-6 py-4 mt-6"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                >
                     <div className="space-y-2">
                         <div className="flex justify-between">
                             <span className="text-sm font-medium text-gray-200">Year in progress</span>
                             <span className="text-sm font-medium text-gray-200">{progress.year}%</span>
                         </div>
                         <div className="h-2 w-full rounded-full bg-gray-700">
-                            <div
+                            <motion.div
                                 className="h-2 rounded-full bg-blue-500 transition-all duration-500"
                                 style={{ width: `${progress.year}%` }}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress.year}%` }}
+                                transition={{ duration: 1 }}
                             />
                         </div>
                     </div>
@@ -50,24 +59,27 @@ const ProgressBars = () => {
                             <span className="text-sm font-medium text-gray-200">{progress.day}%</span>
                         </div>
                         <div className="h-2 w-full rounded-full bg-gray-700">
-                            <div
+                            <motion.div
                                 className="h-2 rounded-full bg-green-500 transition-all duration-500"
                                 style={{ width: `${progress.day}%` }}
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress.day}%` }}
+                                transition={{ duration: 1 }}
                             />
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
 
-
+            {/* Center column - Weather/Additional Widgets */}
             <div className="flex justify-center items-center my-auto">
+                {/* Uncomment to enable Weather widget */}
                 {/* <Weather /> */}
-                {/* <h1>DevTab</h1> */}
             </div>
 
-            {/* Right column - Container */}
+            {/* Right column - Placeholder for additional content */}
             <div className="text-gray-200">
-                {/* conatiner */}
+                {/* You can add more components here */}
             </div>
         </div>
     );

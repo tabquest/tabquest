@@ -96,18 +96,19 @@ const Weather = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Cloud className="w-6 h-6 text-white" />
-            <span className="text-2xl font-semibold text-white">
-              {kelvinToCelsius(weatherData.main.temp)}°C
+            <span className="text-lg font-semibold text-white">
+              {kelvinToCelsius(weatherData?.main?.temp)}°
             </span>
           </div>
-          <span className="flex justify-evenly items-center text-[16px] text-white/70">
-            <MapPin size={18} />
-            <span className="pl-1">{weatherData.name}</span>,{' '}
-            <span className="pl-1">{weatherData.sys.country}</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-white" />
+            <span className="text-sm font-semibold text-white">
+              {weatherData?.name}, {weatherData?.sys?.country}
+            </span>
+          </div>
         </div>
       ) : (
-        <div className="text-lg text-white animate-pulse">. . . .</div>
+        <div className="text-white text-center mt-4">Loading weather...</div>
       )}
     </div>
   );

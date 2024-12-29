@@ -1,9 +1,9 @@
 {
     "name": "devtab",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A devloper home page",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --open",
         "build": "vite build --emptyOutDir false",
         "preview": "vite preview"
     },
