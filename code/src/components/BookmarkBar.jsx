@@ -25,14 +25,14 @@ const BookmarkBar = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed bottom-4 left-0 right-0 mx-auto w-fit px-4"
+      className="py-8 left-0 right-0 mx-auto w-fit px-4"
       style={{
         minWidth: 'min(90vw, 320px)',
         maxWidth: 'min(90vw, 1200px)',
       }}
     >
       <motion.div
-        className="relative backdrop-blur-xl bg-black/20 rounded-2xl py-4 px-6 shadow-lg border border-white/10"
+        className="relative backdrop-blur-xl bg-black/20 rounded-2xl py-5 px-8 shadow-lg border border-white/10"
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
@@ -58,7 +58,7 @@ const BookmarkBar = () => {
               whileTap={{ scale: 0.95 }} // Add tap scale effect
             >
               <motion.div
-                className="relative flex items-center justify-center w-12 h-12"
+                className="relative flex items-center justify-center w-14 h-14"
                 whileHover={{ scale: 1.1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >

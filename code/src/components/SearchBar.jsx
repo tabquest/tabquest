@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Youtube, Globe, ChevronDown, Sun, Thermometer } from 'lucide-react';
+import { Search, Youtube, Globe, ChevronDown } from 'lucide-react';
 import Weather from './Weather';
 import { useSelector } from 'react-redux';
-
 import { AnimatePresence, motion } from 'framer-motion';
 
 const SearchBar = ({ onSearch }) => {
   const SearchEngineName = useSelector((state) => state.settings.searchEngine);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [searchEngine, setSearchEngine] = useState('webSearch');
   const [isTyping, setIsTyping] = useState(false);
@@ -43,8 +41,14 @@ const SearchBar = ({ onSearch }) => {
     window.location.href = url;
   };
 
-  return (
+  // Get the alternate option based on current selection
+  const getAlternateOption = () => {
+    return searchEngine === 'webSearch'
+      ? { icon: <Youtube size={16} />, text: 'YouTube', value: 'youtube' }
+      : { icon: <Globe size={16} />, text: SearchEngineName, value: 'webSearch' };
+  };
 
+  return (
     <motion.div
       className="relative w-full"
       initial={{ opacity: 0 }}
@@ -62,7 +66,7 @@ const SearchBar = ({ onSearch }) => {
         )}
       </AnimatePresence>
 
-      <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-30 space-y-4">
+      <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-10 space-y-4">
         <motion.div
           className="relative bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl border border-purple-500/20"
           initial={{ y: 20, opacity: 0 }}
@@ -113,35 +117,23 @@ const SearchBar = ({ onSearch }) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute top-full left-0 mt-1 w-full 
-                          bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl 
-                          rounded-xl border border-purple-500/20 overflow-hidden z-50
-                          shadow-lg shadow-purple-500/20"
+                        bg-gradient-to-br from-purple-900 to-blue-900 
+                        rounded-xl border border-purple-500/20 overflow-hidden
+                        shadow-lg shadow-purple-500/20 z-30"
                   >
+                    {/* Only show the alternate option */}
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(255,255,255,0.1)" }}
                       type="button"
                       onClick={() => {
-                        setSearchEngine('webSearch');
+                        setSearchEngine(getAlternateOption().value);
                         setIsDropdownOpen(false);
                       }}
                       className="flex text-lg items-center gap-2 w-full px-4 py-3 
-                            text-white transition-all duration-200"
+                          text-white transition-all duration-200"
                     >
-                      <Globe size={16} />
-                      {SearchEngineName}
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                      type="button"
-                      onClick={() => {
-                        setSearchEngine('youtube');
-                        setIsDropdownOpen(false);
-                      }}
-                      className="flex text-lg items-center gap-2 w-full px-4 py-3 
-                            text-white transition-all duration-200"
-                    >
-                      <Youtube size={16} />
-                      YouTube
+                      {getAlternateOption().icon}
+                      {getAlternateOption().text}
                     </motion.button>
                   </motion.div>
                 )}
@@ -171,7 +163,6 @@ const SearchBar = ({ onSearch }) => {
           </form>
         </motion.div>
 
-        {/* Weather Component */}
         <Weather />
       </div>
     </motion.div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,27 +8,7 @@ import {
     updateSocialProfiles,
     updateBookmarks
 } from '../utils/redux/settingsSlice';
-
-const initialState = {
-    userName: 'user_name',
-    userRole: 'developer',
-    userPortfolioUrl: '',
-    searchEngine: 'Google',
-    weatherLocation: 'Chennai',
-    socialProfiles: {
-        linkedin: 'https://www.linkedin.com/',
-        github: 'https://github.com/',
-        twitter: '',
-        instagram: '',
-        reddit: ''
-    },
-    bookmarks: [
-        { url: 'https://claude.ai/new', name: 'Claude AI' },
-        { url: 'https://www.eraser.io', name: 'Eraser' },
-        { url: 'https://www.netflix.com', name: 'Netflix' },
-        { url: 'https://youtube.com', name: 'YouTube' }
-    ]
-};
+import { initialState } from '../utils/constants';
 
 const SettingsPanel = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -36,22 +16,95 @@ const SettingsPanel = () => {
     const dispatch = useDispatch();
     const settings = useSelector((state) => state.settings);
     const [formState, setFormState] = useState(settings);
-
     const [error, setError] = useState(null);
     const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const panelRef = useRef();
+    const dropdownRef = useRef();
 
+    // Reset form state when settings change
+    useEffect(() => {
+        setFormState(settings);
+    }, [settings]);
 
+    // Handle error display and timeout
     useEffect(() => {
         if (error) {
             setIsAlertVisible(true);
             const timer = setTimeout(() => {
                 setIsAlertVisible(false);
-                setTimeout(() => setError(null), 300); // Wait for exit animation
+                setTimeout(() => setError(null), 300);
             }, 3000);
             return () => clearTimeout(timer);
         }
     }, [error]);
-    
+
+    // Handle click outside for dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    // Handle click outside for panel with auto-save
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (panelRef.current && !panelRef.current.contains(event.target)) {
+                const hasChanges =
+                    formState.userName !== settings.userName ||
+                    formState.userRole !== settings.userRole ||
+                    formState.userPortfolioUrl !== settings.userPortfolioUrl ||
+                    formState.searchEngine !== settings.searchEngine ||
+                    formState.weatherLocation !== settings.weatherLocation ||
+                    JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
+                    JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
+
+                if (hasChanges) {
+                    handleAutoSave();
+                } else {
+                    setIsOpen(false);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [formState, settings]);
+
+    // Handle escape key to close panel
+    useEffect(() => {
+        const handleEscKey = (event) => {
+            if (event.key === 'Escape' && isOpen) {
+                const hasChanges =
+                    formState.userName !== settings.userName ||
+                    formState.userRole !== settings.userRole ||
+                    formState.userPortfolioUrl !== settings.userPortfolioUrl ||
+                    formState.searchEngine !== settings.searchEngine ||
+                    formState.weatherLocation !== settings.weatherLocation ||
+                    JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
+                    JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
+
+                if (hasChanges) {
+                    handleAutoSave();
+                } else {
+                    setIsOpen(false);
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleEscKey);
+        return () => {
+            document.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isOpen, formState, settings]);
 
     const Alert = ({ message }) => (
         <motion.div
@@ -65,6 +118,35 @@ const SettingsPanel = () => {
             {message}
         </motion.div>
     );
+
+    const handleAutoSave = () => {
+        // Validate required fields before auto-saving
+        if (!formState.userName.trim() || !formState.userRole.trim() || !formState.weatherLocation.trim()) {
+            setError('Please fill in all required fields');
+            return;
+        }
+
+        dispatch(updateUserInfo({
+            userName: formState.userName || settings.userName || '',
+            userRole: formState.userRole || settings.userRole || '',
+            userPortfolioUrl: formState.userPortfolioUrl || settings.userPortfolioUrl || ''
+        }));
+
+        dispatch(updateSearchPreferences({
+            searchEngine: formState.searchEngine || settings.searchEngine,
+            weatherLocation: formState.weatherLocation || settings.weatherLocation || ''
+        }));
+
+        if (formState.socialProfiles) {
+            dispatch(updateSocialProfiles(formState.socialProfiles));
+        }
+
+        if (formState.bookmarks) {
+            dispatch(updateBookmarks(formState.bookmarks));
+        }
+
+        setIsOpen(false);
+    };
 
     const handleSave = () => {
         if (!formState.userName.trim()) {
@@ -146,17 +228,19 @@ const SettingsPanel = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
+                        ref={panelRef}
                         initial={{ x: '100%', opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-[16.2px] top-0 right-0 h-full w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl"
+                        className="fixed text-[16.2px] top-0 right-0 h-full w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
                     >
-                        <div className="relative h-full overflow-y-auto">
+                        <div
+                            className="relative h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600 rounded-[4px]">
                             <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
                             <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
 
-                            <div className="relative z-10 px-6 py-8">
+                            <div className="relative z-100 px-6 py-8">
                                 <div className="flex justify-between items-center mb-8">
                                     <motion.h2
                                         initial={{ x: -20, opacity: 0 }}
@@ -166,6 +250,7 @@ const SettingsPanel = () => {
                                         Settings
                                     </motion.h2>
                                     <motion.button
+                                        aria-label="Close Settings"
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsOpen(false)}
@@ -247,7 +332,7 @@ const SettingsPanel = () => {
 
                                                 {/* Dropdown Options */}
                                                 {isDropdownOpen && (
-                                                    <ul className="absolute w-full mt-2 bg-[#2d2d2dd5] border border-white/10 rounded-xl shadow-lg z-10">
+                                                    <ul className="absolute w-full mt-2 bg-[#2d2d2dd5] border border-white/10 rounded-xl shadow-lg z-20">
                                                         {["Google", "Bing", "DuckDuckGo"].map((engine) => (
                                                             <li
                                                                 key={engine}
@@ -392,6 +477,7 @@ const SettingsPanel = () => {
                                             Reset Settings
                                         </motion.button>
 
+                                        {/* Future use for document ref */}
                                         {/* <motion.a
                                             href="https://devtabs.dev/docs"
                                             target="_blank"

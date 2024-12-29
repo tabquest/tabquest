@@ -32,7 +32,7 @@ const ProgressBars = () => {
             {/* Left column - Progress bars */}
             <div className="w-full md:w-[75%]">
                 <motion.div
-                    className="space-y-6 py-4 mt-6"
+                    className="space-y-6 py-4 mt-2 ml-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.6 }}

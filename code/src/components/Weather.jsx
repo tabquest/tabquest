@@ -74,16 +74,16 @@ const Weather = () => {
   const kelvinToCelsius = (kelvin) => Math.round(kelvin - 273.15);
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto px-4">
+    <div className="relative w-full max-w-3xl mx-auto px-6 -z-20">
       {error && (
-        <div className="absolute top-4 right-4 bg-red-600 text-white text-sm p-3 rounded-md shadow-lg flex items-center gap-2 z-50">
+        <div className="absolute top-4 right-4 bg-red-600 text-white text-sm p-3 rounded-md shadow-lg flex items-center gap-2 z-20">
           <AlertCircle size={16} />
           {error}
         </div>
       )}
 
       {!isOnline ? (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 -z-20">
           <div className="flex items-center gap-2">
             <Cloud className="w-6 h-6 text-white" />
             <span className="text-sm font-semibold text-white">
