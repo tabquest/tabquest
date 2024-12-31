@@ -9,6 +9,11 @@ import SettingsPanel from './components/SettingsPanel';
 import { Provider } from 'react-redux';
 import { store } from './utils/redux/store';
 import { motion } from 'framer-motion';
+import FeathersTab from './components/ToolsPanel';
+import ToolsPanel from './components/ToolsPanel';
+// import PopupContainer from './components/PopUpContainer';
+// import ToolsFeature from './components/ToolsFeature';
+// import MainLayout from './components/MainLayout';
 
 function App() {
   return (
@@ -57,6 +62,11 @@ function App() {
           className="mt-4"
         >
           <SettingsPanel />
+          <ToolsPanel/>
+          {/* <FeathersTab/> */}
+          {/* <PopupContainer/> */}
+          {/* <MainLayout/> */}
+          {/* <ToolsFeature/> */}
         </motion.div>
       </div>
     </Provider>

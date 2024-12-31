@@ -12,7 +12,7 @@
     "chrome_url_overrides": {
         "newtab": "dist/index.html"
     },
-    "permissions": ["tabs"],
+    "permissions": ["tabs", "bookmarks", "storage"],
     "background": {
         "service_worker": "background.js"
     },
