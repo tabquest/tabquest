@@ -1,287 +1,574 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Folder, Edit2, Trash2, Star, Search } from 'lucide-react';
-import { setIsAddingNew, addFolder, setFolders, setBookmarks, addBookmark, updateBookmark, deleteBookmark } from '../utils/redux/bookmarkSlice';
-import { saveToLocalStorage, loadFromLocalStorage } from '../utils/locatStorage';
+import { Plus, Search, Folder, Edit2, Trash2, Star } from 'lucide-react';
+import {
+  setIsAddingNew,
+  addFolder,
+  setFolders,
+  setBookmarks,
+  addBookmark,
+  updateBookmark,
+  deleteBookmark,
+  updateFolder,
+  deleteFolder
+} from '../utils/redux/bookmarkSlice';
+import { loadFromLocalStorage } from '../utils/loadFromLocalStorage';
+import FolderSidebar from './FolderSidebar';
+import BookmarkList from './BookmarkList';
+
+// Constants moved to top level
+const FAVORITES_FOLDER = {
+  id: 'favorites',
+  title: 'Favorites',
+  count: 0,
+  isDefault: true
+};
+
+const MAX_TAGS = 3;
+const STORAGE_KEY = 'bookmarkManager';
+
+const saveToLocalStorage = (folders, bookmarks) => {
+  const dataToSave = {
+    folders: folders.filter(f => !f.isDefault),
+    bookmarks
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+};
 
 const BookmarkComponent = () => {
   const dispatch = useDispatch();
   const { folders, bookmarks, isAddingNew } = useSelector(state => state.bookmarks);
-  const [newFolderName, setNewFolderName] = useState('');
-  const [newBookmark, setNewBookmark] = useState({ title: '', url: '', folder: '' });
-  const [editingBookmark, setEditingBookmark] = useState(null);
+  const [newBookmark, setNewBookmark] = useState({ title: '', url: '', tags: [], folder: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const [showFolderPopup, setShowFolderPopup] = useState(false);
+  const [showBookmarkPopup, setShowBookmarkPopup] = useState(false);
+  const [editingFolder, setEditingFolder] = useState(null);
+  const [editingBookmark, setEditingBookmark] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
+  // Load initial data
   useEffect(() => {
-    const { folders, bookmarks } = loadFromLocalStorage();
-    dispatch(setFolders(folders));
+    const { folders: savedFolders, bookmarks } = loadFromLocalStorage();
+    const foldersWithFavorites = [FAVORITES_FOLDER, ...savedFolders.filter(f => f.id !== FAVORITES_FOLDER.id)];
+    dispatch(setFolders(foldersWithFavorites));
     dispatch(setBookmarks(bookmarks));
   }, [dispatch]);
 
+  // Save data on changes
   useEffect(() => {
-    saveToLocalStorage({ folders, bookmarks });
+    const nonDefaultFolders = folders.filter(f => !f.isDefault);
+    saveToLocalStorage(nonDefaultFolders, bookmarks);
   }, [folders, bookmarks]);
 
-  const handleAddFolder = () => {
-    if (newFolderName.trim()) {
-      const newFolder = {
+  const handleAddFolder = (values) => {
+    if (values.title && values.title.trim()) {
+      dispatch(addFolder({
         id: Date.now().toString(),
-        title: newFolderName,
-        count: 0,
-      };
-      dispatch(addFolder(newFolder));
-      setNewFolderName('');
-      dispatch(setIsAddingNew(false));
+        title: values.title,
+        count: 0
+      }));
+      setShowFolderPopup(false);
     }
   };
 
-  const handleAddBookmark = () => {
-    if (newBookmark.title.trim() && newBookmark.url.trim() && newBookmark.folder) {
-      const bookmark = {
-        id: Date.now().toString(),
-        ...newBookmark,
-        dateAdded: Date.now(),
-        tags: [],
-        starred: false,
-      };
-      dispatch(addBookmark(bookmark));
-      setNewBookmark({ title: '', url: '', folder: '' });
+  const handleDeleteFolder = (folderId) => {
+    const folderBookmarks = bookmarks.filter(b => b.folder === folderId);
+    folderBookmarks.forEach(bookmark => {
+      dispatch(deleteBookmark(bookmark.id));
+    });
+    dispatch(deleteFolder(folderId));
+    setShowDeleteConfirm(null);
+    if (selectedFolder === folderId) {
+      setSelectedFolder(null);
+    }
+  };
+
+  const handleUpdateFolder = (id, newTitle) => {
+    if (newTitle.trim()) {
+      dispatch(updateFolder({ id, title: newTitle }));
+      setEditingFolder(null);
     }
   };
 
   const handleUpdateBookmark = (id, updates) => {
-    dispatch(updateBookmark({ id, updates }));
-    setEditingBookmark(null);
+    if (updates.title.trim() && updates.url.trim()) {
+      dispatch(updateBookmark({ id, updates }));
+      setEditingBookmark(null);
+    }
   };
 
-  const handleDeleteBookmark = (id) => {
-    dispatch(deleteBookmark(id));
+  const handleAddBookmark = (bookmark) => {
+    if (bookmark.title.trim() && bookmark.url.trim()) {
+      const tags = bookmark.tags
+        .split(', ')
+        .map(tag => tag.trim())
+        .filter(Boolean)
+        .slice(0, MAX_TAGS);
+
+      const newBookmark = {
+        id: Date.now().toString(),
+        ...bookmark,
+        tags,
+        folder: selectedFolder,
+        dateAdded: Date.now(),
+        starred: false,
+        originalFolder: selectedFolder
+      };
+      dispatch(addBookmark(newBookmark));
+      setShowBookmarkPopup(false);
+    }
+  };
+
+  const handleStarBookmark = (bookmark) => {
+    const updates = {
+      starred: !bookmark.starred,
+    };
+
+    // Check if the bookmark is already in the favorites folder
+    if (!bookmark.starred) {
+      const isAlreadyFavorite = bookmarks.some(b => b.id === bookmark.id && b.starred);
+      if (isAlreadyFavorite) {
+        return; // Do not add duplicate favorite
+      }
+    }
+
+    dispatch(updateBookmark({
+      id: bookmark.id,
+      updates,
+      addToFavorites: !bookmark.starred
+    }));
+  };
+
+  const handleDeleteBookmark = (bookmarkId) => {
+    dispatch(deleteBookmark(bookmarkId));
+    setShowDeleteConfirm(null);
   };
 
   const filteredBookmarks = bookmarks.filter(bookmark => {
-    const matchesSearch = bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         bookmark.url.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFolder = !selectedFolder || bookmark.folder === selectedFolder;
-    return matchesSearch && matchesFolder;
+    const searchTerms = searchQuery.toLowerCase();
+    const matchesSearch = searchQuery ? (
+      bookmark.title.toLowerCase().includes(searchTerms) ||
+      bookmark.url.toLowerCase().includes(searchTerms) ||
+      bookmark.tags.some(tag => tag.toLowerCase().includes(searchTerms))
+    ) : true;
+    const matchesFolder = selectedFolder ? bookmark.folder === selectedFolder ||
+      (selectedFolder === FAVORITES_FOLDER.id && bookmark.starred) : true;
+    return matchesSearch && (searchQuery ? true : matchesFolder);
   });
+
+  const highlightText = (text, query) => {
+    if (!query) return text;
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return parts.map((part, i) =>
+      part.toLowerCase() === query.toLowerCase()
+        ? <span key={i} className="bg-yellow-400/30 transition-colors duration-200">{part}</span>
+        : part
+    );
+  };
+
 
   return (
     <div className="h-full flex">
       {/* Folders Sidebar */}
-      <div className="w-64 border-r border-white/10 p-4">
-        {/* Button for Adding New Folder */}
-        {!isAddingNew ? (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full mb-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
-            onClick={() => dispatch(setIsAddingNew(true))}
-          >
-            <Plus size={16} />
-            <span>New Folder</span>
-          </motion.button>
-        ) : (
-          // Folder Creation Form
-          <div className="mb-4 flex gap-2">
-            <input
-              type="text"
-              className="w-full px-4 py-2 bg-white/5 text-white/80 placeholder-white/40 border border-white/10 rounded-lg"
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
-              placeholder="Enter folder name"
-            />
-            <button
-              onClick={handleAddFolder}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-            >
-              Add
-            </button>
-            <button
-              onClick={() => dispatch(setIsAddingNew(false))}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+      <motion.div
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        className="w-64 border-r border-white/10 p-4"
+      >
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full mb-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+          onClick={() => setShowFolderPopup(true)}
+        >
+          <Plus size={16} />
+          <span>New Folder</span>
+        </motion.button>
 
-        {/* Display Folders */}
         <div className="space-y-1">
           {folders.map((folder) => (
-            <motion.button
+            <motion.div
               key={folder.id}
-              whileHover={{ x: 4 }}
-              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${
-                selectedFolder === folder.id ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
-              }`}
-              onClick={() => setSelectedFolder(folder.id)}
+              whileHover={{ x: 2 }}
+              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
+                }`}
             >
-              <div className="flex items-center gap-2">
+              <div
+                className="flex-1 flex items-center gap-2 cursor-pointer"
+                onClick={() => setSelectedFolder(folder.id)}
+              >
                 <Folder size={16} />
                 <span>{folder.title}</span>
+                <span className="text-sm text-white/50">
+                  ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
+                </span>
               </div>
-              <span className="text-sm text-white/50">{folder.count}</span>
-            </motion.button>
+              {!folder.isDefault && (
+                <div className="opacity-0 group-hover:opacity-100 flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="text-white/50 hover:text-white/90"
+                    onClick={() => setEditingFolder(folder)}
+                  >
+                    <Edit2 size={16} />
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="text-white/50 hover:text-red-400"
+                    onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                  >
+                    <Trash2 size={16} />
+                  </motion.button>
+                </div>
+              )}
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4">
-        {/* Search Bar */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex-1 p-4"
+      >
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
           <input
             type="text"
             placeholder="Search bookmarks..."
-            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 placeholder:text-white/40 focus:outline-none focus:border-white/20"
+            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 transition-all duration-200 focus:border-white/20 focus:ring-1 focus:ring-white/20"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Add Bookmark Form */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Title"
-            className="w-full mb-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 placeholder:text-white/40 focus:outline-none focus:border-white/20"
-            value={newBookmark.title}
-            onChange={(e) => setNewBookmark({ ...newBookmark, title: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="URL"
-            className="w-full mb-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 placeholder:text-white/40 focus:outline-none focus:border-white/20"
-            value={newBookmark.url}
-            onChange={(e) => setNewBookmark({ ...newBookmark, url: e.target.value })}
-          />
-          <select
-            className="w-full mb-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:outline-none focus:border-white/20"
-            value={newBookmark.folder}
-            onChange={(e) => setNewBookmark({ ...newBookmark, folder: e.target.value })}
+        {selectedFolder && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="mb-6 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+            onClick={() => setShowBookmarkPopup(true)}
           >
-            <option value="">Select Folder</option>
-            {folders.map(folder => (
-              <option key={folder.id} value={folder.id}>{folder.title}</option>
-            ))}
-          </select>
-          <button
-            onClick={handleAddBookmark}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg"
-          >
-            Add Bookmark
-          </button>
-        </div>
+            <Plus size={16} />
+            <span>Add URL</span>
+          </motion.button>
+        )}
 
-        {/* Bookmarks List */}
         <div className="space-y-2">
-          <AnimatePresence>
+          <AnimatePresence mode="popLayout">
             {filteredBookmarks.map(bookmark => (
               <motion.div
                 key={bookmark.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="group p-4 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors"
+                layout
+                className="group p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors duration-200"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <motion.button
                       whileHover={{ scale: 1.2, rotate: 180 }}
                       whileTap={{ scale: 0.9 }}
-                      className={bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}
+                      className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'
+                        }`}
+                      onClick={() => handleStarBookmark(bookmark)}
                     >
                       <Star size={16} />
                     </motion.button>
-                    
+
                     <div>
-                      <h3 className="text-white/90 font-medium">{bookmark.title}</h3>
-                      <p className="text-sm text-white/50">{bookmark.url}</p>
+                      <a
+                        href={bookmark.url}
+                        target="_self"
+                        className="text-white/90 font-medium hover:underline"
+                      >
+                        {highlightText(bookmark.title, searchQuery)}
+                      </a>
+                      <p className="text-sm text-white/50">
+                        {highlightText(bookmark.url, searchQuery)}
+                      </p>
+                      {bookmark.tags.length > 0 && (
+                        <div className="flex gap-2 mt-1">
+                          {bookmark.tags.map(tag => (
+                            <span
+                              key={tag}
+                              className="text-xs px-2 py-0.5 bg-white/10 rounded transition-colors duration-200 hover:bg-white/20"
+                            >
+                              {highlightText(tag, searchQuery)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-1 text-white/50 hover:text-white/90"
-                      onClick={() => setEditingBookmark(bookmark)}
-                    >
-                      <Edit2 size={16} />
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-1 text-white/50 hover:text-red-400"
-                      onClick={() => handleDeleteBookmark(bookmark.id)}
-                    >
-                      <Trash2 size={16} />
-                    </motion.button>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="flex gap-2">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1 text-white/50 hover:text-white/90"
+                        onClick={() => setEditingBookmark(bookmark)}
+                      >
+                        <Edit2 size={16} />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-1 text-white/50 hover:text-red-400"
+                        onClick={() => setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id })}
+                      >
+                        <Trash2 size={16} />
+                      </motion.button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Edit Modal */}
+      {/* Popups */}
       <AnimatePresence>
+        {showFolderPopup && (
+          <PopupModal
+            title="Create New Folder"
+            onClose={() => setShowFolderPopup(false)}
+            onSubmit={handleAddFolder}
+            fields={[
+              { name: 'title', label: 'Folder Name', type: 'text' }
+            ]}
+          />
+        )}
+
+        {editingFolder && (
+          <PopupModal
+            title="Edit Folder"
+            initialValues={{ title: editingFolder.title }}
+            onClose={() => setEditingFolder(null)}
+            onSubmit={(values) => handleUpdateFolder(editingFolder.id, values.title)}
+            fields={[
+              { name: 'title', label: 'Folder Name', type: 'text' }
+            ]}
+          />
+        )}
+
+        {showBookmarkPopup && (
+          <PopupModal
+            title="Add Bookmark"
+            onClose={() => setShowBookmarkPopup(false)}
+            onSubmit={handleAddBookmark}
+            fields={[
+              { name: 'url', label: 'URL', type: 'text' },
+              { name: 'title', label: 'Title', type: 'text' },
+              {
+                name: 'tags',
+                label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
+                type: 'text',
+                validate: value => {
+                  const tags = value.split(',').map(t => t.trim()).filter(Boolean);
+                  if (tags.length > MAX_TAGS) {
+                    return `Maximum ${MAX_TAGS} tags allowed`;
+                  }
+                }
+              }
+            ]}
+          />
+        )}
+
         {editingBookmark && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
-              className="w-[400px] bg-gray-900/90 backdrop-blur-lg rounded-xl border border-white/10 p-6"
-            >
-              <h3 className="text-lg font-medium text-white/90 mb-4">Edit Bookmark</h3>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={editingBookmark.title}
-                  onChange={(e) => setEditingBookmark({ ...editingBookmark, title: e.target.value })}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
-                  placeholder="Title"
-                />
-                <input
-                  type="text"
-                  value={editingBookmark.url}
-                  onChange={(e) => setEditingBookmark({ ...editingBookmark, url: e.target.value })}
-                  className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
-                  placeholder="URL"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setEditingBookmark(null)}
-                    className="flex-1 px-4 py-2 rounded-lg border border-white/10 text-white/70 hover:bg-white/10"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleUpdateBookmark(editingBookmark.id, {
-                      title: editingBookmark.title,
-                      url: editingBookmark.url
-                    })}
-                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+          <PopupModal
+            title="Edit Bookmark"
+            initialValues={{
+              title: editingBookmark.title,
+              url: editingBookmark.url,
+              tags: editingBookmark.tags.join(', ')
+            }}
+            onClose={() => setEditingBookmark(null)}
+            onSubmit={(values) => {
+              const tags = values.tags
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(Boolean)
+                .slice(0, MAX_TAGS);
+
+              handleUpdateBookmark(editingBookmark.id, {
+                ...values,
+                tags
+              });
+            }}
+            fields={[
+              { name: 'url', label: 'URL', type: 'text' },
+              { name: 'title', label: 'Title', type: 'text' },
+              {
+                name: 'tags',
+                label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
+                type: 'text',
+                validate: value => {
+                  const tags = value.split(',').map(t => t.trim()).filter(Boolean);
+                  if (tags.length > MAX_TAGS) {
+                    return `Maximum ${MAX_TAGS} tags allowed`;
+                  }
+                }
+              }
+            ]}
+          />
+        )}
+
+        {showDeleteConfirm && (
+          <DeleteConfirmModal
+            type={showDeleteConfirm.type}
+            onConfirm={() => {
+              if (showDeleteConfirm.type === 'folder') {
+                handleDeleteFolder(showDeleteConfirm.id);
+              } else {
+                handleDeleteBookmark(showDeleteConfirm.id);
+              }
+            }}
+            onCancel={() => setShowDeleteConfirm(null)}
+          />
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+const PopupModal = ({
+  title,
+  onClose,
+  onSubmit,
+  fields,
+  initialValues = {}
+}) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newErrors = {};
+
+    fields.forEach(field => {
+      if (field.validate) {
+        const error = field.validate(values[field.name] || '');
+        if (error) {
+          newErrors[field.name] = error;
+        }
+      }
+    });
+
+    if (Object.keys(newErrors).length === 0) {
+      onSubmit(values);
+    } else {
+      setErrors(newErrors);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.95 }}
+        className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+      >
+        <h3 className="text-lg font-medium text-white mb-4">{title}</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {fields.map(field => (
+            <div key={field.name}>
+              <label className="block text-sm font-medium text-white/70 mb-1">
+                {field.label}
+              </label>
+              <input
+                type={field.type}
+                value={values[field.name] || ''}
+                onChange={(e) => {
+                  setValues(prev => ({
+                    ...prev,
+                    [field.name]: e.target.value
+                  }));
+                  if (errors[field.name]) {
+                    setErrors(prev => ({
+                      ...prev,
+                      [field.name]: undefined
+                    }));
+                  }
+                }}
+                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
+              />
+              {errors[field.name] && (
+                <p className="mt-1 text-sm text-red-400">{errors[field.name]}</p>
+              )}
+            </div>
+          ))}
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-white/70 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.95 }}
+        className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+      >
+        <h3 className="text-lg font-medium text-white mb-2">
+          Delete {type}?
+        </h3>
+        <p className="text-white/70 mb-6">
+          Are you sure you want to delete this {type}? This action cannot be undone.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-white/70 hover:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-500/80 hover:bg-red-500 rounded-lg text-white"
+          >
+            Delete
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
