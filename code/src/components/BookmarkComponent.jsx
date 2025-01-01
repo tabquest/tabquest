@@ -16,6 +16,8 @@ import {
 import { loadFromLocalStorage } from '../utils/loadFromLocalStorage';
 import FolderSidebar from './FolderSidebar';
 import BookmarkList from './BookmarkList';
+import PopupModal from './PopupModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 // Constants moved to top level
 const FAVORITES_FOLDER = {
@@ -247,7 +249,7 @@ const BookmarkComponent = () => {
           />
         </div>
 
-        {selectedFolder && (
+        {selectedFolder && selectedFolder !== FAVORITES_FOLDER.id && (
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -437,138 +439,6 @@ const BookmarkComponent = () => {
         )}
       </AnimatePresence>
     </div>
-  );
-};
-
-const PopupModal = ({
-  title,
-  onClose,
-  onSubmit,
-  fields,
-  initialValues = {}
-}) => {
-  const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-
-    fields.forEach(field => {
-      if (field.validate) {
-        const error = field.validate(values[field.name] || '');
-        if (error) {
-          newErrors[field.name] = error;
-        }
-      }
-    });
-
-    if (Object.keys(newErrors).length === 0) {
-      onSubmit(values);
-    } else {
-      setErrors(newErrors);
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
-    >
-      <motion.div
-        initial={{ scale: 0.95 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.95 }}
-        className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
-      >
-        <h3 className="text-lg font-medium text-white mb-4">{title}</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {fields.map(field => (
-            <div key={field.name}>
-              <label className="block text-sm font-medium text-white/70 mb-1">
-                {field.label}
-              </label>
-              <input
-                type={field.type}
-                value={values[field.name] || ''}
-                onChange={(e) => {
-                  setValues(prev => ({
-                    ...prev,
-                    [field.name]: e.target.value
-                  }));
-                  if (errors[field.name]) {
-                    setErrors(prev => ({
-                      ...prev,
-                      [field.name]: undefined
-                    }));
-                  }
-                }}
-                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
-              />
-              {errors[field.name] && (
-                <p className="mt-1 text-sm text-red-400">{errors[field.name]}</p>
-              )}
-            </div>
-          ))}
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-white/70 hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
-    >
-      <motion.div
-        initial={{ scale: 0.95 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.95 }}
-        className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
-      >
-        <h3 className="text-lg font-medium text-white mb-2">
-          Delete {type}?
-        </h3>
-        <p className="text-white/70 mb-6">
-          Are you sure you want to delete this {type}? This action cannot be undone.
-        </p>
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 text-white/70 hover:text-white"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-red-500/80 hover:bg-red-500 rounded-lg text-white"
-          >
-            Delete
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
   );
 };
 
