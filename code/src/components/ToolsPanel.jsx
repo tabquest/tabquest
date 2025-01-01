@@ -9,6 +9,7 @@ import {
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BookmarkComponent from "./BookmarkComponent";
+import TaskComponent from "./TaskComponent ";
 
 const ToolsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,13 +133,9 @@ const TabButton = ({ icon, isActive, onClick, label }) => (
   </button>
 );
 
-// const BookmarkComponent = () => (
+// const TaskComponent = () => (
 //   <div className="text-white/80"></div>
 // );
-
-const TaskComponent = () => (
-  <div className="text-white/80">This is the Task tab content.</div>
-);
 
 const NotesComponent = () => (
   <div className="text-white/80">This is the Notes tab content.</div>
