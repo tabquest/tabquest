@@ -12,10 +12,8 @@ import {
   deleteBookmark,
   updateFolder,
   deleteFolder
-} from '../utils/redux/bookmarkSlice';
-import { loadFromLocalStorage } from '../utils/loadFromLocalStorage';
-// import FolderSidebar from './FolderSidebar';
-// import BookmarkList from './BookmarkList';
+} from '../../utils/redux/bookmarkSlice';
+import { loadFromLocalStorage } from '../../utils/loadFromLocalStorage';
 import PopupModal from './PopupModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
@@ -170,7 +168,6 @@ const BookmarkComponent = () => {
     );
   };
 
-
   return (
     <div className="h-full flex">
       {/* Folders Sidebar */}
@@ -238,31 +235,38 @@ const BookmarkComponent = () => {
         animate={{ opacity: 1 }}
         className="flex-1 p-4"
       >
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
-          <input
-            type="text"
-            placeholder="Search bookmarks..."
-            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 transition-all duration-200 focus:border-white/20 focus:ring-1 focus:ring-white/20"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        <div className="relative mb-6 flex items-center gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+            <input
+              type="text"
+              placeholder="Search bookmarks..."
+              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 transition-all duration-200 focus:border-white/20 focus:ring-1 focus:ring-white/20"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-        {selectedFolder && selectedFolder !== FAVORITES_FOLDER.id && (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="mb-6 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
-            onClick={() => setShowBookmarkPopup(true)}
-          >
-            <Plus size={16} />
-            <span>Add URL</span>
-          </motion.button>
-        )}
+          {selectedFolder && selectedFolder !== FAVORITES_FOLDER.id && (
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+              onClick={() => setShowBookmarkPopup(true)}
+            >
+              <Plus size={16} />
+              <span>Add URL</span>
+            </motion.button>
+          )}
+        </div>
 
         <div className="space-y-2">
           <AnimatePresence mode="popLayout">
+            {filteredBookmarks.length === 0 && <p>No bookmarks found...</p>}
+
             {filteredBookmarks.map(bookmark => (
               <motion.div
                 key={bookmark.id}
@@ -275,13 +279,16 @@ const BookmarkComponent = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <motion.button
-                      whileHover={{ scale: 1.2, rotate: 180 }}
+                      whileHover={{ scale: 1.2, rotate: 360 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'
-                        }`}
+                      className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
                       onClick={() => handleStarBookmark(bookmark)}
                     >
-                      <Star size={16} />
+                      {bookmark.starred ? (
+                        <Star fill="currentColor" size={16} />
+                      ) : (
+                        <Star size={16} />
+                      )}
                     </motion.button>
 
                     <div>
@@ -296,7 +303,7 @@ const BookmarkComponent = () => {
                         {highlightText(bookmark.url, searchQuery)}
                       </p>
                       {bookmark.tags.length > 0 && (
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex gap-2 mt-1.5">
                           {bookmark.tags.map(tag => (
                             <span
                               key={tag}

@@ -49,8 +49,6 @@ function App() {
           <ProgressBars />
           <SearchBar />
           <BookmarkBar />
-
-          {/* <BookmarkBar /> */}
         </motion.div>
 
 
@@ -62,11 +60,7 @@ function App() {
           className="mt-4"
         >
           <SettingsPanel />
-          <ToolsPanel/>
-          {/* <FeathersTab/> */}
-          {/* <PopupContainer/> */}
-          {/* <MainLayout/> */}
-          {/* <ToolsFeature/> */}
+          <ToolsPanel />
         </motion.div>
       </div>
     </Provider>
