@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BookmarkComponent from "./BookmarkComponent";
 import TaskComponent from "./TaskComponent ";
+import NotesComponent from "./NotesComponent";
 
 const ToolsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,12 +134,8 @@ const TabButton = ({ icon, isActive, onClick, label }) => (
   </button>
 );
 
-// const TaskComponent = () => (
+// const NotesComponent = () => (
 //   <div className="text-white/80"></div>
 // );
-
-const NotesComponent = () => (
-  <div className="text-white/80">This is the Notes tab content.</div>
-);
 
 export default ToolsPanel;

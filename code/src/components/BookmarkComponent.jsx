@@ -14,8 +14,8 @@ import {
   deleteFolder
 } from '../utils/redux/bookmarkSlice';
 import { loadFromLocalStorage } from '../utils/loadFromLocalStorage';
-import FolderSidebar from './FolderSidebar';
-import BookmarkList from './BookmarkList';
+// import FolderSidebar from './FolderSidebar';
+// import BookmarkList from './BookmarkList';
 import PopupModal from './PopupModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
