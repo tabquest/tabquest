@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Folder, Edit2, Trash2, Clock, Calendar, AlertTriangle, X } from 'lucide-react';
+import { Plus, Folder, Edit2, Trash2, Clock, Calendar, AlertTriangle, X, Paperclip } from 'lucide-react';
 import { loadFromLocalStorage, saveToLocalStorage } from '../../utils/storage';
 
 import {
@@ -292,7 +292,8 @@ const TaskComponent = () => {
                                     className="flex-1 flex items-center gap-2 cursor-pointer"
                                     onClick={() => setSelectedFolder(folder.id)}
                                 >
-                                    <Folder size={16} />
+                                    {/* <Folder  /> */}
+                                    <Paperclip size={16}/>
                                     <span>{folder.title}</span>
                                     <span className="text-sm text-white/50">
                                         ({folder.count})
@@ -362,6 +363,7 @@ const TaskComponent = () => {
 
                 <div className="space-y-2">
                     <AnimatePresence mode="popLayout">
+                        {filteredTasks.length === 0 && (<p>No tasks found...</p>)}
                         {filteredTasks.map(task => (
                             <TaskItem
                                 key={task.id}

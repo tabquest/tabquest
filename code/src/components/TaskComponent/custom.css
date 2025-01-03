@@ -1,0 +1,24 @@
+.custom-date {
+    appearance: none;
+    background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23FFF"%3E%3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 4h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2zm0 4h10"%3E%3C/path%3E%3C/svg%3E')
+        no-repeat right 10px center;
+    background-size: 1.5em;
+    color: rgb(255 255 255 / 0.7); /* Text color */
+}
+
+.custom-date::-webkit-calendar-picker-indicator {
+    opacity: 0; /* Hide default calendar icon */
+}
+
+/* Date picker dropdown */
+.custom-date-picker {
+    background-color: #1a1e29; /* Match your UI's dark theme background */
+    color: rgb(255 255 255 / 0.7); /* Text color */
+    border: 1px solid #333; /* Subtle border for consistency */
+}
+
+.custom-date-picker td:hover,
+.custom-date-picker button:focus {
+    background-color: #2e3645; /* Highlight color on hover or focus */
+    color: rgb(255 255 255 / 0.7);
+}

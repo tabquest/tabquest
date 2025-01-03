@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-
+import './custom.css'
 
 
 const SimpleTaskModal = ({
@@ -71,8 +71,8 @@ const SimpleTaskModal = ({
                         <input
                             type="date"
                             value={values.dueDate}
-                            onChange={(e) => setValues(prev => ({ ...prev, dueDate: e.target.value }))}
-                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
+                            onChange={(e) => setValues((prev) => ({ ...prev, dueDate: e.target.value }))}
+                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none custom-date"
                         />
                     </div>
 
@@ -81,26 +81,65 @@ const SimpleTaskModal = ({
                             <label className="block text-sm font-medium text-white/70 mb-1">
                                 Start Time
                             </label>
-                            <input
-                                type="time"
-                                value={values.startTime}
-                                onChange={(e) => setValues(prev => ({ ...prev, startTime: e.target.value }))}
-                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
-                            />
+                            <div className="relative">
+                                <input
+                                    type="time"
+                                    value={values.startTime}
+                                    onChange={(e) => setValues((prev) => ({ ...prev, startTime: e.target.value }))}
+                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
+                                />
+                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5 text-white/70"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
+
                         <span className="text-white/70">to</span>
+
                         <div className="flex-1">
                             <label className="block text-sm font-medium text-white/70 mb-1">
                                 End Time
                             </label>
-                            <input
-                                type="time"
-                                value={values.endTime}
-                                onChange={(e) => setValues(prev => ({ ...prev, endTime: e.target.value }))}
-                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
-                            />
+                            <div className="relative">
+                                <input
+                                    type="time"
+                                    value={values.endTime}
+                                    onChange={(e) => setValues((prev) => ({ ...prev, endTime: e.target.value }))}
+                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
+                                />
+                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-5 w-5 text-white/70"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
 
                     <div className="flex justify-end gap-3 mt-6">
                         <button

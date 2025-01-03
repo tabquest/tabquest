@@ -70,9 +70,23 @@ const ToolsPanel = () => {
               <div className="relative h-full flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-white/10">
-                  <h2 className="text-lg font-medium text-white/80 flex items-center gap-2">
-                    {tabDetails[activeTab].icon}
-                    {tabDetails[activeTab].title}
+                  <h2 className="text-lg font-medium text-white/80 flex items-center gap-2 overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                          duration: 0.3,
+                          // ease: [0.22, 1, 0.36, 1]
+                        }}
+                        className="flex items-center gap-2"
+                      >
+                        {tabDetails[activeTab].icon}
+                        <span>{tabDetails[activeTab].title}</span>
+                      </motion.div>
+                    </AnimatePresence>
                   </h2>
                   <button
                     onClick={() => setIsOpen(false)}
