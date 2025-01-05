@@ -1,8 +1,10 @@
-import React from "react";
-import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { SocialIcons } from "../images/SocialIcons";
 import { motion } from "framer-motion";
+
+import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
+import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaReddit } from "react-icons/fa";
 
 const SocialPopover = () => {
     const SocialProfiles = useSelector((state) => state.settings.socialProfiles);
@@ -10,14 +12,26 @@ const SocialPopover = () => {
     const userRole = useSelector((state) => state.settings.userRole);
     const userPortfolioUrl = useSelector((state) => state.settings.userPortfolioUrl);
 
+
     const [isOpen, setIsOpen] = React.useState(false);
     const [copiedText, setCopiedText] = React.useState("");
+
+    const SocialIcons = {
+        linkedin: <FaLinkedin />,
+        github: <FaGithub />,
+        twitter: <FaTwitter />,
+        instagram: <FaInstagram />,
+        reddit: <FaReddit />,
+    };
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
         setCopiedText(text);
         setTimeout(() => setCopiedText(""), 2000);
     };
+
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    useEffect(() => (window.ononline = window.onoffline = () => setIsOnline(navigator.onLine)), []);
 
     return (
         <div className="relative inline-block">
@@ -28,7 +42,7 @@ const SocialPopover = () => {
             >
                 <User className="h-5 w-5 text-white/80" />
                 <span className="text-white font-medium">{userName}</span>
-                {!navigator.onLine ? (
+                {!isOnline ? (
                     <WifiOff size={20} className="text-red-400 ml-2" />
                 ) : (
                     <Wifi size={20} className="text-green-400 ml-2" />
@@ -37,7 +51,7 @@ const SocialPopover = () => {
 
             {isOpen && (
                 <motion.div
-                    className="absolute right-0 pt-2 z-50"
+                    className="absolute right-0 pt-1 z-50"
                     onMouseEnter={() => setIsOpen(true)}
                     onMouseLeave={() => setIsOpen(false)}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -46,10 +60,10 @@ const SocialPopover = () => {
                     transition={{ duration: 0.3 }}
                 >
                     <div className="w-72 rounded-xl border border-white/10 bg-[#1a1b26]/95 p-3 backdrop-blur-xl shadow-xl">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                        <div className="flex items-center justify-between border-b border-white/10 p-2">
                             <div>
                                 <h3 className="text-base font-medium text-white">{userName}</h3>
-                                {userRole !== '' && <p className="text-sm text-white/70 mt-1">{userRole}</p>}
+                                {userRole !== '' && <p className="text-sm text-white/70 mt-1 capitalize">{userRole}</p>}
                             </div>
                             <div className="flex gap-2">
                                 <a href="https://mail.google.com/" className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors">
@@ -60,7 +74,7 @@ const SocialPopover = () => {
                                         <button
                                             onClick={() => copyToClipboard(userPortfolioUrl)}
                                             className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors"
-                                            title="Copy profile URL"
+                                            title="Copy portfolio URL"
                                         >
                                             <Copy className="h-4 w-4" />
                                         </button>
@@ -69,7 +83,7 @@ const SocialPopover = () => {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors"
-                                            title="Open profile"
+                                            title="Open porfolio website"
                                         >
                                             <ExternalLink className="h-4 w-4" />
                                         </a>
@@ -79,51 +93,54 @@ const SocialPopover = () => {
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            {Object.entries(SocialProfiles).map(([key, value]) => value !== '' && (
-                                <motion.div
-                                    key={key}
-                                    className="group relative flex items-center justify-between rounded-xl p-2 transition-colors hover:bg-white/10"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <a
-                                        href={value}
-                                        rel="noopener noreferrer"
-                                        className="flex flex-1 items-center gap-3 text-white"
-                                    >
-                                        <span className="text-white/80">
-                                            {SocialIcons[key]}
-                                        </span>
-                                        <p className="text-base capitalize">{key}</p>
-                                    </a>
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            onClick={() => copyToClipboard(value)}
-                                            className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
-                                            title="Copy URL"
+                            {Object.entries(SocialProfiles).map(
+                                ([key, value]) =>
+                                    value !== '' && (
+                                        <motion.div
+                                            key={key}
+                                            className="group relative flex items-center justify-between rounded-xl p-2 transition-colors hover:bg-white/10"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
                                         >
-                                            <Copy className="h-4 w-4" />
-                                        </button>
-                                        <a
-                                            href={value}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
-                                            title="Open link"
-                                        >
-                                            <ExternalLink className="h-4 w-4" />
-                                        </a>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                            <a
+                                                href={value}
+                                                rel="noopener noreferrer"
+                                                className="flex flex-1 items-center gap-3 text-white"
+                                            >
+                                                {/* Icon on the left */}
+                                                <span className="text-lg text-white/80">{SocialIcons[key]}</span>
+                                                <p className="text-base capitalize">{key}</p>
+                                            </a>
+                                            {/* Action buttons on the right */}
+                                            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={() => copyToClipboard(value)}
+                                                    className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
+                                                    title="Copy URL"
+                                                >
+                                                    <Copy className="h-4 w-4" />
+                                                </button>
+                                                <a
+                                                    href={value}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
+                                                    title="Open link"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" />
+                                                </a>
+                                            </div>
+                                        </motion.div>
+                                    )
+                            )}
                         </div>
                     </div>
 
                     {copiedText && (
                         <motion.div
-                            className="fixed top-4 right-4 z-50 animate-in fade-in slide-in-from-top-4 duration-300"
+                            className="fixed top-1 right-2 z-50 animate-in fade-in slide-in-from-top-4 duration-300"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}

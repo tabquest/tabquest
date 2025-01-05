@@ -6,7 +6,7 @@ import {
   PenTool,
   SquareChevronRight,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BookmarkComponent from "./BookmarkComponent";
 import TaskComponent from "./TaskComponent";
@@ -21,6 +21,21 @@ const tabDetails = {
 const ToolsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("bookmarks");
+
+
+  // Handle escape key to close panel
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isOpen]);
 
   return (
     <div>
@@ -42,18 +57,18 @@ const ToolsPanel = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed inset-0 flex items-center justify-center z-50"
+            // initial={{ opacity: 0, scale: 0.95 }}
+            // animate={{ opacity: 1, scale: 1 }}
+            // exit={{ opacity: 0, scale: 0.95 }}
+            // // transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed inset-0 flex items-center justify-center z-50 text-[16px]"
           >
             {/* Backdrop */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              // initial={{ opacity: 0, scale: 0 }}
+              // animate={{ opacity: 1, scale: 1 }}
+              // exit={{ opacity: 0, scale: 0 }}
+              // transition={{ duration: 0.6, ease: "easeInOut" }}
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
             />
@@ -79,7 +94,6 @@ const ToolsPanel = () => {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{
                           duration: 0.3,
-                          // ease: [0.22, 1, 0.36, 1]
                         }}
                         className="flex items-center gap-2"
                       >
@@ -129,6 +143,7 @@ const ToolsPanel = () => {
                 </div>
               </div>
             </motion.div>
+
           </motion.div>
         )}
       </AnimatePresence>

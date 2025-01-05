@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Youtube, Globe, ChevronDown } from 'lucide-react';
 import Weather from './Weather';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
+
+import { Search, Youtube, Globe, ChevronDown } from 'lucide-react';
+import { FaGoogle } from 'react-icons/fa';
+import { BiLogoBing } from "react-icons/bi";
+import { SiDuckduckgo } from "react-icons/si";
 
 const SearchBar = ({ onSearch }) => {
   const SearchEngineName = useSelector((state) => state.settings.searchEngine);
@@ -43,10 +47,18 @@ const SearchBar = ({ onSearch }) => {
 
   // Get the alternate option based on current selection
   const getAlternateOption = () => {
+    const alternateIcon =
+      SearchEngineName === 'Google'
+        ? <FaGoogle size={16} />
+        : SearchEngineName === 'DuckDuckGo'
+          ? <SiDuckduckgo size={16} />
+          : <BiLogoBing size={16} />;
+
     return searchEngine === 'webSearch'
       ? { icon: <Youtube size={16} />, text: 'YouTube', value: 'youtube' }
-      : { icon: <Globe size={16} />, text: SearchEngineName, value: 'webSearch' };
+      : { icon: alternateIcon, text: SearchEngineName, value: 'webSearch' };
   };
+
 
   return (
     <motion.div
@@ -94,10 +106,17 @@ const SearchBar = ({ onSearch }) => {
               >
                 <div className="flex items-center gap-2">
                   {searchEngine === 'webSearch' ? (
-                    <Globe size={20} className="text-white" />
+                    SearchEngineName === 'Google' ? (
+                      <FaGoogle size={18} className="text-white" />
+                    ) : SearchEngineName === 'DuckDuckGo' ? (
+                      <SiDuckduckgo size={18} className="text-white" />
+                    ) : (
+                      <BiLogoBing size={20} className="text-white" />
+                    )
                   ) : (
-                    <Youtube size={20} className="text-white" />
+                    <Youtube size={18} className="text-white" />
                   )}
+
                   <span className="text-white text-[16px] font-medium">
                     {searchEngine === 'webSearch' ? SearchEngineName : 'YouTube'}
                   </span>

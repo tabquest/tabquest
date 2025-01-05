@@ -8,6 +8,7 @@ const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const API_URL = `${OPENWEATHER_API_URL}${city}`;
 
@@ -16,11 +17,10 @@ const Weather = () => {
     return `weather_cache_${today}_${city}`;
   };
 
-  // Clean up old cache entries
   const cleanupOldCache = () => {
     const today = new Date().toISOString().split('T')[0];
     const keysToDelete = [];
-
+    
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key.startsWith('weather_cache_')) {
@@ -30,7 +30,7 @@ const Weather = () => {
         }
       }
     }
-
+    
     keysToDelete.forEach(key => localStorage.removeItem(key));
   };
 
@@ -52,25 +52,32 @@ const Weather = () => {
       timestamp: new Date().toISOString(),
     };
     localStorage.setItem(getCacheKey(), JSON.stringify(cacheData));
-    cleanupOldCache(); // Clean up old cache entries after setting new data
+    cleanupOldCache();
   };
 
   const fetchWeatherInfo = async () => {
     try {
+      setIsLoading(true);
       setError(null);
+      
       const cachedData = getCache();
       if (cachedData) {
         setWeatherData(cachedData);
+        setIsLoading(false);
         return;
       }
+
       const result = await fetch(API_URL);
       if (!result.ok) throw new Error(`City not found`);
+      
       const data = await result.json();
       setWeatherData(data);
       setCache(data);
     } catch (err) {
       setError(err.message);
       setWeatherData(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,8 +86,6 @@ const Weather = () => {
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-
-    // Clean up old cache entries when component mounts
     cleanupOldCache();
 
     return () => {
@@ -102,12 +107,12 @@ const Weather = () => {
     if (!isOnline) {
       const cachedTemp = getCache()?.main?.temp;
       const temp = kelvinToCelsius(cachedTemp);
-
+      
       if (!temp) {
         return (
           <div className="flex items-center gap-2">
-            <WifiOff className="w-4 h-4 text-white/70" />
-            <span className="text-sm text-white/70">Offline - Weather info unavailable</span>
+            <WifiOff className="w-4 h-4 text-white/70" data-testid="wifi-off-icon" />
+            <span className="text-sm text-white/70">Weather info unavailable</span>
           </div>
         );
       }
@@ -118,13 +123,26 @@ const Weather = () => {
             <Cloud className="w-6 h-6 text-white" />
             <span className="text-sm font-semibold text-white">{temp}°</span>
           </div>
-          <WifiOff className="w-4 h-4 text-white/70" />
+          <WifiOff className="w-4 h-4 text-white/70" data-testid="wifi-off-icon" />
         </div>
       );
     }
 
+    if (error) {
+      return (
+        <div className="flex w-[160px] m-auto justify-center items-center gap-2 bg-red-600 text-white text-sm p-2 rounded-md">
+          <AlertCircle size={16} />
+          {error}
+        </div>
+      );
+    }
+
+    if (isLoading) {
+      return <div className="text-white text-center">Loading weather...</div>;
+    }
+
     if (!weatherData) {
-      return <div className="text-white text-center mt-4">Loading weather...</div>;
+      return null;
     }
 
     return (
@@ -146,13 +164,7 @@ const Weather = () => {
   };
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto px-6 -z-20">
-      {error && (
-        <div className="absolute top-4 right-4 bg-red-600 text-white text-sm p-3 rounded-md shadow-lg flex items-center gap-2 z-20">
-          <AlertCircle size={16} />
-          {error}
-        </div>
-      )}
+    <div className="relative w-full max-w-3xl mx-auto px-6">
       {renderWeatherContent()}
     </div>
   );
