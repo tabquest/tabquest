@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 const Weather = () => {
   const city = useSelector((state) => state.settings.weatherLocation);
-
   const [weatherData, setWeatherData] = useState(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [error, setError] = useState(null);
@@ -15,6 +14,24 @@ const Weather = () => {
   const getCacheKey = () => {
     const today = new Date().toISOString().split('T')[0];
     return `weather_cache_${today}_${city}`;
+  };
+
+  // Clean up old cache entries
+  const cleanupOldCache = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const keysToDelete = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith('weather_cache_')) {
+        const [, date] = key.match(/weather_cache_(\d{4}-\d{2}-\d{2})/) || [];
+        if (date && date !== today) {
+          keysToDelete.push(key);
+        }
+      }
+    }
+
+    keysToDelete.forEach(key => localStorage.removeItem(key));
   };
 
   const getCache = () => {
@@ -35,6 +52,7 @@ const Weather = () => {
       timestamp: new Date().toISOString(),
     };
     localStorage.setItem(getCacheKey(), JSON.stringify(cacheData));
+    cleanupOldCache(); // Clean up old cache entries after setting new data
   };
 
   const fetchWeatherInfo = async () => {
@@ -61,6 +79,10 @@ const Weather = () => {
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+
+    // Clean up old cache entries when component mounts
+    cleanupOldCache();
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -71,7 +93,57 @@ const Weather = () => {
     if (isOnline) fetchWeatherInfo();
   }, [city, isOnline]);
 
-  const kelvinToCelsius = (kelvin) => Math.round(kelvin - 273.15);
+  const kelvinToCelsius = (kelvin) => {
+    if (!kelvin) return null;
+    return Math.round(kelvin - 273.15);
+  };
+
+  const renderWeatherContent = () => {
+    if (!isOnline) {
+      const cachedTemp = getCache()?.main?.temp;
+      const temp = kelvinToCelsius(cachedTemp);
+
+      if (!temp) {
+        return (
+          <div className="flex items-center gap-2">
+            <WifiOff className="w-4 h-4 text-white/70" />
+            <span className="text-sm text-white/70">Offline - Weather info unavailable</span>
+          </div>
+        );
+      }
+
+      return (
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Cloud className="w-6 h-6 text-white" />
+            <span className="text-sm font-semibold text-white">{temp}°</span>
+          </div>
+          <WifiOff className="w-4 h-4 text-white/70" />
+        </div>
+      );
+    }
+
+    if (!weatherData) {
+      return <div className="text-white text-center mt-4">Loading weather...</div>;
+    }
+
+    return (
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Cloud className="w-6 h-6 text-white" />
+          <span className="text-lg font-semibold text-white">
+            {kelvinToCelsius(weatherData?.main?.temp)}°
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <MapPin className="w-5 h-5 text-white" />
+          <span className="text-sm font-semibold text-white">
+            {weatherData?.name}, {weatherData?.sys?.country}
+          </span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="relative w-full max-w-3xl mx-auto px-6 -z-20">
@@ -81,35 +153,7 @@ const Weather = () => {
           {error}
         </div>
       )}
-
-      {!isOnline ? (
-        <div className="flex items-center gap-4 -z-20">
-          <div className="flex items-center gap-2">
-            <Cloud className="w-6 h-6 text-white" />
-            <span className="text-sm font-semibold text-white">
-              {kelvinToCelsius(getCache()?.main?.temp || 0)}°
-            </span>
-          </div>
-          <WifiOff className="w-4 h-4 text-white/70" />
-        </div>
-      ) : weatherData ? (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Cloud className="w-6 h-6 text-white" />
-            <span className="text-lg font-semibold text-white">
-              {kelvinToCelsius(weatherData?.main?.temp)}°
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-white" />
-            <span className="text-sm font-semibold text-white">
-              {weatherData?.name}, {weatherData?.sys?.country}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="text-white text-center mt-4">Loading weather...</div>
-      )}
+      {renderWeatherContent()}
     </div>
   );
 };
