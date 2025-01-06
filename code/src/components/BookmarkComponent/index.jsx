@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search, Folder, Edit2, Trash2, Star } from 'lucide-react';
+import { Plus, Search, Folder, Edit2, Trash2, Star, Heart } from 'lucide-react';
 import {
   setIsAddingNew,
   addFolder,
@@ -198,7 +198,8 @@ const BookmarkComponent = () => {
                 className="flex-1 flex items-center gap-2 cursor-pointer"
                 onClick={() => setSelectedFolder(folder.id)}
               >
-                <Folder size={16} />
+                {folder.id === 'favorites'? <Heart size={18} /> : <Folder size={16} />}
+                {/* <Folder size={16} /> */}
                 <span>{folder.title}</span>
                 <span className="text-sm text-white/50">
                   ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})

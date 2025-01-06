@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Folder, Edit2, Trash2, Clock, Calendar, AlertTriangle, X, Paperclip } from 'lucide-react';
+import { Plus, Folder, Edit2, Trash2, Clock, Calendar, AlertTriangle, X, Paperclip, CalendarDays, ArchiveRestore } from 'lucide-react';
 import { loadFromLocalStorage, saveToLocalStorage } from '../../utils/storage';
 
 import {
@@ -293,7 +293,8 @@ const TaskComponent = () => {
                                     onClick={() => setSelectedFolder(folder.id)}
                                 >
                                     {/* <Folder  /> */}
-                                    <Paperclip size={16}/>
+                                    {folder.id === 'today' ? <CalendarDays size={16} /> : folder.id === 'archive' ? <ArchiveRestore size={16} /> : <Paperclip size={16} />}
+                                    {/* <Paperclip size={16}/> */}
                                     <span>{folder.title}</span>
                                     <span className="text-sm text-white/50">
                                         ({folder.count})
