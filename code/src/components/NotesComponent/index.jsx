@@ -63,19 +63,21 @@ const NotesComponent = () => {
                     <div className="absolute top-2 right-2">
                         <Code size={14} className="text-white/40" />
                     </div>
-                    {searchQuery ? (
-                        <Highlight text={note.content} searchQuery={searchQuery} />
-                    ) : (
-                        note.content.length > MAX_PREVIEW_LENGTH
-                            ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
-                            : note.content
-                    )}
+                    <pre className="whitespace-pre-wrap overflow-x-auto break-words">
+                        {searchQuery ? (
+                            <Highlight text={note.content} searchQuery={searchQuery} />
+                        ) : (
+                            note.content.length > MAX_PREVIEW_LENGTH
+                                ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
+                                : note.content
+                        )}
+                    </pre>
                 </div>
             );
         }
 
         return (
-            <p className="text-white/60">
+            <p className="text-white/60 break-words">
                 {searchQuery ? (
                     <Highlight text={note.content} searchQuery={searchQuery} />
                 ) : (
@@ -216,7 +218,10 @@ const NotesComponent = () => {
                                         <StickyNote size={16} className="text-white/40" />
                                     )}
                                     <h3 className="font-medium">
-                                        <Highlight text={note.heading} searchQuery={searchQuery} />
+                                        <Highlight
+                                            text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
+                                            searchQuery={searchQuery}
+                                        />
                                     </h3>
                                 </div>
                                 <motion.button
@@ -451,22 +456,22 @@ const NotesComponent = () => {
                             </div>
                             <style>
                                 {`
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-  }
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-`}
+                                .custom-scrollbar::-webkit-scrollbar {
+                                    width: 8px;
+                                    height: 8px;
+                                }
+                                .custom-scrollbar::-webkit-scrollbar-track {
+                                    background: rgba(0, 0, 0, 0.2);
+                                    border-radius: 4px;
+                                }
+                                .custom-scrollbar::-webkit-scrollbar-thumb {
+                                    background: rgba(255, 255, 255, 0.1);
+                                    border-radius: 4px;
+                                }
+                                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                                    background: rgba(255, 255, 255, 0.2);
+                                }
+                                `}
                             </style>
                         </motion.div>
                     </motion.div>
