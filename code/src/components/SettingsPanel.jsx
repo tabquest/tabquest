@@ -10,6 +10,7 @@ import {
 } from '../utils/redux/settingsSlice';
 import { initialState } from '../utils/constants';
 import FeedbackForm from './FeedbackForm';
+import useExtensionVersion from '../utils/hooks/useExtensionVersion';
 
 const SettingsPanel = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -210,6 +211,8 @@ const SettingsPanel = () => {
             bookmarks: formState.bookmarks.filter((_, i) => i !== index)
         });
     };
+
+    const version = useExtensionVersion();
 
 
     return (
@@ -502,9 +505,17 @@ const SettingsPanel = () => {
                                             Submit Feedback
                                         </motion.a>
 
-                                        <motion.div className="w-full text-center mt-2 opacity-70">
-                                            <span className="text-sm">
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="w-full text-center mt-4 text-gray-400"
+                                        >
+                                            <span className="text-sm font-medium mr-2">
                                                 DevTab
+                                            </span>
+                                            <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
+                                                {version}
                                             </span>
                                         </motion.div>
                                     </div>
