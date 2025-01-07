@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle } from 'lucide-react';
+import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -9,6 +9,7 @@ import {
     updateBookmarks
 } from '../utils/redux/settingsSlice';
 import { initialState } from '../utils/constants';
+import FeedbackForm from './FeedbackForm';
 
 const SettingsPanel = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +21,9 @@ const SettingsPanel = () => {
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const panelRef = useRef();
     const dropdownRef = useRef();
+
+    // Feedback Form Popup
+    const [isFeedbackPopup, setIsFeedbackPopup] = useState(false);
 
     // Reset form state when settings change
     useEffect(() => {
@@ -214,6 +218,12 @@ const SettingsPanel = () => {
                 {error && <Alert message={error} />}
             </AnimatePresence>
 
+            {isFeedbackPopup && (
+                <FeedbackForm
+                    isOpen={isFeedbackPopup}
+                    onClose={() => setIsFeedbackPopup(false)}
+                />
+            )}
 
             <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -478,20 +488,19 @@ const SettingsPanel = () => {
                                         </motion.button>
 
                                         {/* Future use for document ref */}
-                                        {/* <motion.a
-                                            href="https://devtabs.dev/docs"
-                                            target="_blank"
+                                        <motion.a
+                                            onClick={() => setIsFeedbackPopup(true)}
                                             rel="noopener noreferrer"
                                             initial={{ y: 20, opacity: 0 }}
                                             animate={{ y: 0, opacity: 1 }}
                                             transition={{ delay: 0.5 }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className="w-full px-4 py-3 rounded-xl bg-white/5 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center gap-2 group"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md text-white/80 hover:text-white border border-white/20 hover:border-white/40 transition-transform duration-300 flex items-center justify-center gap-2 group"
                                         >
-                                            <BookOpen className="w-4 h-4 text-white/70 group-hover:text-white/90" />
-                                            Documentation
-                                        </motion.a> */}
+                                            <Send className="w-5 h-5 text-white/70 group-hover:text-white" />
+                                            Submit Feedback
+                                        </motion.a>
 
                                         <motion.div className="w-full text-center mt-2 opacity-70">
                                             <span className="text-sm">
