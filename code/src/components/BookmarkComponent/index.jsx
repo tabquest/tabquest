@@ -198,9 +198,10 @@ const BookmarkComponent = () => {
                 className="flex-1 flex items-center gap-2 cursor-pointer"
                 onClick={() => setSelectedFolder(folder.id)}
               >
-                {folder.id === 'favorites'? <Heart size={18} /> : <Folder size={16} />}
-                {/* <Folder size={16} /> */}
-                <span>{folder.title}</span>
+                {folder.id === 'favorites' ? <Heart size={18} /> : <Folder size={16} />}
+                <span>
+                  {folder.title.length > 12 ? `${folder.title.slice(0, 12)}...` : folder.title}
+                </span>
                 <span className="text-sm text-white/50">
                   ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
                 </span>
@@ -298,10 +299,20 @@ const BookmarkComponent = () => {
                         target="_self"
                         className="text-white/90 font-medium hover:underline"
                       >
-                        {highlightText(bookmark.title, searchQuery)}
+                        {highlightText(
+                          bookmark.title.length > 35
+                            ? `${bookmark.title.slice(0, 35)}...`
+                            : bookmark.title,
+                          searchQuery
+                        )}
                       </a>
                       <p className="text-sm text-white/50">
-                        {highlightText(bookmark.url, searchQuery)}
+                        {highlightText(
+                          bookmark.url.length > 39
+                            ? `${bookmark.url.slice(0, 39)}...`
+                            : bookmark.url,
+                          searchQuery
+                        )}
                       </p>
                       {bookmark.tags.length > 0 && (
                         <div className="flex gap-2 mt-1.5">

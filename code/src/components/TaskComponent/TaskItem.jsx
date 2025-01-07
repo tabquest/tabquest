@@ -38,7 +38,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                     <div>
                         <div className="relative">
                             <h3 className={`text-lg font-medium tracking-tight ${task.completed ? 'text-white/40' : 'text-white/90'}`}>
-                                {task.title}
+                                {task.title.length  > 30 ? `${task.title.slice(0, 30)}.....` : task.title}
                             </h3>
                             <AnimatePresence>
                                 {isScribbling && (

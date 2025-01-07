@@ -10,10 +10,13 @@ import ToolsPanel from './components/ToolsPanel';
 import { Provider } from 'react-redux';
 import { store } from './utils/redux/store';
 import { motion } from 'framer-motion';
+import VersionChecker from './components/VersionChecker';
 
 function App() {
   return (
     <Provider store={store}>
+      {/* Version Check */}
+      <VersionChecker />
       <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen flex flex-col p-6 md:p-8">
         {/* Header Section */}
         <div className="flex mt-4 justify-between"> {/* Reduced margin-top */}

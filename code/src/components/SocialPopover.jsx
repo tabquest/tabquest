@@ -41,7 +41,7 @@ const SocialPopover = () => {
                 className="flex items-center space-x-3 rounded-xl bg-[#1a1b26]/80 px-3 py-2.5 text-base backdrop-blur-lg transition-all hover:bg-[#1a1b26] border border-white/10"
             >
                 <User className="h-5 w-5 text-white/80" />
-                <span className="text-white font-medium">{userName}</span>
+                <span className="text-white font-medium">{userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}</span>
                 {!isOnline ? (
                     <WifiOff size={20} className="text-red-400 ml-2" />
                 ) : (
@@ -62,8 +62,8 @@ const SocialPopover = () => {
                     <div className="w-72 rounded-xl border border-white/10 bg-[#1a1b26]/95 p-3 backdrop-blur-xl shadow-xl">
                         <div className="flex items-center justify-between border-b border-white/10 p-2">
                             <div>
-                                <h3 className="text-base font-medium text-white">{userName}</h3>
-                                {userRole !== '' && <p className="text-sm text-white/70 mt-1 capitalize">{userRole}</p>}
+                                <h3 className="text-base font-medium text-white">{userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}</h3>
+                                {userRole !== '' && <p className="text-sm text-white/70 mt-1 capitalize">{userRole.length > 15 ? `${userRole.slice(0, 15)}..` : userRole}</p>}
                             </div>
                             <div className="flex gap-2">
                                 <a href="https://mail.google.com/" className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors">

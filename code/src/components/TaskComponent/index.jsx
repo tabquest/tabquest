@@ -295,7 +295,7 @@ const TaskComponent = () => {
                                     {/* <Folder  /> */}
                                     {folder.id === 'today' ? <CalendarDays size={16} /> : folder.id === 'archive' ? <ArchiveRestore size={16} /> : <Paperclip size={16} />}
                                     {/* <Paperclip size={16}/> */}
-                                    <span>{folder.title}</span>
+                                    <span>{folder.title.length > 16 ? `${folder.title.slice(0, 12)}...` : folder.title}</span>
                                     <span className="text-sm text-white/50">
                                         ({folder.count})
                                     </span>

@@ -53,6 +53,7 @@ const PopupModal = ({
                                 {field.label}
                             </label>
                             <input
+                                required
                                 type={field.type}
                                 value={values[field.name] || ''}
                                 onChange={(e) => {

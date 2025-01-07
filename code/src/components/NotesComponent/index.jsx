@@ -456,23 +456,34 @@ const NotesComponent = () => {
                             </div>
                             <style>
                                 {`
-                                .custom-scrollbar::-webkit-scrollbar {
+                                    /* Custom Scrollbar */
+                                    .custom-scrollbar {
+                                    scrollbar-width: thin; /* For Firefox */
+                                    scrollbar-color: rgba(255, 255, 255, 0.1) rgba(0, 0, 0, 0.2);
+                                    }
+                                    .custom-scrollbar::-webkit-scrollbar {
                                     width: 8px;
                                     height: 8px;
-                                }
-                                .custom-scrollbar::-webkit-scrollbar-track {
+                                    }
+                                    .custom-scrollbar::-webkit-scrollbar-track {
                                     background: rgba(0, 0, 0, 0.2);
                                     border-radius: 4px;
-                                }
-                                .custom-scrollbar::-webkit-scrollbar-thumb {
+                                    }
+                                    .custom-scrollbar::-webkit-scrollbar-thumb {
                                     background: rgba(255, 255, 255, 0.1);
                                     border-radius: 4px;
-                                }
-                                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                                    background: rgba(255, 255, 255, 0.2);
-                                }
+                                    }
+                                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                                    background: rgba(255, 255, 255, 0.3);
+                                    }
+
+                                    /* Add smooth scrolling for better UX */
+                                    .custom-scrollbar {
+                                    scroll-behavior: smooth;
+                                    }
                                 `}
                             </style>
+
                         </motion.div>
                     </motion.div>
                 )}
