@@ -246,7 +246,7 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed inset-y-0 right-0 w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
+                        className="fixed text-base inset-y-0 right-0 w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
                     >
                         {/* Main scrollable container */}
                         <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600">

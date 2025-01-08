@@ -4,7 +4,7 @@ export const OPENWEATHER_API_URL = "https://halithsmh-weatherapi.web.val.run/?ci
 
 export const UPDATE_CHECK_API = "https://halithsmh-updatechecker.web.val.run";
 
-export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxdgZTKQ4Pcv1rcpHsbZ72s7rzUzFe9emZkyDCYtdtVVLsdfvruVkuvaDAMTV_C443O/exec";
+export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxMdCc6s4Ggnx4i1iNq_kVI_4XznCVAlahBC5nS-bSjB99XRoxfElx17aPdFyLAHbsl/exec";
 
 export const initialState = {
     userName: "user_name",

@@ -22,26 +22,26 @@ const saveToLocalStorage = (state) => {
 
 // Initial state
 const initialState = loadFromLocalStorage() || {
-  userName: 'user_name',
-  userRole: 'developer',
-  userPortfolioUrl: '',
-  searchEngine: 'Google',
-  weatherLocation: 'Chennai',
+  userName: "user_name",
+  userRole: "developer",
+  userPortfolioUrl: "",
+  searchEngine: "Google",
+  weatherLocation: "Chennai",
   socialProfiles: {
-    linkedin: 'https://www.linkedin.com/',
-    github: 'https://github.com/',
-    twitter: '',
-    instagram: '',
-    reddit: ''
+      linkedin: "https://www.linkedin.com/",
+      github: "https://github.com/",
+      twitter: "",
+      instagram: "https://www.instagram.com",
+      reddit: "",
   },
   bookmarks: [
-    { url: 'https://www.netflix.com', name: 'Netflix' },
-    { url: 'https://youtube.com', name: 'YouTube' },
-    { url: 'https://chatgpt.com', name: 'ChatGPT' },
-    { url: 'https://www.notion.com', name: 'Notion'},
-    { url: 'https://www.eraser.io/', name: 'Eraser' },
-    { url: 'https://web.telegram.org', name: 'Telegram'}
-  ]
+      { url: "https://www.notion.com", name: "Notion" },
+      { url: "https://www.eraser.io", name: "Eraser" },
+      { url: "https://www.netflix.com", name: "Netflix" },
+      { url: "https://youtube.com", name: "YouTube" },
+      { url: "https://chatgpt.com", name: "ChatGPT" },
+      { url: "https://www.primevideo.com/region/eu/storefront", name: "Prime" },
+  ],
 };
 
 const settingsSlice = createSlice({
