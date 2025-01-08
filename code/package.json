@@ -1,7 +1,7 @@
 {
-    "name": "devtab",
-    "version": "1.0.1",
-    "description": "A devloper home page",
+    "name": "tabquest",
+    "version": "1.0.0",
+    "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
     "type": "module",
     "scripts": {
         "dev": "vite --open",

@@ -512,7 +512,7 @@ const SettingsPanel = () => {
                                             className="w-full text-center mt-4 text-gray-400"
                                         >
                                             <span className="text-sm font-medium mr-2">
-                                                DevTab
+                                                TabQuest
                                             </span>
                                             <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
                                                 {version}

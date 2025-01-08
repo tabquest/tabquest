@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "DevTab",
-    "version": "1.0.1",
-    "description": "A developer home page extension",
+    "name": "TabQuest",
+    "version": "1.0.0",
+    "description": "Embark on a journey of productivity with TabQuest. Tailored for developers and general users, TabQuest helps you effortlessly manage bookmarks, tasks, and notes. Enjoy a sleek, professional interface and a customizable home page for easy access to your favorites and social media. With searchable notes and bookmarks, TabQuest keeps you organized and boosts your browsing experience.",
     "icons": {
         "16": "images/icons/icon16.png",
         "32": "images/icons/icon32.png",
