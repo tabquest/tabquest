@@ -1,45 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Mock Chrome API for development
-const mockChromeAPI = {
-  runtime: {
-    getManifest: () => ({
-      version: '1.0.0'
-    })
-  }
-};
-
-const isExtensionEnvironment = () => {
-  return typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest;
-};
-
-const chromeAPI = isExtensionEnvironment() ? chrome : mockChromeAPI;
+import { APP_VERSION, CHECK_INTERVAL, API_ENDPOINTS } from '../../utils/version';
 
 const VersionChecker = () => {
-  const [currentVersion, setCurrentVersion] = useState('');
   const [latestVersion, setLatestVersion] = useState('');
   const [updateUrl, setUpdateUrl] = useState('');
   const [showNotification, setShowNotification] = useState(false);
-  const [isDev] = useState(!isExtensionEnvironment());
-
-  const CHECK_INTERVAL = 8 * 60 * 60 * 1000; // 8 hours
-
-  const getCurrentVersion = () => {
-    const manifest = chromeAPI.runtime.getManifest();
-    setCurrentVersion(manifest.version);
-  };
 
   const checkForUpdates = async () => {
     try {
-      const response = await fetch('https://halithsmh-updatechecker.web.val.run');
+      const response = await fetch(API_ENDPOINTS.UPDATE_CHECK);
       const data = await response.json();
       
       setLatestVersion(data.version);
       setUpdateUrl(data.updateUrl);
 
-      if (data.version !== currentVersion) {
+      // Show notification if versions don't match
+      if (data.version !== APP_VERSION) {
         setShowNotification(true);
       }
 
@@ -50,28 +28,19 @@ const VersionChecker = () => {
   };
 
   useEffect(() => {
-    getCurrentVersion();
-
     const lastCheck = localStorage.getItem('lastUpdateCheck');
     const now = Date.now();
 
     if (!lastCheck || (now - Number(lastCheck)) > CHECK_INTERVAL) {
       checkForUpdates();
     }
+
+    const intervalId = setInterval(checkForUpdates, CHECK_INTERVAL);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <div className="fixed top-0 right-0 z-50 p-4">
-      {isDev && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="-mt-2 px-2 py-1 bg-yellow-500/10 text-yellow-500 rounded-md text-sm backdrop-blur-sm"
-        >
-          Development Mode
-        </motion.div>
-      )}
-      
+    <div className="fixed top-0 right-0 z-50 p-4">      
       <AnimatePresence>
         {showNotification && (
           <motion.div
@@ -89,7 +58,7 @@ const VersionChecker = () => {
                     Update Available!
                   </h3>
                   <p className="text-gray-300 text-sm">
-                    A new version ({latestVersion}) is available. Your current version is {currentVersion}.
+                    A new version ({latestVersion}) is available. Your current version is {APP_VERSION}.
                   </p>
                   <motion.a 
                     href={updateUrl}
