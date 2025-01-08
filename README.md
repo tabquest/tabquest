@@ -7,7 +7,7 @@ TabQuest is a productivity-focused extension designed to help you manage bookmar
 To start the development server run:
 
 ```bash
-  npm run def
+  npm run dev
 ```
 
 ## Build
