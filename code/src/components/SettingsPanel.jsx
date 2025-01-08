@@ -241,6 +241,7 @@ const SettingsPanel = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
+                        ref={panelRef}
                         initial={{ x: '100%', opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
