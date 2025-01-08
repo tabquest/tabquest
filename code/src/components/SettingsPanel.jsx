@@ -241,18 +241,21 @@ const SettingsPanel = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        ref={panelRef}
                         initial={{ x: '100%', opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-[16.2px] top-0 right-0 h-full w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
+                        className="fixed inset-y-0 right-0 w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
                     >
-                        <div
-                            className="relative h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600 rounded-[4px]">
-                            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+                        {/* Main scrollable container */}
+                        <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600">
+                            {/* Background and gradient container - fixed position */}
+                            <div className="absolute inset-0 bg-black/40">
+                                <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+                            </div>
 
+                            {/* Content container */}
                             <div className="relative z-100 px-6 py-8">
                                 <div className="flex justify-between items-center mb-8">
                                     <motion.h2
@@ -521,6 +524,25 @@ const SettingsPanel = () => {
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+
+
+
+                        <div
+                            className="relative h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600 rounded-[4px]">
+                            {/* 
+                            // Fixed background wrapper that extends full height 
+                            <div className="absolute inset-0 bg-black/40">
+                                <div className="relative h-full">
+
+                                    <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+
+                                   
+
+                                </div>
+                            </div> */}
                         </div>
                     </motion.div>
                 )}
