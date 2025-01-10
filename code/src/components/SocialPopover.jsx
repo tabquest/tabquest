@@ -30,6 +30,8 @@ const SocialPopover = () => {
         setTimeout(() => setCopiedText(""), 2000);
     };
 
+    const validateUrl = (url) => { if (!/^https?:\/\//i.test(url)) { return `https://${url}`; } return url; };
+
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     useEffect(() => (window.ononline = window.onoffline = () => setIsOnline(navigator.onLine)), []);
 
@@ -79,7 +81,7 @@ const SocialPopover = () => {
                                             <Copy className="h-4 w-4" />
                                         </button>
                                         <a
-                                            href={userPortfolioUrl}
+                                            href={validateUrl(userPortfolioUrl)}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors"

@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle, Send } from 'lucide-react';
+// import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle, Send } from 'lucide-react';
+import {
+    Settings, X, Plus, Save, RotateCcw, Send, Trash2,
+    User, Briefcase, Globe, MapPin, Search, AlertCircle,
+    Github, Twitter, Linkedin, Instagram,
+    Link
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -279,38 +285,38 @@ const SettingsPanel = () => {
 
                                 <div className="space-y-8">
                                     {/* User Details */}
-                                    <motion.div
-                                        initial={{ y: 20, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        className="space-y-4"
-                                    >
-                                        <h3 className="text-sm font-medium text-white/50">User Details</h3>
-                                        <div className="space-y-3">
+                                    <div className="space-y-3">
+                                        <div className="relative">
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                             <input
                                                 type="text"
                                                 value={formState.userName}
                                                 onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
                                                 placeholder="Username"
-                                                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
                                             />
+                                        </div>
+                                        <div className="relative">
+                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                             <input
                                                 type="text"
                                                 value={formState.userRole}
                                                 onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
                                                 placeholder="Role"
-                                                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
                                             />
-
+                                        </div>
+                                        <div className="relative">
+                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                             <input
                                                 type="text"
                                                 value={formState.userPortfolioUrl}
                                                 onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
                                                 placeholder="Portfolio URL"
-                                                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
                                             />
-
                                         </div>
-                                    </motion.div>
+                                    </div>
 
                                     {/* Search Preferences */}
                                     <motion.div
@@ -324,9 +330,10 @@ const SettingsPanel = () => {
 
                                             <div className="relative w-full">
                                                 {/* Selected Value */}
+                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                                 <button
                                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                    className="w-full px-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20 transition-all duration-300"
+                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20 transition-all duration-300"
                                                 >
                                                     {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
                                                     <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -368,13 +375,16 @@ const SettingsPanel = () => {
 
 
 
-                                            <input
-                                                type="text"
-                                                value={formState.weatherLocation}
-                                                onChange={(e) => setFormState({ ...formState, weatherLocation: e.target.value })}
-                                                placeholder="Weather Location"
-                                                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
-                                            />
+                                            <div className="relative">
+                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                <input
+                                                    type="text"
+                                                    value={formState.weatherLocation}
+                                                    onChange={(e) => setFormState({ ...formState, weatherLocation: e.target.value })}
+                                                    placeholder="Weather Location"
+                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                />
+                                            </div>
                                         </div>
                                     </motion.div>
 
@@ -386,24 +396,34 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <h3 className="text-sm font-medium text-white/50">Social Profiles</h3>
-                                        <div className="space-y-3">
-                                            {Object.keys(formState.socialProfiles).map((platform) => (
-                                                <input
-                                                    key={platform}
-                                                    type="url"
-                                                    value={formState.socialProfiles[platform]}
-                                                    onChange={(e) => setFormState({
-                                                        ...formState,
-                                                        socialProfiles: {
-                                                            ...formState.socialProfiles,
-                                                            [platform]: e.target.value
-                                                        }
-                                                    })}
-                                                    placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
-                                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
-                                                />
-                                            ))}
-                                        </div>
+                                        
+                                        {Object.entries(formState.socialProfiles).map(([platform, value]) => {
+                                            const IconComponent = {
+                                                github: Github,
+                                                twitter: Twitter,
+                                                linkedin: Linkedin,
+                                                instagram: Instagram
+                                            }[platform] || Link;
+
+                                            return (
+                                                <div key={platform} className="relative">
+                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                    <input
+                                                        type="url"
+                                                        value={value}
+                                                        onChange={(e) => setFormState({
+                                                            ...formState,
+                                                            socialProfiles: {
+                                                                ...formState.socialProfiles,
+                                                                [platform]: e.target.value
+                                                            }
+                                                        })}
+                                                        placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
+                                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                    />
+                                                </div>
+                                            );
+                                        })}
                                     </motion.div>
 
                                     {/* Bookmarks */}

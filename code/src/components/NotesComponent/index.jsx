@@ -127,13 +127,16 @@ const NotesComponent = () => {
         setShowDeleteModal(false);
     };
 
-    const filteredNotes = notes.filter(note => {
-        const matchesFilter = filter === 'all' || (filter === 'favorites' && note.starred);
-        const matchesSearch = note.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchesFilter && matchesSearch;
-    });
+
+    const filteredNotes = notes
+        .filter(note => {
+            const matchesFilter = filter === 'all' || (filter === 'favorites' && note.starred);
+            const matchesSearch = note.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            return matchesFilter && matchesSearch;
+        })
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
 
     const formatDate = (timestamp) => {
         return new Date(timestamp).toLocaleDateString('en-US', {
@@ -155,110 +158,117 @@ const NotesComponent = () => {
     };
 
     return (
-        <div className="h-full p-2 text-white/90">
-            <div className="flex items-center gap-4 mb-6">
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90"
-                    onClick={() => setShowAddModal(true)}
-                >
-                    <Plus size={18} />
-                    <span>Add Note</span>
-                </motion.button>
+        <div className="h-full flex flex-col">
+            {/* Fixed header */}
+            <div className="sticky top-0 z-30 bg-[#1a1b1e] rounded-lg p-4">
 
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search notes..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
-                    />
+                <div className="flex items-center gap-4">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90"
+                        onClick={() => setShowAddModal(true)}
+                    >
+                        <Plus size={18} />
+                        <span>Add Note</span>
+                    </motion.button>
+
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Search notes..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
+                        />
+                    </div>
+
+                    <select
+                        value={filter}
+                        onChange={(e) => dispatch(setFilter(e.target.value))}
+                        className="bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90 px-4 py-2"
+                        style={{
+                            WebkitAppearance: 'none',
+                            MozAppearance: 'none',
+                            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 0.7rem center',
+                            backgroundSize: '1rem',
+                            paddingRight: '2.5rem'
+                        }}
+                    >
+                        <option value="all" className="bg-[#1a1a1a] text-white/80">All Notes</option>
+                        <option value="favorites" className="bg-[#1a1a1a] text-white/80">Favorites</option>
+                    </select>
                 </div>
-
-                <select
-                    value={filter}
-                    onChange={(e) => dispatch(setFilter(e.target.value))}
-                    className="bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90 px-4 py-2"
-                    style={{
-                        WebkitAppearance: 'none',
-                        MozAppearance: 'none',
-                        backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 0.7rem center',
-                        backgroundSize: '1rem',
-                        paddingRight: '2.5rem'
-                    }}
-                >
-                    <option value="all" className="bg-[#1a1a1a] text-white/80">All Notes</option>
-                    <option value="favorites" className="bg-[#1a1a1a] text-white/80">Favorites</option>
-                </select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
-                <AnimatePresence mode="popLayout">
-                    {filteredNotes.length === 0 && (<p>No notes found...</p>)}
-                    {filteredNotes.map(note => (
-                        <motion.div
-                            key={note.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            whileHover={{ scale: 1.02 }}
-                            className="group bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer"
-                            onClick={() => dispatch(setSelectedNote(note))}
-                        >
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-2">
-                                    {note.type === 'snippet' ? (
-                                        <Code size={16} className="text-white/40" />
-                                    ) : (
-                                        <StickyNote size={16} className="text-white/40" />
-                                    )}
-                                    <h3 className="font-medium">
-                                        <Highlight
-                                            text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
-                                            searchQuery={searchQuery}
-                                        />
-                                    </h3>
-                                </div>
-                                <motion.button
-                                    whileHover={{ scale: 1.2 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        dispatch(toggleStarred(note.id));
-                                    }}
-                                    className={`${note.starred ? 'text-yellow-400' : 'text-white/30'}`}
-                                >
-                                    <Star
-                                        size={16}
-                                        fill={note.starred ? "currentColor" : "none"}
-                                    />
-                                </motion.button>
-                            </div>
-
-                            <div className="mb-3">
-                                {renderContent(note)}
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mb-2">
-                                {note.tags.map(tag => (
-                                    <span
-                                        key={tag}
-                                        className="text-xs px-2 py-0.5 bg-white/10 rounded"
+            {/* Scrollable content */}
+            <div className="flex-1 overflow-y-auto p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+                    <AnimatePresence mode="popLayout">
+                        {filteredNotes.length === 0 && (<p>No notes found...</p>)}
+                        {filteredNotes.map(note => (
+                            <motion.div
+                                key={note.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                whileHover={{ scale: 1.02 }}
+                                className="group bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer"
+                                onClick={() => dispatch(setSelectedNote(note))}
+                            >
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        {note.type === 'snippet' ? (
+                                            <Code size={16} className="text-white/40" />
+                                        ) : (
+                                            <StickyNote size={16} className="text-white/40" />
+                                        )}
+                                        <h3 className="font-medium">
+                                            <Highlight
+                                                text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
+                                                searchQuery={searchQuery}
+                                            />
+                                        </h3>
+                                    </div>
+                                    <motion.button
+                                        whileHover={{ scale: 1.2 }}
+                                        whileTap={{ scale: 0.9 }}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            dispatch(toggleStarred(note.id));
+                                        }}
+                                        className={`${note.starred ? 'text-yellow-400' : 'text-white/30'}`}
                                     >
-                                        <Highlight text={tag} searchQuery={searchQuery} />
-                                    </span>
-                                ))}
-                            </div>
+                                        <Star
+                                            size={16}
+                                            fill={note.starred ? "currentColor" : "none"}
+                                        />
+                                    </motion.button>
+                                </div>
 
-                            <p className="text-xs text-white/40">{formatDate(note.timestamp)}</p>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
+                                <div className="mb-3">
+                                    {renderContent(note)}
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                    {note.tags.map(tag => (
+                                        <span
+                                            key={tag}
+                                            className="text-xs px-2 py-0.5 bg-white/10 rounded"
+                                        >
+                                            <Highlight text={tag} searchQuery={searchQuery} />
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <p className="text-xs text-white/40">{formatDate(note.timestamp)}</p>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
             </div>
 
             <AnimatePresence>
@@ -273,55 +283,57 @@ const NotesComponent = () => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-gray-900 border border-gray-700 rounded-lg p-6 w-full max-w-2xl max-h-[50vh] flex flex-col relative"
+                            className="bg-[#1F2937] border border-white/10 rounded-lg w-full max-w-2xl max-h-[60vh] flex flex-col"
                         >
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-xl font-medium text-gray-100">
-                                    {isEditing ? 'Edit Note' : selectedNote ? 'View Note' : 'Add Note'}
-                                </h2>
-                                <div className="flex gap-2">
-                                    {selectedNote && !isEditing && (
-                                        <>
-                                            <motion.button
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                                onClick={() => {
-                                                    setIsEditing(true);
-                                                    setFormData({
-                                                        heading: selectedNote.heading,
-                                                        content: selectedNote.content,
-                                                        tags: selectedNote.tags.join(', '),
-                                                        type: selectedNote.type,
-                                                    });
-                                                }}
-                                                className="p-2 hover:bg-gray-800 rounded-lg"
-                                            >
-                                                <Edit2 size={20} />
-                                            </motion.button>
-                                            <motion.button
-                                                whileTap={{ scale: 0.9 }}
-                                                onClick={() => setShowDeleteModal(true)}
-                                                className="p-2 hover:bg-gray-800 rounded-lg text-red-400"
-                                            >
-                                                <Trash2 size={20} />
-                                            </motion.button>
-                                        </>
-                                    )}
-                                    <motion.button
-                                        whileHover={{ scale: 1.1 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent event bubbling
-                                            handleCloseModal();
-                                        }}
-                                        className="p-2 hover:bg-gray-800 rounded-lg"
-                                    >
-                                        <X size={20} />
-                                    </motion.button>
+                            {/* Modal Header */}
+                            <div className="p-6">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-xl font-medium text-white/90">
+                                        {isEditing ? 'Edit Note' : selectedNote ? 'View Note' : 'Add Note'}
+                                    </h2>
+                                    <div className="flex gap-2">
+                                        {selectedNote && !isEditing && (
+                                            <>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() => {
+                                                        setIsEditing(true);
+                                                        setFormData({
+                                                            heading: selectedNote.heading,
+                                                            content: selectedNote.content,
+                                                            tags: selectedNote.tags.join(', '),
+                                                            type: selectedNote.type,
+                                                        });
+                                                    }}
+                                                    className="p-2 hover:bg-white/10 rounded-lg"
+                                                >
+                                                    <Edit2 size={20} />
+                                                </motion.button>
+                                                <motion.button
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() => setShowDeleteModal(true)}
+                                                    className="p-2 hover:bg-white/10 rounded-lg text-red-400"
+                                                >
+                                                    <Trash2 size={20} />
+                                                </motion.button>
+                                            </>
+                                        )}
+                                        <motion.button
+                                            whileHover={{ scale: 1.1 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            onClick={handleCloseModal}
+                                            className="p-2 hover:bg-white/10 rounded-lg"
+                                        >
+                                            <X size={20} />
+                                        </motion.button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="overflow-y-auto flex-1 pr-2 -mr-2 custom-scrollbar">
+
+                            {/* Modal Content - Scrollable */}
+                            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                                 {(showAddModal || isEditing) ? (
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         <div className="flex gap-4 mb-4">
@@ -329,7 +341,7 @@ const NotesComponent = () => {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, type: 'note' })}
                                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                      ${formData.type === 'note' ? 'bg-gray-700 text-gray-100' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                                            ${formData.type === 'note' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
                                             >
                                                 <StickyNote size={18} />
                                                 Note
@@ -338,7 +350,7 @@ const NotesComponent = () => {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, type: 'snippet' })}
                                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                      ${formData.type === 'snippet' ? 'bg-gray-700 text-gray-100' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                                            ${formData.type === 'snippet' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
                                             >
                                                 <Code size={18} />
                                                 Code Snippet
@@ -350,7 +362,7 @@ const NotesComponent = () => {
                                             placeholder="Title"
                                             value={formData.heading}
                                             onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                                            className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100"
+                                            className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/90"
                                             required
                                         />
 
@@ -358,8 +370,7 @@ const NotesComponent = () => {
                                             placeholder={formData.type === 'snippet' ? "Paste your code here..." : "Note Content"}
                                             value={formData.content}
                                             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                            className={`w-full h-40 px-4 py-2 border border-gray-700 rounded-lg resize-none custom-scrollbar
-                    ${formData.type === 'snippet' ? 'bg-gray-900 font-mono' : 'bg-gray-800'} text-gray-100`}
+                                            className={`w-full h-40 px-4 py-2 border border-white/10 rounded-lg resize-none custom-scrollbar ${formData.type === 'snippet' ? 'bg-black/20 font-mono' : 'bg-black/20'} text-white/90`}
                                             required
                                         />
 
@@ -369,32 +380,21 @@ const NotesComponent = () => {
                                                 placeholder={`Tags (minimum ${MIN_TAGS}, comma-separated)`}
                                                 value={formData.tags}
                                                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                                                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-100"
+                                                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/90"
                                                 required
                                             />
-                                            <p className="mt-1 text-xs text-gray-500">Example: work, important, meeting</p>
-                                        </div>
-
-                                        <div className="flex justify-end pt-4">
-                                            <motion.button
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                type="submit"
-                                                className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-100"
-                                            >
-                                                {isEditing ? 'Save Changes' : 'Add Note'}
-                                            </motion.button>
+                                            <p className="mt-1 text-xs text-white/40">Example: work, important, meeting</p>
                                         </div>
                                     </form>
                                 ) : (
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2">
                                             {selectedNote.type === 'snippet' ? (
-                                                <Code size={18} className="text-gray-400" />
+                                                <Code size={18} className="text-gray-400 flex-shrink-0" />
                                             ) : (
-                                                <StickyNote size={18} className="text-gray-400" />
+                                                <StickyNote size={18} className="text-gray-400 flex-shrink-0" />
                                             )}
-                                            <h3 className="text-lg font-medium text-gray-100">{selectedNote.heading}</h3>
+                                            <h3 className="text-lg font-medium text-gray-100 break-words">{selectedNote.heading}</h3>
                                         </div>
 
                                         {selectedNote.type === 'snippet' ? (
@@ -403,7 +403,7 @@ const NotesComponent = () => {
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.9 }}
                                                     onClick={() => handleCopyCode(selectedNote.content)}
-                                                    className="absolute top-2 right-2 p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-gray-100 flex items-center gap-2"
+                                                    className="absolute top-2 right-2 p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-gray-100 z-10"
                                                 >
                                                     <AnimatePresence mode="wait">
                                                         {copied ? (
@@ -429,12 +429,14 @@ const NotesComponent = () => {
                                                         )}
                                                     </AnimatePresence>
                                                 </motion.button>
-                                                <pre className="whitespace-pre-wrap overflow-x-auto custom-scrollbar text-gray-100">
+                                                <pre className="whitespace-pre-wrap overflow-x-auto custom-scrollbar text-gray-100 max-h-[60vh]">
                                                     {selectedNote.content}
                                                 </pre>
                                             </div>
                                         ) : (
-                                            <p className="text-gray-300 whitespace-pre-wrap">{selectedNote.content}</p>
+                                            <p className="text-gray-300 whitespace-pre-wrap break-words max-h-[60vh] overflow-y-auto custom-scrollbar">
+                                                {selectedNote.content}
+                                            </p>
                                         )}
 
                                         <div className="flex flex-wrap gap-2">
@@ -454,36 +456,22 @@ const NotesComponent = () => {
                                     </div>
                                 )}
                             </div>
-                            <style>
-                                {`
-                                    /* Custom Scrollbar */
-                                    .custom-scrollbar {
-                                    scrollbar-width: thin; /* For Firefox */
-                                    scrollbar-color: rgba(255, 255, 255, 0.1) rgba(0, 0, 0, 0.2);
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar {
-                                    width: 8px;
-                                    height: 8px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-track {
-                                    background: rgba(0, 0, 0, 0.2);
-                                    border-radius: 4px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-thumb {
-                                    background: rgba(255, 255, 255, 0.1);
-                                    border-radius: 4px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                                    background: rgba(255, 255, 255, 0.3);
-                                    }
 
-                                    /* Add smooth scrolling for better UX */
-                                    .custom-scrollbar {
-                                    scroll-behavior: smooth;
-                                    }
-                                `}
-                            </style>
-
+                            {/* Modal Footer */}
+                            {(showAddModal || isEditing) && (
+                                <div className="p-6 border-t border-white/10">
+                                    <div className="flex justify-end">
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleSubmit}  // Changed from type="submit" to onClick handler
+                                            className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white/90"
+                                        >
+                                            {isEditing ? 'Save Changes' : 'Add Note'}
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            )}
                         </motion.div>
                     </motion.div>
                 )}

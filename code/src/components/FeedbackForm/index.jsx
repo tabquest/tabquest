@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { FEEDBACK_FORM_API } from '../../utils/constants';
+import { FiLoader } from 'react-icons/fi';
 
 const FeedbackForm = ({ isOpen, onClose }) => {
     const [rating, setRating] = useState(0);
@@ -53,11 +54,11 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        transition={{ 
-                            type: "spring", 
-                            damping: 25, 
+                        transition={{
+                            type: "spring",
+                            damping: 25,
                             stiffness: 350,
-                            duration: 0.3 
+                            duration: 0.3
                         }}
                         className="w-full max-w-sm bg-[#1a1b26] rounded-xl shadow-2xl mx-4 border border-gray-800/50"
                     >
@@ -69,14 +70,13 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2 }}
-                                        className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${
-                                            alert.type === 'success' 
-                                                ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                                                : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                                        }`}
+                                        className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${alert.type === 'success'
+                                            ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                                            : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                            }`}
                                     >
-                                        {alert.type === 'success' ? 
-                                            <CheckCircle className="w-4 h-4" /> : 
+                                        {alert.type === 'success' ?
+                                            <CheckCircle className="w-4 h-4" /> :
                                             <AlertCircle className="w-4 h-4" />
                                         }
                                         <p className="text-sm font-medium">{alert.message}</p>
@@ -114,9 +114,8 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                                 className="focus:outline-none"
                                             >
                                                 <Star
-                                                    className={`w-6 h-6 transition-colors duration-200 ${
-                                                        star <= rating ? 'fill-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
-                                                    }`}
+                                                    className={`w-6 h-6 transition-colors duration-200 ${star <= rating ? 'fill-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
+                                                        }`}
                                                 />
                                             </motion.button>
                                         ))}
@@ -148,18 +147,10 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                     />
                                 </div>
 
-                                <motion.button
-                                    type="submit"
-                                    disabled={isSubmitting || rating === 0}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className={`w-full py-2 rounded-lg text-white font-medium transition-all
-                                        ${isSubmitting || rating === 0
-                                            ? 'bg-gray-700 cursor-not-allowed'
-                                            : 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-500/20'
-                                        }`}
-                                >
-                                    {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+                                <motion.button type="submit"
+                                    disabled={isSubmitting || rating === 0} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                                    className={`w-full py-2 rounded-lg text-white font-medium transition-all ${isSubmitting || rating === 0 ? 'bg-gray-700 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-500/20'}`} >
+                                    {isSubmitting ? (<div className="flex items-center justify-center gap-2"> <FiLoader className="animate-spin" /> Submitting... </div>) : ('Submit Feedback')}
                                 </motion.button>
                             </form>
                         </div>
