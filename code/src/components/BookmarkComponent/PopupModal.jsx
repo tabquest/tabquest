@@ -1,6 +1,19 @@
 import React, { useState } from "react";
-import { motion} from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Bookmark, Link, Tags, Folder, X } from "lucide-react";
 
+const getIconForField = (fieldName) => {
+    switch (fieldName) {
+        case 'title':
+            return <Bookmark className="w-5 h-5" />;
+        case 'url':
+            return <Link className="w-5 h-5" />;
+        case 'tags':
+            return <Tags className="w-5 h-5" />;
+        default:
+            return <Folder className="w-5 h-5" />;
+    }
+};  
 
 const PopupModal = ({
     title,
@@ -43,33 +56,48 @@ const PopupModal = ({
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+                className="bg-[#0b1518] rounded-lg p-6 w-full max-w-md"
             >
-                <h3 className="text-lg font-medium text-white mb-4">{title}</h3>
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-medium text-white">{title}</h3>
+                    <button
+                        onClick={onClose}
+                        className="text-white/70 hover:text-white"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {fields.map(field => (
                         <div key={field.name}>
                             <label className="block text-sm font-medium text-white/70 mb-1">
                                 {field.label}
                             </label>
-                            <input
-                                required
-                                type={field.type}
-                                value={values[field.name] || ''}
-                                onChange={(e) => {
-                                    setValues(prev => ({
-                                        ...prev,
-                                        [field.name]: e.target.value
-                                    }));
-                                    if (errors[field.name]) {
-                                        setErrors(prev => ({
+                            <div className="relative flex items-center">
+                                <div className="absolute left-3 text-white/50">
+                                    {getIconForField(field.name)}
+                                </div>
+                                <input
+                                    required
+                                    type={field.type}
+                                    value={values[field.name] || ''}
+                                    placeholder={field.placeholder}
+                                    onChange={(e) => {
+                                        setValues(prev => ({
                                             ...prev,
-                                            [field.name]: undefined
+                                            [field.name]: e.target.value
                                         }));
-                                    }
-                                }}
-                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
-                            />
+                                        if (errors[field.name]) {
+                                            setErrors(prev => ({
+                                                ...prev,
+                                                [field.name]: undefined
+                                            }));
+                                        }
+                                    }}
+                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
+                                />
+                            </div>
                             {errors[field.name] && (
                                 <p className="mt-1 text-sm text-red-400">{errors[field.name]}</p>
                             )}

@@ -174,7 +174,7 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        style={{overflowY: 'auto', height: "50vh"}}
+        style={{ overflowY: 'auto', height: "50vh" }}
         className="w-64 border-r border-white/10 p-4 custom-scrollbar"
       >
         <motion.button
@@ -236,7 +236,7 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{overflowY: 'auto', height: "50vh"}}
+        style={{ overflowY: 'auto', height: "50vh" }}
         className="flex-1 p-4 custom-scrollbar"
       >
         <div className="relative mb-6 flex items-center gap-4">
@@ -366,7 +366,12 @@ const BookmarkComponent = () => {
             onClose={() => setShowFolderPopup(false)}
             onSubmit={handleAddFolder}
             fields={[
-              { name: 'title', label: 'Folder Name', type: 'text' }
+              {
+                name: 'title',
+                label: 'Folder Name',
+                type: 'text',
+                placeholder: 'Enter folder name...'
+              }
             ]}
           />
         )}
@@ -378,7 +383,12 @@ const BookmarkComponent = () => {
             onClose={() => setEditingFolder(null)}
             onSubmit={(values) => handleUpdateFolder(editingFolder.id, values.title)}
             fields={[
-              { name: 'title', label: 'Folder Name', type: 'text' }
+              {
+                name: 'title',
+                label: 'Folder Name',
+                type: 'text',
+                placeholder: 'Enter folder name...'
+              }
             ]}
           />
         )}
@@ -389,12 +399,23 @@ const BookmarkComponent = () => {
             onClose={() => setShowBookmarkPopup(false)}
             onSubmit={handleAddBookmark}
             fields={[
-              { name: 'url', label: 'URL', type: 'text' },
-              { name: 'title', label: 'Title', type: 'text' },
+              {
+                name: 'title',
+                label: 'Title',
+                type: 'text',
+                placeholder: 'Enter bookmark title...'
+              },
+              {
+                name: 'url',
+                label: 'URL',
+                type: 'text',
+                placeholder: 'https://example.com'
+              },
               {
                 name: 'tags',
                 label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
                 type: 'text',
+                placeholder: 'tech, design, development...',
                 validate: value => {
                   const tags = value.split(',').map(t => t.trim()).filter(Boolean);
                   if (tags.length > MAX_TAGS) {
@@ -428,12 +449,23 @@ const BookmarkComponent = () => {
               });
             }}
             fields={[
-              { name: 'url', label: 'URL', type: 'text' },
-              { name: 'title', label: 'Title', type: 'text' },
+              {
+                name: 'title',
+                label: 'Title',
+                type: 'text',
+                placeholder: 'Enter bookmark title...'
+              },
+              {
+                name: 'url',
+                label: 'URL',
+                type: 'text',
+                placeholder: 'https://example.com'
+              },
               {
                 name: 'tags',
                 label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
                 type: 'text',
+                placeholder: 'tech, design, development...',
                 validate: value => {
                   const tags = value.split(',').map(t => t.trim()).filter(Boolean);
                   if (tags.length > MAX_TAGS) {
