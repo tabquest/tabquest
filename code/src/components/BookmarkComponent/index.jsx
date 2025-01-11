@@ -174,7 +174,8 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-64 border-r border-white/10 p-4"
+        style={{overflowY: 'auto', height: "50vh"}}
+        className="w-64 border-r border-white/10 p-4 custom-scrollbar"
       >
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -200,7 +201,7 @@ const BookmarkComponent = () => {
               >
                 {folder.id === 'favorites' ? <Heart size={18} /> : <Folder size={16} />}
                 <span>
-                  {folder.title.length > 12 ? `${folder.title.slice(0, 12)}...` : folder.title}
+                  {folder.title.length > 11 ? `${folder.title.slice(0, 11)}..` : folder.title}
                 </span>
                 <span className="text-sm text-white/50">
                   ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
@@ -235,7 +236,8 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex-1 p-4"
+        style={{overflowY: 'auto', height: "50vh"}}
+        className="flex-1 p-4 custom-scrollbar"
       >
         <div className="relative mb-6 flex items-center gap-4">
           <div className="relative flex-1">

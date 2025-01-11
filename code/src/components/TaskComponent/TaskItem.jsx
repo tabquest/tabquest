@@ -52,7 +52,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                                             <motion.path
                                                 d="M0 4 C20 6, 40 2, 60 4 S80 6, 100 4 S120 2, 140 4 S160 6, 180 4"
                                                 stroke="url(#strikethrough-gradient)"
-                                                strokeWidth="3"
+                                                strokeWidth="5"
                                                 strokeLinecap="round"
                                                 fill="none"
                                                 initial={{ pathLength: 0, opacity: 0 }}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Folder, Edit2, Trash2, Clock, Calendar, AlertTriangle, X, Paperclip, CalendarDays, ArchiveRestore } from 'lucide-react';
+import { Plus, Edit2, Trash2, Paperclip, CalendarDays, ArchiveRestore } from 'lucide-react';
 import { loadFromLocalStorage, saveToLocalStorage } from '../../utils/storage';
 
 import {
@@ -265,7 +265,8 @@ const TaskComponent = () => {
             <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="w-64 border-r border-white/10 p-4"
+                style={{overflowY: 'auto', height: "52vh"}}
+                className="w-64 border-r border-white/10 p-4 custom-scrollbar"
             >
                 <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -295,7 +296,7 @@ const TaskComponent = () => {
                                     {/* <Folder  /> */}
                                     {folder.id === 'today' ? <CalendarDays size={16} /> : folder.id === 'archive' ? <ArchiveRestore size={16} /> : <Paperclip size={16} />}
                                     {/* <Paperclip size={16}/> */}
-                                    <span>{folder.title.length > 16 ? `${folder.title.slice(0, 12)}...` : folder.title}</span>
+                                    <span>{folder.title.length > 11 ? `${folder.title.slice(0, 11)}..` : folder.title}</span>
                                     <span className="text-sm text-white/50">
                                         ({folder.count})
                                     </span>
@@ -326,7 +327,8 @@ const TaskComponent = () => {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex-1 p-4"
+                style={{overflowY: 'auto', height: "52vh"}}
+                className="flex-1 p-4 custom-scrollbar"
             >
                 <div className="flex items-center justify-between mb-6">
                     <h1 className="text-2xl font-semibold text-white">{headerTitle}</h1>
