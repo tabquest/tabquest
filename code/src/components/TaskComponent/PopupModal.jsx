@@ -1,6 +1,22 @@
-import React, { useState } from 'react'
-import { X } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Type, Mail, Calendar, Clock, Hash, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const getIconForField = (type) => {
+    switch (type) {
+        case 'email':
+            return Mail;
+        case 'date':
+            return Calendar;
+        case 'time':
+            return Clock;
+        case 'number':
+            return Hash;
+        case 'text':
+        default:
+            return Type;
+    }
+};
 
 const PopupModal = ({
     title,
@@ -54,43 +70,58 @@ const PopupModal = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full mx-4"
+                className="bg-[#0b1518] p-6 rounded-lg shadow-xl max-w-md w-full mx-4"
             >
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-white">{title}</h2>
+                    <div className="flex items-center gap-2">
+                        <FileText className="text-white/70" size={24} />
+                        <h2 className="text-xl font-semibold text-white">{title}</h2>
+                    </div>
                     <button
                         onClick={onClose}
-                        className="p-1 text-white/50 hover:text-white/90 transition-colors"
+                        className="p-1 text-white/50 hover:text-white/90 transition-colors rounded-full hover:bg-white/10"
                     >
                         <X size={20} />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {fields.map(field => (
-                        <div key={field.name}>
-                            <label className="block text-white/70 text-sm mb-2">
-                                {field.label}
-                            </label>
-                            <input
-                                type={field.type}
-                                name={field.name}
-                                value={values[field.name] || ''}
-                                onChange={handleChange}
-                                placeholder={field.placeholder}
-                                className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 transition-all duration-200 focus:border-white/20 focus:ring-1 focus:ring-white/20"
-                            />
-                            {errors[field.name] && (
-                                <p className="text-red-400 text-sm mt-1">{errors[field.name]}</p>
-                            )}
-                        </div>
-                    ))}
+                    {fields.map(field => {
+                        const Icon = getIconForField(field.type);
+                        return (
+                            <div key={field.name}>
+                                <label className="block text-white/70 text-sm mb-2">
+                                    {field.label}
+                                    {field.required && <span className="text-red-400 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                        <Icon size={18} />
+                                    </div>
+                                    <input
+                                        type={field.type}
+                                        name={field.name}
+                                        value={values[field.name] || ''}
+                                        onChange={handleChange}
+                                        placeholder={field.placeholder}
+                                        className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:border-white/20 focus:ring-1 focus:ring-white/20 focus:outline-none placeholder:text-white/30"
+                                    />
+                                </div>
+                                {errors[field.name] && (
+                                    <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                        <span className="inline-block w-1 h-1 bg-red-400 rounded-full"></span>
+                                        {errors[field.name]}
+                                    </p>
+                                )}
+                            </div>
+                        );
+                    })}
 
-                    <div className="flex gap-3 justify-end mt-6">
+                    <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-white/10">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-white/70 hover:text-white transition-colors"
+                            className="px-4 py-2 text-white/70 hover:text-white transition-colors rounded-lg hover:bg-white/5"
                         >
                             Cancel
                         </button>
@@ -107,4 +138,4 @@ const PopupModal = ({
     );
 };
 
-export default PopupModal
+export default PopupModal;

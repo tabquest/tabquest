@@ -12,6 +12,9 @@ import {
 } from '../../utils/redux/notesSlice';
 import ValidationModal from './ValidationModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import PopupModal from './PopupModal';
+import ViewNotesModal from './ViewNotesModal';
+import Dropdown from './Dropdown';
 
 const MIN_TAGS = 1;
 const MAX_PREVIEW_LENGTH = 33;
@@ -19,7 +22,13 @@ const MAX_PREVIEW_LENGTH = 33;
 const NotesComponent = () => {
     const dispatch = useDispatch();
     const notes = useSelector(state => state.notes.items);
+
     const filter = useSelector(state => state.notes.filter);
+    const options = [
+        { value: "all", label: "All Notes" },
+        { value: "favorites", label: "Favorites" },
+    ];
+
     const selectedNote = useSelector(state => state.notes.selectedNote);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -122,9 +131,14 @@ const NotesComponent = () => {
     };
 
     const handleDelete = () => {
+        if (!selectedNote) return;
         dispatch(deleteNote(selectedNote.id));
-        dispatch(setSelectedNote(null));
-        setShowDeleteModal(false);
+        handleCloseModals();
+    };
+
+    const handleEditClick = (note) => {
+        dispatch(setSelectedNote(note));
+        setIsEditing(true);
     };
 
 
@@ -157,10 +171,66 @@ const NotesComponent = () => {
         dispatch(setSelectedNote(null));
     };
 
+
+
+    const handleAddNote = (formData) => {
+        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+
+        if (tags.length < MIN_TAGS) {
+            setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
+            setShowValidationModal(true);
+            return;
+        }
+
+        const newNote = {
+            id: Date.now().toString(),
+            heading: formData.heading,
+            content: formData.content,
+            tags,
+            timestamp: new Date().toISOString(),
+            starred: false,
+            type: formData.type,
+        };
+
+        dispatch(addNote(newNote));
+        handleCloseModals();
+    };
+
+    const handleEditNote = (formData) => {
+        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+
+        if (tags.length < MIN_TAGS) {
+            setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
+            setShowValidationModal(true);
+            return;
+        }
+
+        if (!selectedNote) return;
+
+        const updatedNote = {
+            ...selectedNote,
+            heading: formData.heading,
+            content: formData.content,
+            tags,
+            type: formData.type,
+        };
+
+        dispatch(updateNote(updatedNote));
+        handleCloseModals();
+    };
+
+    const handleCloseModals = () => {
+        setShowAddModal(false);
+        setIsEditing(false);
+        dispatch(setSelectedNote(null));
+        setShowDeleteModal(false);
+        setShowValidationModal(false);
+    };
+
     return (
         <div className="h-full flex flex-col">
             {/* Fixed header */}
-            <div style={{backgroundColor: 'rgb(14 26 28)'}} className="sticky top-0 z-30 rounded-lg p-4">
+            <div style={{ backgroundColor: 'rgb(14 26 28)' }} className="sticky top-0 z-30 rounded-lg p-4">
 
                 <div className="flex items-center gap-4">
                     <motion.button
@@ -180,11 +250,19 @@ const NotesComponent = () => {
                             placeholder="Search notes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80"
+                            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
                         />
                     </div>
 
-                    <select
+                    <div className="">
+                        <Dropdown
+                            value={filter}
+                            onChange={(e) => dispatch(setFilter(e.target.value))}
+                            options={options}
+                        />
+                    </div>
+
+                    {/* <select
                         value={filter}
                         onChange={(e) => dispatch(setFilter(e.target.value))}
                         className="bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90 px-4 py-2"
@@ -200,7 +278,7 @@ const NotesComponent = () => {
                     >
                         <option value="all" className="bg-[#1a1a1a] text-white/80">All Notes</option>
                         <option value="favorites" className="bg-[#1a1a1a] text-white/80">Favorites</option>
-                    </select>
+                    </select> */}
                 </div>
             </div>
 
@@ -208,288 +286,136 @@ const NotesComponent = () => {
             <div className="flex-1 overflow-y-auto p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
                     <AnimatePresence mode="popLayout">
-                        {filteredNotes.length === 0 && (<p>No notes found...</p>)}
-                        {filteredNotes.map(note => (
+
+                        {filteredNotes.length === 0 ? (
                             <motion.div
-                                key={note.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                whileHover={{ scale: 1.02 }}
-                                className="group bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer"
-                                onClick={() => dispatch(setSelectedNote(note))}
+                                key="no-notes"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
                             >
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        {note.type === 'snippet' ? (
-                                            <Code size={16} className="text-white/40" />
-                                        ) : (
-                                            <StickyNote size={16} className="text-white/40" />
-                                        )}
-                                        <h3 className="font-medium">
-                                            <Highlight
-                                                text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
-                                                searchQuery={searchQuery}
-                                            />
-                                        </h3>
-                                    </div>
-                                    <motion.button
-                                        whileHover={{ scale: 1.2 }}
-                                        whileTap={{ scale: 0.9 }}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            dispatch(toggleStarred(note.id));
-                                        }}
-                                        className={`${note.starred ? 'text-yellow-400' : 'text-white/30'}`}
-                                    >
-                                        <Star
-                                            size={16}
-                                            fill={note.starred ? "currentColor" : "none"}
-                                        />
-                                    </motion.button>
-                                </div>
-
-                                <div className="mb-3">
-                                    {renderContent(note)}
-                                </div>
-
-                                <div className="flex flex-wrap gap-2 mb-2">
-                                    {note.tags.map(tag => (
-                                        <span
-                                            key={tag}
-                                            className="text-xs px-2 py-0.5 bg-white/10 rounded"
-                                        >
-                                            <Highlight text={tag} searchQuery={searchQuery} />
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <p className="text-xs text-white/40">{formatDate(note.timestamp)}</p>
+                                <p>No notes found...</p>
                             </motion.div>
-                        ))}
+                        ) : (
+                            filteredNotes.map(note => (
+                                <motion.div
+                                    key={`note-${note.id}`}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    className="group bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer"
+                                    onClick={() => dispatch(setSelectedNote(note))}
+                                >
+                                    {/* Note content */}
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            {note.type === 'snippet' ? (
+                                                <Code size={16} className="text-white/40" />
+                                            ) : (
+                                                <StickyNote size={16} className="text-white/40" />
+                                            )}
+                                            <h3 className="font-medium">
+                                                <Highlight
+                                                    text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
+                                                    searchQuery={searchQuery}
+                                                />
+                                            </h3>
+                                        </div>
+                                        <motion.button
+                                            whileHover={{ scale: 1.2 }}
+                                            whileTap={{ scale: 0.9 }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                dispatch(toggleStarred(note.id));
+                                            }}
+                                            className={`${note.starred ? 'text-yellow-400' : 'text-white/30'}`}
+                                        >
+                                            <Star
+                                                size={16}
+                                                fill={note.starred ? "currentColor" : "none"}
+                                            />
+                                        </motion.button>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        {renderContent(note)}
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {note.tags.map(tag => (
+                                            <span
+                                                key={tag}
+                                                className="text-xs px-2 py-0.5 bg-white/10 rounded"
+                                            >
+                                                <Highlight text={tag} searchQuery={searchQuery} />
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    <p className="text-xs text-white/40">{formatDate(note.timestamp)}</p>
+
+                                </motion.div>
+                            ))
+                        )}
                     </AnimatePresence>
                 </div>
             </div>
 
             <AnimatePresence>
-                {(showAddModal || selectedNote) && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-40"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-[#1F2937] border border-white/10 rounded-lg w-full max-w-2xl max-h-[60vh] flex flex-col"
-                        >
-                            {/* Modal Header */}
-                            <div className="p-6">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-xl font-medium text-white/90">
-                                        {isEditing ? 'Edit Note' : selectedNote ? 'View Note' : 'Add Note'}
-                                    </h2>
-                                    <div className="flex gap-2">
-                                        {selectedNote && !isEditing && (
-                                            <>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => {
-                                                        setIsEditing(true);
-                                                        setFormData({
-                                                            heading: selectedNote.heading,
-                                                            content: selectedNote.content,
-                                                            tags: selectedNote.tags.join(', '),
-                                                            type: selectedNote.type,
-                                                        });
-                                                    }}
-                                                    className="p-2 hover:bg-white/10 rounded-lg"
-                                                >
-                                                    <Edit2 size={20} />
-                                                </motion.button>
-                                                <motion.button
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => setShowDeleteModal(true)}
-                                                    className="p-2 hover:bg-white/10 rounded-lg text-red-400"
-                                                >
-                                                    <Trash2 size={20} />
-                                                </motion.button>
-                                            </>
-                                        )}
-                                        <motion.button
-                                            whileHover={{ scale: 1.1 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            onClick={handleCloseModal}
-                                            className="p-2 hover:bg-white/10 rounded-lg"
-                                        >
-                                            <X size={20} />
-                                        </motion.button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            {/* Modal Content - Scrollable */}
-                            <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
-                                {(showAddModal || isEditing) ? (
-                                    <form onSubmit={handleSubmit} className="space-y-4">
-                                        <div className="flex gap-4 mb-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, type: 'note' })}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                                            ${formData.type === 'note' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
-                                            >
-                                                <StickyNote size={18} />
-                                                Note
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, type: 'snippet' })}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                                            ${formData.type === 'snippet' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
-                                            >
-                                                <Code size={18} />
-                                                Code Snippet
-                                            </button>
-                                        </div>
-
-                                        <input
-                                            type="text"
-                                            placeholder="Title"
-                                            value={formData.heading}
-                                            onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                                            className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/90"
-                                            required
-                                        />
-
-                                        <textarea
-                                            placeholder={formData.type === 'snippet' ? "Paste your code here..." : "Note Content"}
-                                            value={formData.content}
-                                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                            className={`w-full h-40 px-4 py-2 border border-white/10 rounded-lg resize-none custom-scrollbar ${formData.type === 'snippet' ? 'bg-black/20 font-mono' : 'bg-black/20'} text-white/90`}
-                                            required
-                                        />
-
-                                        <div>
-                                            <input
-                                                type="text"
-                                                placeholder={`Tags (minimum ${MIN_TAGS}, comma-separated)`}
-                                                value={formData.tags}
-                                                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                                                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/90"
-                                                required
-                                            />
-                                            <p className="mt-1 text-xs text-white/40">Example: work, important, meeting</p>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2">
-                                            {selectedNote.type === 'snippet' ? (
-                                                <Code size={18} className="text-gray-400 flex-shrink-0" />
-                                            ) : (
-                                                <StickyNote size={18} className="text-gray-400 flex-shrink-0" />
-                                            )}
-                                            <h3 className="text-lg font-medium text-gray-100 break-words">{selectedNote.heading}</h3>
-                                        </div>
-
-                                        {selectedNote.type === 'snippet' ? (
-                                            <div className="relative bg-gray-950 p-4 rounded-lg font-mono text-sm">
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() => handleCopyCode(selectedNote.content)}
-                                                    className="absolute top-2 right-2 p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-gray-100 z-10"
-                                                >
-                                                    <AnimatePresence mode="wait">
-                                                        {copied ? (
-                                                            <motion.div
-                                                                key="copied"
-                                                                initial={{ opacity: 0 }}
-                                                                animate={{ opacity: 1 }}
-                                                                exit={{ opacity: 0 }}
-                                                                className="flex items-center gap-1"
-                                                            >
-                                                                <Check size={14} />
-                                                                <span className="text-xs">Copied</span>
-                                                            </motion.div>
-                                                        ) : (
-                                                            <motion.div
-                                                                key="copy"
-                                                                initial={{ opacity: 0 }}
-                                                                animate={{ opacity: 1 }}
-                                                                exit={{ opacity: 0 }}
-                                                            >
-                                                                <Copy size={14} />
-                                                            </motion.div>
-                                                        )}
-                                                    </AnimatePresence>
-                                                </motion.button>
-                                                <pre className="whitespace-pre-wrap overflow-x-auto custom-scrollbar text-gray-100 max-h-[60vh]">
-                                                    {selectedNote.content}
-                                                </pre>
-                                            </div>
-                                        ) : (
-                                            <p className="text-gray-300 whitespace-pre-wrap break-words max-h-[60vh] overflow-y-auto custom-scrollbar">
-                                                {selectedNote.content}
-                                            </p>
-                                        )}
-
-                                        <div className="flex flex-wrap gap-2">
-                                            {selectedNote.tags.map(tag => (
-                                                <span
-                                                    key={tag}
-                                                    className="text-xs px-2 py-0.5 bg-gray-800 text-gray-300 rounded"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-
-                                        <p className="text-sm text-gray-500">
-                                            Created: {formatDate(selectedNote.timestamp)}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Modal Footer */}
-                            {(showAddModal || isEditing) && (
-                                <div className="p-6 border-t border-white/10">
-                                    <div className="flex justify-end">
-                                        <motion.button
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={handleSubmit}  // Changed from type="submit" to onClick handler
-                                            className="px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white/90"
-                                        >
-                                            {isEditing ? 'Save Changes' : 'Add Note'}
-                                        </motion.button>
-                                    </div>
-                                </div>
-                            )}
-                        </motion.div>
-                    </motion.div>
+                {showAddModal && (
+                    <PopupModal
+                        key="add-modal"
+                        isOpen={true}
+                        title="Add Note"
+                        onClose={handleCloseModals}
+                        onSubmit={handleAddNote}
+                        minTags={MIN_TAGS}
+                    />
                 )}
-            </AnimatePresence>
 
-            <AnimatePresence>
+                {isEditing && selectedNote && (
+                    <PopupModal
+                        key="edit-modal"
+                        isOpen={true}
+                        title="Edit Note"
+                        onClose={handleCloseModals}
+                        onSubmit={handleEditNote}
+                        initialValues={{
+                            heading: selectedNote.heading,
+                            content: selectedNote.content,
+                            tags: selectedNote.tags.join(', '),
+                            type: selectedNote.type
+                        }}
+                        isEditing={true}
+                        minTags={MIN_TAGS}
+                    />
+                )}
+
+                {selectedNote && !isEditing && (
+                    <ViewNotesModal
+                        key="view-modal"
+                        note={selectedNote}
+                        isOpen={true}
+                        onClose={handleCloseModals}
+                        onEdit={() => handleEditClick(selectedNote)}
+                        onDelete={() => setShowDeleteModal(true)}
+                        formatDate={formatDate}
+                    />
+                )}
+
                 {showDeleteModal && (
                     <DeleteConfirmModal
+                        key="delete-modal"
                         type="note"
                         onConfirm={handleDelete}
                         onCancel={() => setShowDeleteModal(false)}
                     />
                 )}
-            </AnimatePresence>
 
-            <AnimatePresence>
                 {showValidationModal && (
                     <ValidationModal
+                        key="validation-modal"
                         message={validationMessage}
                         onClose={() => setShowValidationModal(false)}
                     />

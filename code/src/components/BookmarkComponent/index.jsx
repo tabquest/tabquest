@@ -245,7 +245,7 @@ const BookmarkComponent = () => {
             <input
               type="text"
               placeholder="Search bookmarks..."
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 transition-all duration-200 focus:border-white/20 focus:ring-1 focus:ring-white/20"
+              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -413,7 +413,7 @@ const BookmarkComponent = () => {
               },
               {
                 name: 'tags',
-                label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
+                label: `Tags (${MAX_TAGS})`,
                 type: 'text',
                 placeholder: 'tech, design, development...',
                 validate: value => {

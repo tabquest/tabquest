@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, AlignLeft, Calendar, Clock, Plus } from 'lucide-react';
 import './custom.css'
-
 
 const SimpleTaskModal = ({
     onClose,
@@ -29,21 +28,24 @@ const SimpleTaskModal = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
         >
             <motion.div
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+                className="bg-[#0b1518] rounded-lg p-6 w-full max-w-md"
             >
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-white">
-                        {isEditing ? 'Edit Task' : 'New Task'}
-                    </h3>
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                        {/* <Plus className="text-white/70" size={20} /> */}
+                        <h3 className="text-lg font-medium text-white">
+                            {isEditing ? 'Edit Task' : 'New Task'}
+                        </h3>
+                    </div>
                     <button
                         onClick={onClose}
-                        className="p-1 text-white/70 hover:text-white transition-colors"
+                        className="p-1 text-white/70 hover:text-white transition-colors rounded-full hover:bg-white/10"
                     >
                         <X size={20} />
                     </button>
@@ -51,107 +53,91 @@ const SimpleTaskModal = ({
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-white/70 mb-1">
-                            Task Title
+                        <label className="block text-sm font-medium text-white/70 mb-2">
+                            Task Title <span className="text-red-400">*</span>
                         </label>
-                        <input
-                            type="text"
-                            value={values.title}
-                            onChange={(e) => setValues(prev => ({ ...prev, title: e.target.value }))}
-                            placeholder="What needs to be done?"
-                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
-                            autoFocus
-                        />
+                        <div className="relative">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                <AlignLeft size={18} />
+                            </div>
+                            <input
+                                type="text"
+                                value={values.title}
+                                onChange={(e) => setValues(prev => ({ ...prev, title: e.target.value }))}
+                                placeholder="What needs to be done?"
+                                className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none placeholder:text-white/30"
+                                autoFocus
+                            />
+                        </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-white/70 mb-1">
+                        <label className="block text-sm font-medium text-white/70 mb-2">
                             Due Date
                         </label>
-                        <input
-                            type="date"
-                            value={values.dueDate}
-                            onChange={(e) => setValues((prev) => ({ ...prev, dueDate: e.target.value }))}
-                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none custom-date"
-                        />
+                        <div className="relative">
+                            {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                <Calendar size={18} />
+                            </div> */}
+                            <input
+                                type="date"
+                                value={values.dueDate}
+                                onChange={(e) => setValues((prev) => ({ ...prev, dueDate: e.target.value }))}
+                                className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none [color-scheme:dark]"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex gap-3 items-center">
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-white/70 mb-1">
+                            <label className="block text-sm font-medium text-white/70 mb-2">
                                 Start Time
                             </label>
                             <div className="relative">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                    <Clock size={18} />
+                                </div>
                                 <input
                                     type="time"
                                     value={values.startTime}
                                     onChange={(e) => setValues((prev) => ({ ...prev, startTime: e.target.value }))}
-                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
+                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none appearance-none [color-scheme:dark]"
                                 />
-                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 text-white/70"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                        />
-                                    </svg>
-                                </div>
                             </div>
                         </div>
 
-                        <span className="text-white/70">to</span>
+                        <span className="text-white/70 mt-7">to</span>
 
                         <div className="flex-1">
-                            <label className="block text-sm font-medium text-white/70 mb-1">
+                            <label className="block text-sm font-medium text-white/70 mb-2">
                                 End Time
                             </label>
                             <div className="relative">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                    <Clock size={18} />
+                                </div>
                                 <input
                                     type="time"
                                     value={values.endTime}
                                     onChange={(e) => setValues((prev) => ({ ...prev, endTime: e.target.value }))}
-                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none"
+                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none appearance-none [color-scheme:dark]"
                                 />
-                                <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5 text-white/70"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                        />
-                                    </svg>
-                                </div>
                             </div>
                         </div>
                     </div>
 
 
-                    <div className="flex justify-end gap-3 mt-6">
+                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/10">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-white/70 hover:text-white"
+                            className="px-4 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+                            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
                         >
                             {isEditing ? 'Save Changes' : 'Add Task'}
                         </button>

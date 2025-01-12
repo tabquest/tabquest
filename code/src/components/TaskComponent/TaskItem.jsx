@@ -23,7 +23,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
             ref={ref}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            // exit={{ opacity: 0, y: -10 }}
             layout
             className="group p-2.5 bg-gradient-to-br from-gray-900/40 to-gray-800/40 hover:from-gray-800/40 hover:to-gray-700/40 rounded-xl border border-white/[0.08] shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/[0.12] hover:shadow-emerald-500/5"
         >
