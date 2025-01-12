@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, CheckCircle, AlertCircle } from 'lucide-react';
-import { FEEDBACK_FORM_API } from '../../utils/constants';
+import { FEEDBACK_FORM_API } from '../utils/constants';
 import { FiLoader } from 'react-icons/fi';
 
 const FeedbackForm = ({ isOpen, onClose }) => {
@@ -130,7 +130,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                         name="feedback"
                                         required
                                         rows={3}
-                                        className="w-full bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Tell us what you think..."
                                     />
                                 </div>
@@ -142,7 +142,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                     <textarea
                                         name="feature_request"
                                         rows={3}
-                                        className="w-full bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Suggest new features..."
                                     />
                                 </div>

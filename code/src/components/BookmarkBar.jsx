@@ -41,14 +41,14 @@ const BookmarkBar = () => {
     loadFavicons();
   }, [bookmarks]);
 
-  const containerWidth = useMemo(() => {
-    const itemWidth = 80;
-    const minWidth = 320;
-    const maxWidth = 1200;
-    const calculatedWidth = bookmarks.length * itemWidth;
+  // const containerWidth = useMemo(() => {
+  //   const itemWidth = 80;
+  //   const minWidth = 320;
+  //   const maxWidth = 1200;
+  //   const calculatedWidth = bookmarks.length * itemWidth;
 
-    return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
-  }, [bookmarks.length]);
+  //   return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
+  // }, [bookmarks.length]);
 
   return (
     <motion.div

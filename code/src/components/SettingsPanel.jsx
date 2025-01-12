@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { Settings, X, Plus, Trash2, Save, RotateCcw, BookOpen, AlertCircle, Send } from 'lucide-react';
 import {
     Settings, X, Plus, Save, RotateCcw, Send, Trash2,
     User, Briefcase, Globe, MapPin, Search, AlertCircle,
@@ -15,8 +14,10 @@ import {
     updateBookmarks
 } from '../utils/redux/settingsSlice';
 import { initialState } from '../utils/constants';
-import FeedbackForm from './FeedbackForm';
 import useExtensionVersion from '../utils/hooks/useExtensionVersion';
+
+import { APP_VERSION } from '../utils/version';
+import { FeedbackForm } from '../features';
 
 const SettingsPanel = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -220,7 +221,6 @@ const SettingsPanel = () => {
 
     const version = useExtensionVersion();
 
-
     return (
         <>
             <AnimatePresence>
@@ -293,7 +293,7 @@ const SettingsPanel = () => {
                                                 value={formState.userName}
                                                 onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
                                                 placeholder="Username"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                             />
                                         </div>
                                         <div className="relative">
@@ -303,7 +303,7 @@ const SettingsPanel = () => {
                                                 value={formState.userRole}
                                                 onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
                                                 placeholder="Role"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                             />
                                         </div>
                                         <div className="relative">
@@ -313,7 +313,7 @@ const SettingsPanel = () => {
                                                 value={formState.userPortfolioUrl}
                                                 onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
                                                 placeholder="Portfolio URL"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                             />
                                         </div>
                                     </div>
@@ -333,7 +333,7 @@ const SettingsPanel = () => {
                                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                                                 <button
                                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20 transition-all duration-300"
+                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20"
                                                 >
                                                     {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
                                                     <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -364,7 +364,7 @@ const SettingsPanel = () => {
                                                                     setFormState({ ...formState, searchEngine: engine });
                                                                     setIsDropdownOpen(false);
                                                                 }}
-                                                                className="px-4 py-3 cursor-pointer text-inherit hover:bg-white/20 transition-all duration-300"
+                                                                className="px-4 py-3 cursor-pointer text-inherit hover:bg-white/20"
                                                             >
                                                                 {engine}
                                                             </li>
@@ -382,7 +382,7 @@ const SettingsPanel = () => {
                                                     value={formState.weatherLocation}
                                                     onChange={(e) => setFormState({ ...formState, weatherLocation: e.target.value })}
                                                     placeholder="Weather Location"
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                                 />
                                             </div>
                                         </div>
@@ -396,7 +396,7 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <h3 className="text-sm font-medium text-white/50">Social Profiles</h3>
-                                        
+
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
                                                 github: Github,
@@ -419,7 +419,7 @@ const SettingsPanel = () => {
                                                             }
                                                         })}
                                                         placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
-                                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                                     />
                                                 </div>
                                             );
@@ -458,7 +458,7 @@ const SettingsPanel = () => {
                                                                 setFormState({ ...formState, bookmarks: newBookmarks });
                                                             }}
                                                             placeholder="Name"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                                         />
                                                         <input
                                                             type="url"
@@ -469,7 +469,7 @@ const SettingsPanel = () => {
                                                                 setFormState({ ...formState, bookmarks: newBookmarks });
                                                             }}
                                                             placeholder="Website URL"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
+                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                                         />
                                                     </div>
 
@@ -488,33 +488,36 @@ const SettingsPanel = () => {
 
                                     {/* Action Buttons */}
                                     <div className="space-y-3">
-                                        <motion.button
-                                            initial={{ y: 20, opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ delay: 0.4 }}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={handleSave}
-                                            className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center gap-2 group"
-                                        >
-                                            <Save className="w-4 h-4 text-white/70 group-hover:text-white/90" />
-                                            Save Changes
-                                        </motion.button>
+                                        {/* Save and Reset in a Row */}
+                                        <div className="flex gap-3">
+                                            <motion.button
+                                                initial={{ y: 20, opacity: 0 }}
+                                                animate={{ y: 0, opacity: 1 }}
+                                                transition={{ delay: 0.4 }}
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={handleSave}
+                                                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                            >
+                                                <Save className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                Save Changes
+                                            </motion.button>
 
-                                        <motion.button
-                                            initial={{ y: 20, opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ delay: 0.45 }}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            onClick={handleReset}
-                                            className="w-full px-4 py-3 rounded-xl bg-red-500/10 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 transition-all duration-300 flex items-center justify-center gap-2 group"
-                                        >
-                                            <RotateCcw className="w-4 h-4 text-white/70 group-hover:text-white/90" />
-                                            Reset Settings
-                                        </motion.button>
+                                            <motion.button
+                                                initial={{ y: 20, opacity: 0 }}
+                                                animate={{ y: 0, opacity: 1 }}
+                                                transition={{ delay: 0.45 }}
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={handleReset}
+                                                className="flex-1 px-4 py-3 rounded-xl bg-red-500/10 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                            >
+                                                <RotateCcw className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                Reset Settings
+                                            </motion.button>
+                                        </div>
 
-                                        {/* Future use for document ref */}
+                                        {/* Feedback submit btn */}
                                         <motion.a
                                             onClick={() => setIsFeedbackPopup(true)}
                                             rel="noopener noreferrer"
@@ -523,23 +526,26 @@ const SettingsPanel = () => {
                                             transition={{ delay: 0.5 }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md text-white/80 hover:text-white border border-white/20 hover:border-white/40 transition-transform duration-300 flex items-center justify-center gap-2 group"
+                                            className="w-full px-4 py-3 rounded-xl bg-purple-800/20 text-white/90 hover:text-white border border-purple-800/30 hover:border-white/20 flex items-center justify-center gap-2 group"
                                         >
                                             <Send className="w-5 h-5 text-white/70 group-hover:text-white" />
                                             Submit Feedback
                                         </motion.a>
 
+
+
+
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            transition={{ duration: 0.3 }}
+                                            // transition={{ duration: 0.3 }}
                                             className="w-full text-center mt-4 text-gray-400"
                                         >
                                             <span className="text-sm font-medium mr-2">
                                                 TabQuest
                                             </span>
                                             <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
-                                                {version}
+                                                {APP_VERSION}
                                             </span>
                                         </motion.div>
                                     </div>

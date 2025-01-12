@@ -94,9 +94,9 @@ const SimpleTaskModal = ({
                                 Start Time
                             </label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
                                     <Clock size={18} />
-                                </div>
+                                </div> */}
                                 <input
                                     type="time"
                                     value={values.startTime}
@@ -113,9 +113,9 @@ const SimpleTaskModal = ({
                                 End Time
                             </label>
                             <div className="relative">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
                                     <Clock size={18} />
-                                </div>
+                                </div> */}
                                 <input
                                     type="time"
                                     value={values.endTime}
