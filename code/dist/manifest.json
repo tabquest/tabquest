@@ -21,5 +21,7 @@
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
+    "permissions": ["storage"],
+    "host_permissions": ["https://www.google-analytics.com/"],
     "author": "mohamedhalith.smh@gmail.com"
 }

@@ -28,3 +28,7 @@ export const initialState = {
         { url: "https://www.primevideo.com/region/eu/storefront", name: "Prime" },
     ],
 };
+
+// Google Analytics
+export const G_MEASUREMENT_ID = "G-50YH00KDF9";
+export const G_TAG_API_KEY = "szqjQ9USR4ClwzAvorcI0g";
