@@ -6,6 +6,7 @@ import {
     Github, Twitter, Linkedin, Instagram,
     Link
 } from 'lucide-react';
+import { RiRedditLine } from "react-icons/ri";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -287,7 +288,7 @@ const SettingsPanel = () => {
                                     {/* User Details */}
                                     <div className="space-y-3">
                                         <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                             <input
                                                 type="text"
                                                 value={formState.userName}
@@ -297,7 +298,7 @@ const SettingsPanel = () => {
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                             <input
                                                 type="text"
                                                 value={formState.userRole}
@@ -307,7 +308,7 @@ const SettingsPanel = () => {
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                             <input
                                                 type="text"
                                                 value={formState.userPortfolioUrl}
@@ -325,12 +326,12 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/50">Search Preferences</h3>
+                                        <h3 className="text-sm font-medium text-white/70">Search Preferences</h3>
                                         <div className="space-y-3">
 
                                             <div className="relative w-full">
                                                 {/* Selected Value */}
-                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                                 <button
                                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20"
@@ -376,7 +377,7 @@ const SettingsPanel = () => {
 
 
                                             <div className="relative">
-                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                                 <input
                                                     type="text"
                                                     value={formState.weatherLocation}
@@ -395,19 +396,20 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.2 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/50">Social Profiles</h3>
+                                        <h3 className="text-sm font-medium text-white/70">Social Profiles</h3>
 
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
                                                 github: Github,
                                                 twitter: Twitter,
                                                 linkedin: Linkedin,
-                                                instagram: Instagram
+                                                instagram: Instagram,
+                                                reddit: RiRedditLine
                                             }[platform] || Link;
 
                                             return (
                                                 <div key={platform} className="relative">
-                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                                     <input
                                                         type="url"
                                                         value={value}
@@ -434,7 +436,7 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex justify-between items-center">
-                                            <h3 className="text-sm font-medium text-white/50">Favourites (upto 8)</h3>
+                                            <h3 className="text-sm font-medium text-white/70">Favourites (upto 8)</h3>
                                             <motion.button
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
