@@ -7,7 +7,8 @@ import BookmarkBar from './components/BookmarkBar';
 import SettingsPanel from './components/SettingsPanel';
 import ToolsPanel from './components/ToolsPanel';
 
-import { LiveUsersTracker, MobileView, VersionChecker } from './features';
+// import { LiveUsersTracker, MobileView, VersionChecker } from './features';
+import {MobileView, VersionChecker } from './features';
 
 import { Provider } from 'react-redux';
 import { store } from './utils/redux/store';
@@ -24,7 +25,7 @@ function App() {
   return (
     <Provider store={store}>
       {/* LiveUsersTracker - GoogleAnalytics */}
-      <LiveUsersTracker />
+      {/* <LiveUsersTracker /> */}
 
       {/* Version Check */}
       <VersionChecker />
