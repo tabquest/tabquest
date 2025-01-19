@@ -8,11 +8,12 @@ import SettingsPanel from './components/SettingsPanel';
 import ToolsPanel from './components/ToolsPanel';
 
 // import { LiveUsersTracker, MobileView, VersionChecker } from './features';
-import {MobileView, VersionChecker } from './features';
+import { MobileView, VersionChecker } from './features';
 
 import { Provider } from 'react-redux';
 import { store } from './utils/redux/store';
 import { motion } from 'framer-motion';
+import ChromeSearchBar from './components/ChromeSearchBar';
 
 function App() {
   // Check if the user is on a mobile device
@@ -21,6 +22,9 @@ function App() {
   if (isMobile) {
     return <MobileView />;  // Only display mobile warning
   }
+
+  // Check Chrome Env
+  const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
 
   return (
     <Provider store={store}>
@@ -61,7 +65,7 @@ function App() {
           transition={{ delay: 0.4, duration: 0.6 }}
         >
           <ProgressBars />
-          <SearchBar />
+          {isChrome ? <ChromeSearchBar/> : <SearchBar />}
           <BookmarkBar />
         </motion.div>
 

@@ -222,6 +222,8 @@ const SettingsPanel = () => {
 
     const version = useExtensionVersion();
 
+    const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
+
     return (
         <>
             <AnimatePresence>
@@ -326,10 +328,11 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/70">Search Preferences</h3>
+                                        
+                                        <h3 className="text-sm font-medium text-white/70">{isChrome ? 'Weather': ""}</h3>
                                         <div className="space-y-3">
 
-                                            <div className="relative w-full">
+                                            {!isChrome && <div className="relative w-full">
                                                 {/* Selected Value */}
                                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                                                 <button
@@ -372,7 +375,7 @@ const SettingsPanel = () => {
                                                         ))}
                                                     </ul>
                                                 )}
-                                            </div>
+                                            </div>}
 
 
 
