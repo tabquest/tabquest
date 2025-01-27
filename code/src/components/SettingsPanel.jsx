@@ -75,6 +75,8 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
+                    formState.hideSeconds !== settings.hideSeconds || 
+                    formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
                     JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
 
@@ -102,6 +104,8 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
+                    formState.hideSeconds !== settings.hideSeconds || 
+                    formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
                     JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
 
@@ -147,7 +151,9 @@ const SettingsPanel = () => {
 
         dispatch(updateSearchPreferences({
             searchEngine: formState.searchEngine || settings.searchEngine,
-            weatherLocation: formState.weatherLocation || settings.weatherLocation || ''
+            weatherLocation: formState.weatherLocation || settings.weatherLocation || '',
+            hideSeconds: formState.hideSeconds || false,
+            use12Hour: formState.use12Hour || false
         }));
 
         if (formState.socialProfiles) {
@@ -182,7 +188,9 @@ const SettingsPanel = () => {
         }));
         dispatch(updateSearchPreferences({
             searchEngine: formState.searchEngine,
-            weatherLocation: formState.weatherLocation
+            weatherLocation: formState.weatherLocation,
+            hideSeconds: formState.hideSeconds,
+            use12Hour: formState.use12Hour
         }));
         dispatch(updateSocialProfiles(formState.socialProfiles));
         dispatch(updateBookmarks(formState.bookmarks));
@@ -321,15 +329,19 @@ const SettingsPanel = () => {
                                         </div>
                                     </div>
 
-                                    {/* Search Preferences */}
+
+
+
+
+                                    {/* Weather Preferences */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-                                        
-                                        <h3 className="text-sm font-medium text-white/70">{isChrome ? 'Weather': ""}</h3>
+
+                                        <h3 className="text-sm font-medium text-white/70">{isChrome ? 'Weather' : ""}</h3>
                                         <div className="space-y-3">
 
                                             {!isChrome && <div className="relative w-full">
@@ -391,6 +403,40 @@ const SettingsPanel = () => {
                                             </div>
                                         </div>
                                     </motion.div>
+
+                                    {/* Clock */}
+                                    <div className="space-y-3">
+                                        <h3 className="text-sm font-medium text-white/70">Clock Settings</h3>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+                                                <span className="text-white/90">Hide seconds</span>
+                                                <button
+                                                    onClick={() => setFormState({ ...formState, hideSeconds: !formState.hideSeconds })}
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.hideSeconds ? 'bg-emerald-500/50' : 'bg-white/10'
+                                                        }`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.hideSeconds ? 'translate-x-6' : 'translate-x-1'
+                                                            }`}
+                                                    />
+                                                </button>
+                                            </div>
+
+                                            <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10">
+                                                <span className="text-white/90">12-hour</span>
+                                                <button
+                                                    onClick={() => setFormState({ ...formState, use12Hour: !formState.use12Hour })}
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.use12Hour ? 'bg-emerald-500/50' : 'bg-white/10'
+                                                        }`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.use12Hour ? 'translate-x-6' : 'translate-x-1'
+                                                            }`}
+                                                    />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     {/* Social Profiles */}
                                     <motion.div

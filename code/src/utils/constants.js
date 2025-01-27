@@ -12,6 +12,8 @@ export const initialState = {
     userPortfolioUrl: "",
     searchEngine: "Google",
     weatherLocation: "Chennai",
+    hideSeconds: false,
+    use12Hour: false,
     socialProfiles: {
         linkedin: "https://www.linkedin.com/",
         github: "https://github.com/",
