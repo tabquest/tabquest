@@ -4,6 +4,10 @@ TabQuest is a productivity-focused extension designed to help you manage bookmar
 
 ## Development
 
+```bash
+  cd code
+```
+
 To start the development server run:
 
 ```bash
