@@ -406,7 +406,7 @@ const SettingsPanel = () => {
 
                                     {/* Clock */}
                                     <div className="space-y-3">
-                                        <h3 className="text-sm font-medium text-white/70">Clock Settings</h3>
+                                        <h3 className="text-sm font-medium text-white/70">Clock</h3>
                                         <div className="space-y-3">
                                             <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10">
                                                 <span className="text-white/90">Hide seconds</span>

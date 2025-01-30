@@ -5,6 +5,7 @@ import { APP_VERSION, CHECK_INTERVAL, API_ENDPOINTS } from '../utils/version';
 
 const VersionChecker = () => {
     const [latestVersion, setLatestVersion] = useState('');
+    const [releaseNotes, setReleaseNotes] = useState('');
     const [updateUrl, setUpdateUrl] = useState('');
     const [showNotification, setShowNotification] = useState(false);
 
@@ -15,6 +16,8 @@ const VersionChecker = () => {
 
             setLatestVersion(data.version);
             setUpdateUrl(data.updateUrl);
+            setReleaseNotes(data.releaseNotes);
+            
 
             // Show notification if versions don't match
             if (data.version !== APP_VERSION) {
@@ -58,7 +61,11 @@ const VersionChecker = () => {
                                         Update Available!
                                     </h3>
                                     <p className="text-gray-300 text-sm">
-                                        A new version ({latestVersion}) is available. Your current version is {APP_VERSION}.
+                                        A new version ({latestVersion}) is available. 
+                                         {/* Your current version is {APP_VERSION}. */}
+                                    </p>
+                                    <p>
+                                        {releaseNotes}
                                     </p>
                                     <motion.a
                                         href={updateUrl}
