@@ -1,4 +1,4 @@
-export const APP_VERSION = "1.0.2";
+export const APP_VERSION = "1.0.3";
 
 export const CHECK_INTERVAL = 8 * 60 * 60 * 1000; // 8 hours
 

@@ -6,7 +6,15 @@ import { FAVICON_URL } from '../utils/constants';
 
 const getFaviconUrl = (url) => {
   try {
-    return FAVICON_URL + new URL(url).hostname;
+    const hostname = new URL(url).hostname;
+
+    // Check for Gmail URL pattern
+    if (hostname === 'mail.google.com' || hostname.includes('gmail')) {
+      // Gmail icon URL
+      return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico';
+    }
+
+    return FAVICON_URL + hostname;
   } catch {
     return ''; // Fallback for invalid URLs
   }
