@@ -75,7 +75,7 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
-                    formState.hideSeconds !== settings.hideSeconds || 
+                    formState.hideSeconds !== settings.hideSeconds ||
                     formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
                     JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
@@ -104,7 +104,7 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
-                    formState.hideSeconds !== settings.hideSeconds || 
+                    formState.hideSeconds !== settings.hideSeconds ||
                     formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
                     JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
@@ -122,6 +122,24 @@ const SettingsPanel = () => {
             document.removeEventListener('keydown', handleEscKey);
         };
     }, [isOpen, formState, settings]);
+
+    // Handle Clock update
+    const handleClockSettingToggle = (settingName) => {
+        const currentValue = formState[settingName];
+        const newValue = !currentValue;
+
+        // Update the local form state
+        setFormState({
+            ...formState,
+            [settingName]: newValue
+        });
+
+        // Dispatch the update immediately to Redux
+        dispatch(updateSearchPreferences({
+            ...formState,
+            [settingName]: newValue
+        }));
+    };
 
     const Alert = ({ message }) => (
         <motion.div
@@ -329,10 +347,6 @@ const SettingsPanel = () => {
                                         </div>
                                     </div>
 
-
-
-
-
                                     {/* Weather Preferences */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
@@ -407,30 +421,32 @@ const SettingsPanel = () => {
                                     {/* Clock */}
                                     <div className="space-y-3">
                                         <h3 className="text-sm font-medium text-white/70">Clock</h3>
-                                        <div className="space-y-3">
-                                            <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-white/90">Hide seconds</span>
+                                        <div className="flex flex-row gap-3">
+                                            {/* 12-hour format */}
+                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span className="text-sm text-white/90">12-hour</span>
                                                 <button
-                                                    onClick={() => setFormState({ ...formState, hideSeconds: !formState.hideSeconds })}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.hideSeconds ? 'bg-emerald-500/50' : 'bg-white/10'
-                                                        }`}
-                                                >
-                                                    <span
-                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.hideSeconds ? 'translate-x-6' : 'translate-x-1'
-                                                            }`}
-                                                    />
-                                                </button>
-                                            </div>
-
-                                            <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-white/90">12-hour</span>
-                                                <button
-                                                    onClick={() => setFormState({ ...formState, use12Hour: !formState.use12Hour })}
+                                                    onClick={() => handleClockSettingToggle('use12Hour')}
                                                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.use12Hour ? 'bg-emerald-500/50' : 'bg-white/10'
                                                         }`}
                                                 >
                                                     <span
                                                         className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.use12Hour ? 'translate-x-6' : 'translate-x-1'
+                                                            }`}
+                                                    />
+                                                </button>
+                                            </div>
+
+                                            {/* Hide seconds */}
+                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span className="text-sm text-white/90">Hide seconds</span>
+                                                <button
+                                                    onClick={() => handleClockSettingToggle('hideSeconds')}
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.hideSeconds ? 'bg-emerald-500/50' : 'bg-white/10'
+                                                        }`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.hideSeconds ? 'translate-x-6' : 'translate-x-1'
                                                             }`}
                                                     />
                                                 </button>

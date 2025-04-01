@@ -8,10 +8,9 @@ const getFaviconUrl = (url) => {
   try {
     const hostname = new URL(url).hostname;
 
-    // Check for Gmail URL pattern
+    // Ensure Gmail and Google Mail URLs are correctly handled
     if (hostname === 'mail.google.com' || hostname.includes('gmail')) {
-      // Gmail icon URL
-      return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico';
+      return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico'; // Use Google's global favicon
     }
 
     return FAVICON_URL + hostname;

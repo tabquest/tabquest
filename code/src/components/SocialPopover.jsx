@@ -15,6 +15,10 @@ const SocialPopover = () => {
 
     const [isOpen, setIsOpen] = React.useState(false);
     const [copiedText, setCopiedText] = React.useState("");
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [profileImageError, setProfileImageError] = useState(false);
+
+    useEffect(() => (window.ononline = window.onoffline = () => setIsOnline(navigator.onLine)), []);
 
     const SocialIcons = {
         linkedin: <FaLinkedin />,
@@ -32,8 +36,10 @@ const SocialPopover = () => {
 
     const validateUrl = (url) => { if (!/^https?:\/\//i.test(url)) { return `https://${url}`; } return url; };
 
-    const [isOnline, setIsOnline] = useState(navigator.onLine);
-    useEffect(() => (window.ononline = window.onoffline = () => setIsOnline(navigator.onLine)), []);
+    // Set GitHub profile image directly
+    const githubUrl = SocialProfiles.github;
+    const githubUsername = githubUrl ? githubUrl.split("github.com/")[1] : null;
+    const profileImageUrl = githubUsername ? `https://github.com/${githubUsername}.png` : null;
 
     return (
         <div className="relative inline-block">
@@ -42,8 +48,19 @@ const SocialPopover = () => {
                 onMouseLeave={() => setIsOpen(false)}
                 className="flex items-center space-x-3 rounded-xl bg-[#1a1b26]/80 px-3 py-2.5 text-base backdrop-blur-lg transition-all hover:bg-[#1a1b26] border border-white/10"
             >
-                <User className="h-5 w-5 text-white/80" />
-                <span className="text-white font-medium">{userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}</span>
+                {profileImageUrl && !profileImageError ? (
+                    <img
+                        className="h-6 w-6 rounded-md"
+                        src={profileImageUrl}
+                        alt={userName}
+                        onError={() => setProfileImageError(true)} // Handle error case
+                    />
+                ) : (
+                    <User className="h-5 w-5 text-white/80" />
+                )}
+                <span className="text-white font-medium">
+                    {userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}
+                </span>
                 {!isOnline ? (
                     <WifiOff size={20} className="text-red-400 ml-2" />
                 ) : (
