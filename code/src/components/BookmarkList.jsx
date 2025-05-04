@@ -10,6 +10,7 @@ const BookmarkList = ({
   highlightText,
   searchQuery
 }) => {
+  
   return (
     <div className="space-y-2">
       <AnimatePresence mode="popLayout">
@@ -36,7 +37,7 @@ const BookmarkList = ({
 
                 <div>
                   <div
-                  onClick={() => window.open(bookmark.url)}
+                  onClick={() => window.location.replace(bookmark.url)}
                     // href={bookmark.url}
                     className="text-white/90 font-medium hover:underline"
                   >

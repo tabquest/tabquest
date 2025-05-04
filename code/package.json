@@ -1,6 +1,6 @@
 {
     "name": "tabquest",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
     "type": "module",
     "scripts": {
@@ -10,9 +10,9 @@
         "build": "node chooseMode.js build",
         "build:chrome": "vite build --mode chrome",
         "build:firefox_edge": "vite build --mode firefox_edge",
-        "test": "node chooseMode.js test",
-        "test:chrome": "jest --mode chrome",
-        "test:firefox_edge": "jest --mode firefox_edge"
+        "test": "node test",
+        "test:chrome": "node test",
+        "test:firefox_edge": "node test"
     },
     "author": "Mohamed Halith",
     "license": "ISC",

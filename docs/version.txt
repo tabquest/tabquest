@@ -6,4 +6,6 @@
 
 1.0.3 - Bug fixed: Added Custom Gmail Favicon for Favourites/Bookmarks
 
-1.0.4 - Enhancement: Clock Switch button - live update, GitHub profile integration, Gmail Icon Error Fixed,  
+1.0.4 - Enhancement: Clock Switch button - live update, GitHub profile integration, Gmail Icon Error Fixed, Updated VersionChecker - using local storage
+
+1.0.5 - Enhancement: Added Google Lens Search & fixed minor bugs - window.open.repalce() in bookMark urls
