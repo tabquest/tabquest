@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Edit2, Trash2, Code, StickyNote, Copy, Check } from "lucide-react";
+import { X, Edit2, Trash2, Code, StickyNote, Copy, Check, FileType } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
 
 const ViewNotesModal = ({
     note,
@@ -72,6 +73,8 @@ const ViewNotesModal = ({
                         <div className="flex items-center gap-2">
                             {note.type === 'snippet' ? (
                                 <Code size={18} className="text-gray-400 flex-shrink-0" />
+                            ) : note.type === 'markdown' ? (
+                                <FileType size={18} className="text-gray-400 flex-shrink-0" />
                             ) : (
                                 <StickyNote size={18} className="text-gray-400 flex-shrink-0" />
                             )}
@@ -113,12 +116,33 @@ const ViewNotesModal = ({
                                         )}
                                     </AnimatePresence>
                                 </motion.button>
-                                <pre className="whitespace-pre-wrap overflow-x-auto custom-scrollbar text-gray-100">
+                                <pre className="whitespace-pre-wrap overflow-x-auto custom-scrollbar text-gray-100 select-text">
                                     {note.content}
                                 </pre>
                             </div>
+                        ) : note.type === 'markdown' ? (
+                            <div className="bg-gray-950/50 p-4 rounded-lg prose prose-invert prose-sm max-w-none select-text">
+                                <ReactMarkdown 
+                                    components={{
+                                        h1: ({children}) => <h1 className="text-gray-100 text-xl font-bold mb-2 select-text">{children}</h1>,
+                                        h2: ({children}) => <h2 className="text-gray-100 text-lg font-semibold mb-2 select-text">{children}</h2>,
+                                        h3: ({children}) => <h3 className="text-gray-100 text-base font-medium mb-1 select-text">{children}</h3>,
+                                        p: ({children}) => <p className="text-gray-300 mb-2 select-text">{children}</p>,
+                                        strong: ({children}) => <strong className="text-gray-200 font-semibold select-text">{children}</strong>,
+                                        code: ({children}) => <code className="text-gray-200 bg-gray-800 px-1 rounded text-sm select-text">{children}</code>,
+                                        pre: ({children}) => <pre className="bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto select-text">{children}</pre>,
+                                        blockquote: ({children}) => <blockquote className="text-gray-400 border-l-4 border-gray-600 pl-4 italic select-text">{children}</blockquote>,
+                                        a: ({children, href}) => <a href={href} className="text-blue-400 hover:underline select-text">{children}</a>,
+                                        ul: ({children}) => <ul className="text-gray-300 list-disc ml-4 mb-2 select-text">{children}</ul>,
+                                        ol: ({children}) => <ol className="text-gray-300 list-decimal ml-4 mb-2 select-text">{children}</ol>,
+                                        li: ({children}) => <li className="text-gray-300 mb-1 select-text">{children}</li>
+                                    }}
+                                >
+                                    {note.content}
+                                </ReactMarkdown>
+                            </div>
                         ) : (
-                            <p className="text-gray-300 whitespace-pre-wrap break-words">
+                            <p className="text-gray-300 whitespace-pre-wrap break-words select-text">
                                 {note.content}
                             </p>
                         )}
