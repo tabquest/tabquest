@@ -26,15 +26,7 @@ const FAVORITES_FOLDER = {
 };
 
 const MAX_TAGS = 3;
-const STORAGE_KEY = 'bookmarkManager';
 
-const saveToLocalStorage = (folders, bookmarks) => {
-  const dataToSave = {
-    folders: folders.filter(f => !f.isDefault),
-    bookmarks
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-};
 
 const BookmarkComponent = () => {
   const dispatch = useDispatch();
@@ -60,11 +52,7 @@ const BookmarkComponent = () => {
     dispatch(setBookmarks(bookmarks));
   }, [dispatch]);
 
-  // Save data on changes
-  useEffect(() => {
-    const nonDefaultFolders = folders.filter(f => !f.isDefault);
-    saveToLocalStorage(nonDefaultFolders, bookmarks);
-  }, [folders, bookmarks]);
+
 
   const handleAddFolder = (values) => {
     if (values.title && values.title.trim()) {
