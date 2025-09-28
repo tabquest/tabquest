@@ -6,12 +6,13 @@ const initialState = {
     isAddingNew: false,
 };
 
+import { saveToLocalStorage } from '../loadFromLocalStorage';
+
 // Middleware to save state after each action
 export const persistMiddleware = store => next => action => {
     const result = next(action);
     const state = store.getState().bookmarks;
-    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
-    localStorage.setItem("folders", JSON.stringify(state.folders));
+    saveToLocalStorage(state);
     return result;
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Clock from './components/Clock';
 import SocialPopover from './components/SocialPopover';
 import ProgressBars from './components/ProgressBars';
@@ -6,37 +6,54 @@ import SearchBar from './components/SearchBar';
 import BookmarkBar from './components/BookmarkBar';
 import SettingsPanel from './components/SettingsPanel';
 import ToolsPanel from './components/ToolsPanel';
+import UINotification from './components/UINotification';
 
-// import { LiveUsersTracker, MobileView, VersionChecker } from './features';
 import { MobileView, VersionChecker } from './features';
 
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './utils/redux/store';
 import { motion } from 'framer-motion';
 import ChromeSearchBar from './components/ChromeSearchBar';
+import { checkDueReminders } from './services/reminderService';
+import { setTasks } from './utils/redux/taskSlice';
 
-function App() {
-  // Check if the user is on a mobile device
+const AppContent = () => {
+  const dispatch = useDispatch();
+  const { tasks } = useSelector(state => state.tasks);
+  const [notification, setNotification] = useState(null);
+
+  useEffect(() => {
+    const dueReminders = checkDueReminders(tasks);
+    if (dueReminders.length > 0) {
+      const task = dueReminders[0];
+      setNotification({
+        title: `Task Reminder!`,
+        body: task.title
+      });
+      
+      // Play notification sound
+      const audio = new Audio('/notification.mp3');
+      audio.play().catch(() => {});
+      
+      const updatedTasks = tasks.map(t => 
+        t.id === task.id ? { ...t, reminderSent: true } : t
+      );
+      dispatch(setTasks(updatedTasks));
+    }
+  }, [tasks, dispatch]);
+
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
   if (isMobile) {
-    return <MobileView />;  // Only display mobile warning
+    return <MobileView />;
   }
 
-  // Check Chrome Env
   const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
 
   return (
     <Provider store={store}>
-      {/* LiveUsersTracker - GoogleAnalytics */}
-      {/* <LiveUsersTracker /> */}
-
-      {/* Version Check */}
       <VersionChecker />
       <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen flex flex-col p-6 md:p-8">
-        {/* <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white min-h-screen flex flex-col p-6 md:p-8"> */}
-        {/* <div className="bg-gradient-to-br from-[#090d15] via-[#101725] to-[#090d15] text-white min-h-screen flex flex-col p-6 md:p-8"> */}
-
+        
         {/* Header Section */}
         <div className="flex mt-4 justify-between"> {/* Reduced margin-top */}
           <motion.div
@@ -69,7 +86,6 @@ function App() {
           <BookmarkBar />
         </motion.div>
 
-
         {/* Footer */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -81,6 +97,20 @@ function App() {
           <ToolsPanel />
         </motion.div>
       </div>
+      
+      <UINotification 
+        notification={notification}
+        onClose={() => setNotification(null)}
+      />
+    </Provider>
+  );
+};
+
+function App() {
+  return (
+    <Provider store={store}>
+      <VersionChecker />
+      <AppContent />
     </Provider>
   );
 }

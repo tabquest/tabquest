@@ -1,6 +1,6 @@
 {
     "name": "tabquest",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
     "type": "module",
     "scripts": {

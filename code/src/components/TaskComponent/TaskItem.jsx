@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from 'react';
-import { Calendar, Clock, Edit2, Trash2 } from 'lucide-react';
+import { Calendar, Bell, Edit2, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ANIMATION_DURATION = 0.7;
@@ -79,22 +79,14 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                                 )}
                             </AnimatePresence>
                         </div>
-                        <div className="flex gap-5 mt-2">
-                            {task.dueDate && (
+                        {task.reminderDateTime && (
+                            <div className="mt-2">
                                 <span className="text-sm flex items-center gap-2 text-white/60 hover:text-white/80 transition-colors">
-                                    <Calendar className="stroke-[1.5]" size={14} />
-                                    {new Date(task.dueDate).toLocaleDateString()}
+                                    <Bell className="stroke-[1.5]" size={14} />
+                                    {new Date(task.reminderDateTime).toLocaleString()}
                                 </span>
-                            )}
-                            {(task.startTime || task.endTime) && (
-                                <span className="text-sm flex items-center gap-2 text-white/60 hover:text-white/80 transition-colors">
-                                    <Clock className="stroke-[1.5]" size={14} />
-                                    {task.startTime && task.endTime ?
-                                        `${task.startTime} - ${task.endTime}` :
-                                        task.startTime || task.endTime}
-                                </span>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -1,16 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import settingsReducer from './settingsSlice';
-import bookmarkReducer from './bookmarkSlice';
+import bookmarkReducer, { persistMiddleware } from './bookmarkSlice';
 import taskReducer from './taskSlice';
 import notesReducer from './notesSlice';
-
-const persistMiddleware = store => next => action => {
-  const result = next(action);
-  const state = store.getState().bookmarks;
-  localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
-  localStorage.setItem("folders", JSON.stringify(state.folders));
-  return result;
-};
 
 export const store = configureStore({
   reducer: {

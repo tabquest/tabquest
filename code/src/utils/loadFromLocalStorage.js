@@ -6,47 +6,48 @@ const FAVORITES_FOLDER = {
   };
   
   export const saveToLocalStorage = (state) => {
-    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
-    localStorage.setItem("folders", JSON.stringify(state.folders));
+    try {
+      // Only save non-default folders to prevent favorites folder duplication
+      const foldersToSave = state.folders.filter(f => !f.isDefault);
+      localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
+      localStorage.setItem("folders", JSON.stringify(foldersToSave));
+    } catch (e) {
+      console.error("Error saving to localStorage", e);
+    }
   };
   
   export const loadFromLocalStorage = () => {
     let bookmarks = [];
     let folders = [];
+    
     try {
-      bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+      const savedBookmarks = localStorage.getItem("bookmarks");
+      bookmarks = savedBookmarks ? JSON.parse(savedBookmarks) : [];
     } catch (e) {
       console.error("Error parsing bookmarks from localStorage", e);
+      bookmarks = [];
     }
+    
     try {
-      folders = JSON.parse(localStorage.getItem("folders")) || [];
+      const savedFolders = localStorage.getItem("folders");
+      folders = savedFolders ? JSON.parse(savedFolders) : [];
     } catch (e) {
       console.error("Error parsing folders from localStorage", e);
+      folders = [];
     }
   
-    // Ensure no duplicate favorites folder
-    const hasFavoritesFolder = folders.some(folder => folder.id === FAVORITES_FOLDER.id);
-    if (!hasFavoritesFolder) {
-      folders.unshift(FAVORITES_FOLDER);
-    } else {
-      // Remove any duplicate favorites folders
-      folders = folders.filter((folder, index, self) =>
-        index === self.findIndex(f => f.id === folder.id)
-      );
-    }
+    // Always ensure favorites folder exists and is first
+    folders = folders.filter(f => f.id !== FAVORITES_FOLDER.id);
+    folders.unshift(FAVORITES_FOLDER);
   
-    // Ensure no duplicate favorites bookmarks
-    const uniqueBookmarks = bookmarks.reduce((acc, bookmark) => {
-      if (bookmark.starred) {
-        const isDuplicate = acc.some(b => b.id === bookmark.id && b.starred);
-        if (!isDuplicate) {
-          acc.push(bookmark);
-        }
+    // Update folder counts based on actual bookmarks
+    folders.forEach(folder => {
+      if (folder.id === FAVORITES_FOLDER.id) {
+        folder.count = bookmarks.filter(b => b.starred).length;
       } else {
-        acc.push(bookmark);
+        folder.count = bookmarks.filter(b => b.folder === folder.id).length;
       }
-      return acc;
-    }, []);
+    });
   
-    return { bookmarks: uniqueBookmarks, folders };
+    return { bookmarks, folders };
   };
