@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search, Folder, Edit2, Trash2, Star, Heart } from 'lucide-react';
+import { Plus, Search, Folder, Edit2, Trash2, Star, Heart, List, Grid3X3 } from 'lucide-react';
 import {
   setIsAddingNew,
   addFolder,
@@ -26,15 +26,7 @@ const FAVORITES_FOLDER = {
 };
 
 const MAX_TAGS = 3;
-const STORAGE_KEY = 'bookmarkManager';
 
-const saveToLocalStorage = (folders, bookmarks) => {
-  const dataToSave = {
-    folders: folders.filter(f => !f.isDefault),
-    bookmarks
-  };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-};
 
 const BookmarkComponent = () => {
   const dispatch = useDispatch();
@@ -47,6 +39,10 @@ const BookmarkComponent = () => {
   const [editingFolder, setEditingFolder] = useState(null);
   const [editingBookmark, setEditingBookmark] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+  const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState(() => {
+    return localStorage.getItem('bookmarkViewMode') || 'list';
+  });
 
   // Load initial data
   useEffect(() => {
@@ -56,17 +52,24 @@ const BookmarkComponent = () => {
     dispatch(setBookmarks(bookmarks));
   }, [dispatch]);
 
-  // Save data on changes
-  useEffect(() => {
-    const nonDefaultFolders = folders.filter(f => !f.isDefault);
-    saveToLocalStorage(nonDefaultFolders, bookmarks);
-  }, [folders, bookmarks]);
+
 
   const handleAddFolder = (values) => {
     if (values.title && values.title.trim()) {
+      const trimmedTitle = values.title.trim();
+      const isDuplicate = folders.some(folder => 
+        folder.title.toLowerCase() === trimmedTitle.toLowerCase()
+      );
+      
+      if (isDuplicate) {
+        setError('A folder with this name already exists!');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      
       dispatch(addFolder({
         id: Date.now().toString(),
-        title: values.title,
+        title: trimmedTitle,
         count: 0
       }));
       setShowFolderPopup(false);
@@ -87,7 +90,18 @@ const BookmarkComponent = () => {
 
   const handleUpdateFolder = (id, newTitle) => {
     if (newTitle.trim()) {
-      dispatch(updateFolder({ id, title: newTitle }));
+      const trimmedTitle = newTitle.trim();
+      const isDuplicate = folders.some(folder => 
+        folder.id !== id && folder.title.toLowerCase() === trimmedTitle.toLowerCase()
+      );
+      
+      if (isDuplicate) {
+        setError('A folder with this name already exists!');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      
+      dispatch(updateFolder({ id, title: trimmedTitle }));
       setEditingFolder(null);
     }
   };
@@ -174,7 +188,7 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        style={{ overflowY: 'auto', height: "50vh" }}
+        style={{ overflowY: 'auto', height: "72vh" }}
         className="w-64 border-r border-white/10 p-4 custom-scrollbar"
       >
         <motion.button
@@ -236,9 +250,22 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{ overflowY: 'auto', height: "50vh" }}
+        style={{ overflowY: 'auto', height: "72vh" }}
         className="flex-1 p-4 custom-scrollbar"
       >
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] p-3 bg-red-500/90 border border-red-500 rounded-lg text-white text-sm shadow-lg backdrop-blur-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
         <div className="relative mb-6 flex items-center gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
@@ -251,111 +278,247 @@ const BookmarkComponent = () => {
             />
           </div>
 
-          {selectedFolder && selectedFolder !== FAVORITES_FOLDER.id && (
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
-              onClick={() => setShowBookmarkPopup(true)}
-            >
-              <Plus size={16} />
-              <span>Add URL</span>
-            </motion.button>
-          )}
+          <div className="flex items-center gap-2">
+            {/* View Toggle */}
+            <div className="flex bg-white/5 rounded-lg p-1">
+              <button
+                onClick={() => {
+                  setViewMode('list');
+                  localStorage.setItem('bookmarkViewMode', 'list');
+                }}
+                title="List View"
+                className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'}`}
+              >
+                <List size={16} />
+              </button>
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    setViewMode('grid');
+                    localStorage.setItem('bookmarkViewMode', 'grid');
+                  }}
+                  title="Grid View"
+                  className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'}`}
+                >
+                  <Grid3X3 size={16} />
+                </button>
+                <span className="absolute -top-1 -right-2 bg-green-500 text-white px-1 py-0.1 rounded text-[8px] font-medium z-10">
+                  New
+                </span>
+              </div>
+            </div>
+
+            {selectedFolder && selectedFolder !== FAVORITES_FOLDER.id && (
+              <motion.button
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+                onClick={() => setShowBookmarkPopup(true)}
+              >
+                <Plus size={16} />
+                <span>Add URL</span>
+              </motion.button>
+            )}
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <AnimatePresence mode="popLayout">
-            {filteredBookmarks.length === 0 && <p>No bookmarks found...</p>}
+        {filteredBookmarks.length === 0 ? (
+          <div className="text-center text-white/50 py-8">
+            <p>No bookmarks found...</p>
+          </div>
+        ) : viewMode === 'list' ? (
+          <div className="space-y-3">
+            <AnimatePresence mode="popLayout">
+              {filteredBookmarks.map(bookmark => (
+                <motion.div
+                  key={bookmark.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
 
-            {filteredBookmarks.map(bookmark => (
-              <motion.div
-                key={bookmark.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                layout
-                className="group p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors duration-200"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.2, rotate: 360 }}
-                      whileTap={{ scale: 0.9 }}
-                      className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
-                      onClick={() => handleStarBookmark(bookmark)}
-                    >
-                      {bookmark.starred ? (
-                        <Star fill="currentColor" size={16} />
-                      ) : (
-                        <Star size={16} />
-                      )}
-                    </motion.button>
-
-                    <div>
-                      <a
-                        href={bookmark.url}
-                        target="_self"
-                        className="text-white/90 font-medium hover:underline"
+                  whileHover={{ scale: 1.01, x: 4 }}
+                  className="group p-4 bg-gradient-to-r from-white/5 to-white/10 hover:from-white/10 hover:to-white/15 rounded-xl border border-white/10 transition-all duration-200 cursor-pointer"
+                  onClick={() => window.open(bookmark.url, '_blank')}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 flex-1">
+                      <motion.button
+                        whileHover={{ scale: 1.2, rotate: 360 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStarBookmark(bookmark);
+                        }}
                       >
+                        {bookmark.starred ? (
+                          <Star fill="currentColor" size={18} />
+                        ) : (
+                          <Star size={18} />
+                        )}
+                      </motion.button>
+
+                      <div className="flex-1">
+                        <h3 className="text-white/90 font-medium text-base mb-1">
+                          {highlightText(
+                            bookmark.title.length > 40
+                              ? `${bookmark.title.slice(0, 40)}...`
+                              : bookmark.title,
+                            searchQuery
+                          )}
+                        </h3>
+                        <p className="text-sm text-white/60 mb-2">
+                          {highlightText(
+                            bookmark.url.length > 50
+                              ? `${bookmark.url.slice(0, 50)}...`
+                              : bookmark.url,
+                            searchQuery
+                          )}
+                        </p>
+                        {bookmark.tags.length > 0 && (
+                          <div className="flex gap-2 flex-wrap">
+                            {bookmark.tags.map(tag => (
+                              <span
+                                key={tag}
+                                className="text-xs px-3 py-1 bg-white/10 rounded-full text-white/70 hover:bg-white/20 transition-colors"
+                              >
+                                {highlightText(tag, searchQuery)}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="flex gap-2">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-2 text-white/50 hover:text-white/90 hover:bg-white/10 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingBookmark(bookmark);
+                          }}
+                        >
+                          <Edit2 size={16} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-2 text-white/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <AnimatePresence>
+              {filteredBookmarks.map(bookmark => (
+                <motion.div
+                  key={bookmark.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="group relative h-40 w-full bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200 cursor-pointer overflow-hidden"
+                  onClick={() => window.open(bookmark.url, '_blank')}
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`absolute top-3 right-3 z-10 transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStarBookmark(bookmark);
+                    }}
+                  >
+                    {bookmark.starred ? (
+                      <Star fill="currentColor" size={18} />
+                    ) : (
+                      <Star size={18} />
+                    )}
+                  </motion.button>
+
+                  <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-1.5 bg-black/60 rounded text-white/70 hover:text-white/90"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingBookmark(bookmark);
+                      }}
+                    >
+                      <Edit2 size={14} />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-1.5 bg-black/60 rounded text-white/70 hover:text-red-400"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
+                      }}
+                    >
+                      <Trash2 size={14} />
+                    </motion.button>
+                  </div>
+
+                  <div className="p-4 h-full flex flex-col justify-between">
+                    <div className="flex-1 flex flex-col justify-center text-center">
+                      <h3 className="text-white/90 font-medium text-sm mb-2 line-clamp-2">
                         {highlightText(
-                          bookmark.title.length > 35
-                            ? `${bookmark.title.slice(0, 35)}...`
+                          bookmark.title.length > 25
+                            ? `${bookmark.title.slice(0, 25)}...`
                             : bookmark.title,
                           searchQuery
                         )}
-                      </a>
-                      <p className="text-sm text-white/50">
+                      </h3>
+                      <p className="text-xs text-white/50 line-clamp-1">
                         {highlightText(
-                          bookmark.url.length > 39
-                            ? `${bookmark.url.slice(0, 39)}...`
-                            : bookmark.url,
+                          bookmark.url.replace(/^https?:\/\//, '').split('/')[0],
                           searchQuery
                         )}
                       </p>
-                      {bookmark.tags.length > 0 && (
-                        <div className="flex gap-2 mt-1.5">
-                          {bookmark.tags.map(tag => (
-                            <span
-                              key={tag}
-                              className="text-xs px-2 py-0.5 bg-white/10 rounded transition-colors duration-200 hover:bg-white/20"
-                            >
-                              {highlightText(tag, searchQuery)}
-                            </span>
-                          ))}
-                        </div>
-                      )}
                     </div>
-                  </div>
 
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <div className="flex gap-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-1 text-white/50 hover:text-white/90"
-                        onClick={() => setEditingBookmark(bookmark)}
-                      >
-                        <Edit2 size={16} />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-1 text-white/50 hover:text-red-400"
-                        onClick={() => setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id })}
-                      >
-                        <Trash2 size={16} />
-                      </motion.button>
-                    </div>
+                    {bookmark.tags.length > 0 && (
+                      <div className="flex justify-center gap-1 mt-2">
+                        {bookmark.tags.slice(0, 2).map(tag => (
+                          <span
+                            key={tag}
+                            className="text-xs px-2 py-0.5 bg-white/10 rounded-full text-white/70"
+                          >
+                            {tag.length > 8 ? `${tag.slice(0, 8)}..` : tag}
+                          </span>
+                        ))}
+                        {bookmark.tags.length > 2 && (
+                          <span className="text-xs px-2 py-0.5 bg-white/10 rounded-full text-white/50">
+                            +{bookmark.tags.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </motion.div>
 
       {/* Popups */}

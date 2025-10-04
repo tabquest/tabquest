@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, StickyNote, Code, Key, Hash, FileText } from "lucide-react";
+import { X, StickyNote, Code, Key, Hash, FileText, FileType } from "lucide-react";
 
 const getIconForField = (fieldName, type) => {
     switch (fieldName) {
         case 'heading':
             return <FileText className="w-5 h-5" />;
         case 'content':
-            return type === 'snippet' ? <Code className="w-5 h-5" /> : <StickyNote className="w-5 h-5" />;
+            return type === 'snippet' ? <Code className="w-5 h-5" /> : 
+                   type === 'markdown' ? <FileType className="w-5 h-5" /> : <StickyNote className="w-5 h-5" />;
         case 'tags':
             return <Hash className="w-5 h-5" />;
         default:
@@ -58,7 +59,7 @@ const PopupModal = ({
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
-                        className="bg-[#0b1518] border border-white/10 rounded-lg w-full max-w-2xl max-h-[80vh] flex flex-col"
+                        className="bg-[#0b1518] border border-white/10 rounded-lg w-full max-w-4xl max-h-[90vh] flex flex-col"
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-white/10">
@@ -79,25 +80,44 @@ const PopupModal = ({
                         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 {/* Type Selection */}
-                                <div className="flex gap-4 mb-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, type: 'note' })}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                      ${formData.type === 'note' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
-                                    >
-                                        <StickyNote size={18} />
-                                        Note
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setFormData({ ...formData, type: 'snippet' })}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 
-                      ${formData.type === 'snippet' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
-                                    >
-                                        <Code size={18} />
-                                        Code Snippet
-                                    </button>
+                                <div className="mb-4">
+                                    <div className="flex gap-3 mb-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, type: 'note' })}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                          ${formData.type === 'note' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
+                                        >
+                                            <StickyNote size={16} />
+                                            Note
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, type: 'snippet' })}
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                          ${formData.type === 'snippet' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
+                                        >
+                                            <Code size={16} />
+                                            Code Snippet
+                                        </button>
+                                        <div className="relative">
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, type: 'markdown' })}
+                                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                              ${formData.type === 'markdown' ? 'bg-white/20 text-white/90' : 'bg-white/10 text-white/60 hover:bg-white/15'}`}
+                                            >
+                                                <FileType size={16} />
+                                                Markdown
+                                            </button>
+                                            <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                                                NEW
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-orange-400 bg-orange-400/10 p-2 rounded border border-orange-400/20">
+                                        ⚠️ Code Snippets will be deprecated by end of 2025. Please migrate to Markdown for code blocks.
+                                    </p>
                                 </div>
 
                                 {/* Title Input */}
@@ -121,10 +141,11 @@ const PopupModal = ({
                                         {getIconForField('content', formData.type)}
                                     </div>
                                     <textarea
-                                        placeholder={formData.type === 'snippet' ? "Paste your code here..." : "Enter note content..."}
+                                        placeholder={formData.type === 'snippet' ? "Paste your code here..." : 
+                                                   formData.type === 'markdown' ? "Write your markdown here..." : "Enter note content..."}
                                         value={formData.content}
                                         onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        className={`w-full pl-10 pr-4 py-2 h-40 border border-white/10 rounded-lg resize-none custom-scrollbar 
+                                        className={`w-full pl-10 pr-4 py-2 h-64 border border-white/10 rounded-lg resize-y custom-scrollbar 
                       ${formData.type === 'snippet' ? 'bg-black/20 font-mono' : 'bg-black/20'} text-white/90 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent`}
                                         required
                                     />

@@ -9,3 +9,5 @@
 1.0.4 - Enhancement: Clock Switch button - live update, GitHub profile integration, Gmail Icon Error Fixed, Updated VersionChecker - using local storage
 
 1.0.5 - Enhancement: Added Google Lens Search & fixed minor bugs - window.open.repalce() in bookMark urls
+
+1.0.6 - Bookmarks Loclstorage Issue, Enhance Pro tools.

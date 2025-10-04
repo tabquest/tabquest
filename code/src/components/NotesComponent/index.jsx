@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Star, Edit2, Trash2, X, Code, StickyNote, Copy, Check } from 'lucide-react';
+import { Plus, Search, Star, Edit2, Trash2, X, Code, StickyNote, Copy, Check, FileType } from 'lucide-react';
 import {
     addNote,
     updateNote,
@@ -81,6 +81,25 @@ const NotesComponent = () => {
                                 : note.content
                         )}
                     </pre>
+                </div>
+            );
+        }
+
+        if (note.type === 'markdown') {
+            return (
+                <div className="relative bg-black/30 rounded-md p-3">
+                    <div className="absolute top-2 right-2">
+                        <FileType size={14} className="text-white/40" />
+                    </div>
+                    <p className="text-white/60 break-words font-mono text-sm">
+                        {searchQuery ? (
+                            <Highlight text={note.content} searchQuery={searchQuery} />
+                        ) : (
+                            note.content.length > MAX_PREVIEW_LENGTH
+                                ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
+                                : note.content
+                        )}
+                    </p>
                 </div>
             );
         }

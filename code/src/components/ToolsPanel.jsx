@@ -61,7 +61,7 @@ const ToolsPanel = () => {
             // animate={{ opacity: 1, scale: 1 }}
             // exit={{ opacity: 0, scale: 0.95 }}
             // // transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed inset-0 flex items-center justify-center z-50 text-[16px]"
+            className="fixed inset-0 flex items-center justify-center z-50 text-[18px]"
           >
             {/* Backdrop */}
             <motion.div
@@ -75,7 +75,7 @@ const ToolsPanel = () => {
 
             {/* Panel Container */}
             <motion.div
-              className="relative w-[820px] h-[620px] bg-black/40 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
+              className="relative w-[1200px] h-[800px] bg-black/40 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
             >
               {/* Gradient Overlays */}
               <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
@@ -85,7 +85,7 @@ const ToolsPanel = () => {
               <div className="relative h-full flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-white/10">
-                  <h2 className="text-lg font-medium text-white/80 flex items-center gap-2 overflow-hidden">
+                  <h2 className="text-xl font-medium text-white/80 flex items-center gap-2 overflow-hidden">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={activeTab}
@@ -97,8 +97,8 @@ const ToolsPanel = () => {
                         }}
                         className="flex items-center gap-2"
                       >
-                        {tabDetails[activeTab].icon}
-                        <span>{tabDetails[activeTab].title}</span>
+                        {React.cloneElement(tabDetails[activeTab].icon, { size: 24 })}
+                        <span className="text-xl">{tabDetails[activeTab].title}</span>
                       </motion.div>
                     </AnimatePresence>
                   </h2>
@@ -106,7 +106,7 @@ const ToolsPanel = () => {
                     onClick={() => setIsOpen(false)}
                     className="text-white/50 hover:text-white/80 transition-colors"
                   >
-                    <X size={20} />
+                    <X size={24} />
                   </button>
                 </div>
 
@@ -159,8 +159,8 @@ const TabButton = ({ icon, isActive, onClick, label }) => (
       : "text-white/50 hover:text-white/80"
       }`}
   >
-    {icon}
-    <span className="text-sm">{label}</span>
+    {React.cloneElement(icon, { size: 22 })}
+    <span className="text-base">{label}</span>
   </button>
 );
 

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, Trash2, Paperclip, CalendarDays, ArchiveRestore } from 'lucide-react';
 import { loadFromLocalStorage, saveToLocalStorage } from '../../utils/storage';
 
+
 import {
     setFolders,
     setTasks,
@@ -51,9 +52,7 @@ const TaskComponent = () => {
 
     const [newTask, setNewTask] = useState({
         title: '',
-        dueDate: '',
-        startTime: '',
-        endTime: '',
+        reminderDateTime: '',
         folder: ''
     });
     const [searchQuery, setSearchQuery] = useState('');
@@ -70,7 +69,7 @@ const TaskComponent = () => {
             ...folder,
             count: savedTasks.filter(task =>
                 folder.id === 'today'
-                    ? isToday(new Date(task.dueDate)) && !task.completed
+                    ? task.reminderDateTime && isToday(new Date(task.reminderDateTime)) && !task.completed
                     : folder.id === 'archive'
                         ? task.completed
                         : task.folder === folder.id && !task.completed
@@ -86,6 +85,8 @@ const TaskComponent = () => {
         const nonDefaultFolders = folders.filter(f => !f.isDefault);
         saveToLocalStorage(nonDefaultFolders, tasks);
     }, [folders, tasks]);
+
+
 
     const isToday = (date) => {
         const today = new Date();
@@ -113,7 +114,7 @@ const TaskComponent = () => {
             ...folder,
             count: tasks.filter(task =>
                 folder.id === 'today'
-                    ? isToday(new Date(task.dueDate)) && !task.completed
+                    ? task.reminderDateTime && isToday(new Date(task.reminderDateTime)) && !task.completed
                     : folder.id === 'archive'
                         ? task.completed
                         : task.folder === folder.id && !task.completed
@@ -126,13 +127,12 @@ const TaskComponent = () => {
             const newTask = {
                 id: Date.now().toString(),
                 title: task.title.trim(),
-                dueDate: selectedFolder === 'today' ? new Date().toISOString().split('T')[0] : task.dueDate,
-                startTime: task.startTime,
-                endTime: task.endTime,
+                reminderDateTime: task.reminderDateTime,
                 folder: selectedFolder,
                 dateAdded: Date.now(),
                 completed: false,
-                originalFolder: selectedFolder
+                originalFolder: selectedFolder,
+                reminderSent: false
             };
             dispatch(addTask(newTask));
 
@@ -245,7 +245,7 @@ const TaskComponent = () => {
 
     const filteredTasks = tasks.filter(task => {
         const matchesFolder = selectedFolder === 'today'
-            ? isToday(new Date(task.dueDate)) && !task.completed
+            ? task.reminderDateTime && isToday(new Date(task.reminderDateTime)) && !task.completed
             : selectedFolder === 'archive'
                 ? task.completed
                 : task.folder === selectedFolder && !task.completed;
@@ -253,7 +253,7 @@ const TaskComponent = () => {
         return matchesFolder;
     }).sort((a, b) => {
         if (a.completed !== b.completed) return a.completed ? 1 : -1;
-        if (a.dueDate && b.dueDate) return new Date(a.dueDate) - new Date(b.dueDate);
+        if (a.reminderDateTime && b.reminderDateTime) return new Date(a.reminderDateTime) - new Date(b.reminderDateTime);
         return b.dateAdded - a.dateAdded;
     });
 
@@ -265,7 +265,7 @@ const TaskComponent = () => {
             <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                style={{overflowY: 'auto', height: "52vh"}}
+                style={{overflowY: 'auto', height: "72vh"}}
                 className="w-64 border-r border-white/10 p-4 custom-scrollbar"
             >
                 <motion.button
@@ -327,7 +327,7 @@ const TaskComponent = () => {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                style={{overflowY: 'auto', height: "52vh"}}
+                style={{overflowY: 'auto', height: "72vh"}}
                 className="flex-1 p-4 custom-scrollbar"
             >
                 <div className="flex items-center justify-between mb-6">
@@ -421,7 +421,7 @@ const TaskComponent = () => {
                             setEditingTask(null);
                         }}
                         onSubmit={editingTask
-                            ? values => handleEditTask(editingTask.id, values)
+                            ? values => handleEditTask(editingTask.id, { ...values, reminderSent: false })
                             : handleAddTask
                         }
                         initialValues={editingTask || {}}

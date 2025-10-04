@@ -1,6 +1,6 @@
 {
     "name": "tabquest",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
     "type": "module",
     "scripts": {
@@ -33,12 +33,14 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "^2.5.0",
+        "@tailwindcss/typography": "^0.5.19",
         "framer-motion": "^11.15.0",
         "lucide-react": "^0.468.0",
         "prompts": "^2.4.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-icons": "^5.4.0",
+        "react-markdown": "^10.1.0",
         "react-redux": "^9.2.0"
     }
 }

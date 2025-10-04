@@ -78,21 +78,21 @@ const SocialPopover = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="w-72 rounded-xl border border-white/10 bg-[#1a1b26]/95 p-3 backdrop-blur-xl shadow-xl">
-                        <div className="flex items-center justify-between border-b border-white/10 p-2">
+                    <div className="w-72 rounded-xl border border-white/10 bg-[#1a1b26]/95 p-4 backdrop-blur-xl shadow-xl">
+                        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
                             <div>
                                 <h3 className="text-base font-medium text-white">{userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}</h3>
-                                {userRole !== '' && <p className="text-sm text-white/70 mt-1 capitalize">{userRole.length > 15 ? `${userRole.slice(0, 15)}..` : userRole}</p>}
+                                {userRole !== '' && <p className="text-sm text-white/70 mt-0.5 capitalize">{userRole.length > 15 ? `${userRole.slice(0, 15)}..` : userRole}</p>}
                             </div>
-                            <div className="flex gap-2">
-                                <a href="https://mail.google.com/" className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors">
-                                    <Mail className="h-5 w-5" />
+                            <div className="flex gap-1.5">
+                                <a href="https://mail.google.com/" className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors">
+                                    <Mail className="h-4 w-4" />
                                 </a>
                                 {userPortfolioUrl !== '' && (
                                     <>
                                         <button
                                             onClick={() => copyToClipboard(userPortfolioUrl)}
-                                            className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors"
+                                            className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors"
                                             title="Copy portfolio URL"
                                         >
                                             <Copy className="h-4 w-4" />
@@ -101,7 +101,7 @@ const SocialPopover = () => {
                                             href={validateUrl(userPortfolioUrl)}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="rounded-lg p-2 text-white/70 hover:bg-white/10 transition-colors"
+                                            className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors"
                                             title="Open porfolio website"
                                         >
                                             <ExternalLink className="h-4 w-4" />
@@ -111,13 +111,13 @@ const SocialPopover = () => {
                             </div>
                         </div>
 
-                        <div className="mt-3 space-y-1">
+                        <div className="space-y-1">
                             {Object.entries(SocialProfiles).map(
                                 ([key, value]) =>
                                     value !== '' && (
                                         <motion.div
                                             key={key}
-                                            className="group relative flex items-center justify-between rounded-xl p-2 transition-colors hover:bg-white/10"
+                                            className="group relative flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-white/10"
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             exit={{ opacity: 0 }}
@@ -128,15 +128,13 @@ const SocialPopover = () => {
                                                 rel="noopener noreferrer"
                                                 className="flex flex-1 items-center gap-3 text-white"
                                             >
-                                                {/* Icon on the left */}
                                                 <span className="text-lg text-white/80">{SocialIcons[key]}</span>
                                                 <p className="text-base capitalize">{key}</p>
                                             </a>
-                                            {/* Action buttons on the right */}
                                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => copyToClipboard(value)}
-                                                    className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
+                                                    className="rounded-lg p-1.5 text-white/70 hover:bg-white/20 transition-colors"
                                                     title="Copy URL"
                                                 >
                                                     <Copy className="h-4 w-4" />
@@ -145,7 +143,7 @@ const SocialPopover = () => {
                                                     href={value}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="rounded-lg p-2 text-white/70 hover:bg-white/20 transition-colors"
+                                                    className="rounded-lg p-1.5 text-white/70 hover:bg-white/20 transition-colors"
                                                     title="Open link"
                                                 >
                                                     <ExternalLink className="h-4 w-4" />
@@ -153,7 +151,7 @@ const SocialPopover = () => {
                                             </div>
                                         </motion.div>
                                     )
-                            )}
+            )}
                         </div>
                     </div>
 

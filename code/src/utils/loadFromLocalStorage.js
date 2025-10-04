@@ -3,50 +3,50 @@ const FAVORITES_FOLDER = {
     title: 'Favorites',
     count: 0,
     isDefault: true
-  };
-  
-  export const saveToLocalStorage = (state) => {
-    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
-    localStorage.setItem("folders", JSON.stringify(state.folders));
-  };
-  
-  export const loadFromLocalStorage = () => {
+};
+
+const STORAGE_KEY = 'bookmarkManager';
+
+export const loadFromLocalStorage = () => {
     let bookmarks = [];
     let folders = [];
+    
     try {
-      bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-    } catch (e) {
-      console.error("Error parsing bookmarks from localStorage", e);
-    }
-    try {
-      folders = JSON.parse(localStorage.getItem("folders")) || [];
-    } catch (e) {
-      console.error("Error parsing folders from localStorage", e);
-    }
-  
-    // Ensure no duplicate favorites folder
-    const hasFavoritesFolder = folders.some(folder => folder.id === FAVORITES_FOLDER.id);
-    if (!hasFavoritesFolder) {
-      folders.unshift(FAVORITES_FOLDER);
-    } else {
-      // Remove any duplicate favorites folders
-      folders = folders.filter((folder, index, self) =>
-        index === self.findIndex(f => f.id === folder.id)
-      );
-    }
-  
-    // Ensure no duplicate favorites bookmarks
-    const uniqueBookmarks = bookmarks.reduce((acc, bookmark) => {
-      if (bookmark.starred) {
-        const isDuplicate = acc.some(b => b.id === bookmark.id && b.starred);
-        if (!isDuplicate) {
-          acc.push(bookmark);
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            bookmarks = parsedData.bookmarks || [];
+            folders = parsedData.folders || [];
         }
-      } else {
-        acc.push(bookmark);
-      }
-      return acc;
-    }, []);
-  
-    return { bookmarks: uniqueBookmarks, folders };
-  };
+    } catch (e) {
+        console.error("Error loading bookmarks from localStorage", e);
+        // Try to migrate from old storage format
+        try {
+            const oldBookmarks = localStorage.getItem("bookmarks");
+            const oldFolders = localStorage.getItem("folders");
+            if (oldBookmarks) bookmarks = JSON.parse(oldBookmarks);
+            if (oldFolders) folders = JSON.parse(oldFolders);
+            
+            // Clean up old storage
+            localStorage.removeItem("bookmarks");
+            localStorage.removeItem("folders");
+        } catch (migrationError) {
+            console.error("Error migrating old bookmark data", migrationError);
+        }
+    }
+
+    // Always ensure favorites folder exists and is first
+    folders = folders.filter(f => f.id !== FAVORITES_FOLDER.id);
+    folders.unshift(FAVORITES_FOLDER);
+
+    // Update folder counts based on actual bookmarks
+    folders.forEach(folder => {
+        if (folder.id === FAVORITES_FOLDER.id) {
+            folder.count = bookmarks.filter(b => b.starred).length;
+        } else {
+            folder.count = bookmarks.filter(b => b.folder === folder.id).length;
+        }
+    });
+
+    return { bookmarks, folders };
+};

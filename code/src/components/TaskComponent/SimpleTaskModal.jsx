@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion';
-import { X, AlignLeft, Calendar, Clock, Plus } from 'lucide-react';
+import { X, AlignLeft, Bell } from 'lucide-react';
 import './custom.css'
 
 const SimpleTaskModal = ({
@@ -12,14 +12,12 @@ const SimpleTaskModal = ({
 }) => {
     const [values, setValues] = useState({
         title: initialValues.title || '',
-        dueDate: initialValues.dueDate || (selectedFolder === 'today' ? new Date().toISOString().split('T')[0] : ''),
-        startTime: initialValues.startTime || '',
-        endTime: initialValues.endTime || ''
+        reminderDateTime: initialValues.reminderDateTime || ''
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!values.title.trim()) return;
+        if (!values.title.trim() || !values.reminderDateTime) return;
         onSubmit(values);
     };
 
@@ -72,58 +70,26 @@ const SimpleTaskModal = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-white/70 mb-2">
-                            Due Date
+                        <label className="block text-sm font-medium text-white/70 mb-2 flex items-center gap-2">
+                            Reminder <span className="text-red-400">*</span>
+                            <span className="px-2 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-bold rounded-full animate-pulse">NEW</span>
                         </label>
                         <div className="relative">
-                            {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
-                                <Calendar size={18} />
-                            </div> */}
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                <Bell size={18} />
+                            </div>
                             <input
-                                type="date"
-                                value={values.dueDate}
-                                onChange={(e) => setValues((prev) => ({ ...prev, dueDate: e.target.value }))}
+                                type="datetime-local"
+                                value={values.reminderDateTime}
+                                onChange={(e) => setValues((prev) => ({ ...prev, reminderDateTime: e.target.value }))}
                                 className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none [color-scheme:dark]"
+                                placeholder="Set reminder date and time"
+                                required
                             />
                         </div>
-                    </div>
-
-                    <div className="flex gap-3 items-center">
-                        <div className="flex-1">
-                            <label className="block text-sm font-medium text-white/70 mb-2">
-                                Start Time
-                            </label>
-                            <div className="relative">
-                                {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
-                                    <Clock size={18} />
-                                </div> */}
-                                <input
-                                    type="time"
-                                    value={values.startTime}
-                                    onChange={(e) => setValues((prev) => ({ ...prev, startTime: e.target.value }))}
-                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none appearance-none [color-scheme:dark]"
-                                />
-                            </div>
-                        </div>
-
-                        <span className="text-white/70 mt-7">to</span>
-
-                        <div className="flex-1">
-                            <label className="block text-sm font-medium text-white/70 mb-2">
-                                End Time
-                            </label>
-                            <div className="relative">
-                                {/* <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
-                                    <Clock size={18} />
-                                </div> */}
-                                <input
-                                    type="time"
-                                    value={values.endTime}
-                                    onChange={(e) => setValues((prev) => ({ ...prev, endTime: e.target.value }))}
-                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:ring-2 focus:ring-white/20 focus:outline-none appearance-none [color-scheme:dark]"
-                                />
-                            </div>
-                        </div>
+                        <p className="text-xs text-white/50 mt-1 flex items-center gap-1">
+                            <span>💡</span> You'll get a notification with sound at the set time
+                        </p>
                     </div>
 
 

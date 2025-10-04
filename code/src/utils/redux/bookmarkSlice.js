@@ -1,18 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const STORAGE_KEY = 'bookmarkManager';
+
+const saveToStorage = (bookmarks, folders) => {
+    try {
+        const dataToSave = {
+            folders: folders.filter(f => !f.isDefault),
+            bookmarks
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    } catch (error) {
+        console.error('Error saving bookmarks:', error);
+    }
+};
+
 const initialState = {
     folders: [],
     bookmarks: [],
     isAddingNew: false,
-};
-
-// Middleware to save state after each action
-export const persistMiddleware = store => next => action => {
-    const result = next(action);
-    const state = store.getState().bookmarks;
-    localStorage.setItem("bookmarks", JSON.stringify(state.bookmarks));
-    localStorage.setItem("folders", JSON.stringify(state.folders));
-    return result;
 };
 
 const bookmarkSlice = createSlice({
@@ -29,6 +34,7 @@ const bookmarkSlice = createSlice({
             if (folder) {
                 folder.title = title;
             }
+            saveToStorage(state.bookmarks, state.folders);
         },
         deleteFolder(state, action) {
             const folderId = action.payload;
@@ -38,6 +44,7 @@ const bookmarkSlice = createSlice({
             state.bookmarks = state.bookmarks.filter(
                 (bookmark) => bookmark.folder !== folderId
             );
+            saveToStorage(state.bookmarks, state.folders);
         },
         setBookmarks(state, action) {
             state.bookmarks = action.payload;
@@ -47,6 +54,7 @@ const bookmarkSlice = createSlice({
         },
         addFolder(state, action) {
             state.folders.push(action.payload);
+            saveToStorage(state.bookmarks, state.folders);
         },
         addBookmark(state, action) {
             const folder = state.folders.find(
@@ -56,6 +64,7 @@ const bookmarkSlice = createSlice({
                 folder.count += 1;
             }
             state.bookmarks.push(action.payload);
+            saveToStorage(state.bookmarks, state.folders);
         },
         updateBookmark(state, action) {
             const { id, updates } = action.payload;
@@ -65,6 +74,7 @@ const bookmarkSlice = createSlice({
             if (bookmark) {
                 Object.assign(bookmark, updates);
             }
+            saveToStorage(state.bookmarks, state.folders);
         },
         deleteBookmark(state, action) {
             const bookmarkId = action.payload;
@@ -81,6 +91,7 @@ const bookmarkSlice = createSlice({
                 }
                 state.bookmarks.splice(bookmarkIndex, 1);
             }
+            saveToStorage(state.bookmarks, state.folders);
         },
     },
 });
