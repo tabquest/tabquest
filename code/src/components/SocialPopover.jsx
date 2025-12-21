@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { SocialIcons } from "../images/SocialIcons";
 import { motion } from "framer-motion";
+import { CHRISTMAS_MODE } from "../utils/constants";
 
 import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
 import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaReddit } from "react-icons/fa";
@@ -43,27 +44,29 @@ const SocialPopover = () => {
 
     return (
         <div className="relative inline-block">
-            <motion.div
-                initial={{ scale: 0, rotate: 0 }}
-                animate={{
-                    scale: 1,
-                    rotate: [0, -10, 10, -5, 5, 0]
-                }}
-                transition={{
-                    delay: 0.5,
-                    scale: { type: 'spring' },
-                    rotate: {
-                        delay: 1, // Wait for entry animation
-                        duration: 3,
-                        repeat: Infinity,
-                        repeatDelay: 2, // Pause between shakes
-                        ease: "easeInOut"
-                    }
-                }}
-                className="absolute -top-4 -left-4 text-3xl z-20 filter drop-shadow-lg pointer-events-none origin-bottom"
-            >
-                🎅
-            </motion.div>
+            {CHRISTMAS_MODE && (
+                <motion.div
+                    initial={{ scale: 0, rotate: 0 }}
+                    animate={{
+                        scale: 1,
+                        rotate: [0, -10, 10, -5, 5, 0]
+                    }}
+                    transition={{
+                        delay: 0.5,
+                        scale: { type: 'spring' },
+                        rotate: {
+                            delay: 1, // Wait for entry animation
+                            duration: 3,
+                            repeat: Infinity,
+                            repeatDelay: 2, // Pause between shakes
+                            ease: "easeInOut"
+                        }
+                    }}
+                    className="absolute -top-4 -left-4 text-3xl z-20 filter drop-shadow-lg pointer-events-none origin-bottom"
+                >
+                    🎅
+                </motion.div>
+            )}
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}

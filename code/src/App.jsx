@@ -17,6 +17,7 @@ import ChromeSearchBar from './components/ChromeSearchBar';
 import { checkDueReminders } from './services/reminderService';
 import { setTasks } from './utils/redux/taskSlice';
 import ChristmasSnowfall from './components/ChristmasSnowfall';
+import { CHRISTMAS_MODE } from './utils/constants';
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const AppContent = () => {
   return (
     <Provider store={store}>
       <VersionChecker />
-      <ChristmasSnowfall />
+      {CHRISTMAS_MODE && <ChristmasSnowfall />}
       <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen h-screen flex flex-col p-4 md:p-6 overflow-hidden relative">
 
         {/* Header Section */}
@@ -89,22 +90,24 @@ const AppContent = () => {
           transition={{ delay: 0.4, duration: 0.6 }}
         >
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
-            className="text-center py-2"
-          >
-            <h2
-              className="text-3xl md:text-5xl font-bold tracking-wide leading-tight"
-              style={{ fontFamily: "'Mountains of Christmas', cursive" }}
+          {CHRISTMAS_MODE && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+              className="text-center py-2"
             >
-              <span className="text-red-500 drop-shadow-[0_2px_4px_rgba(220,38,38,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-red-400 to-red-600">Merry</span>{" "}
-              <span className="text-white drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">Christmas</span>{" "}
-              <span className="text-green-500 drop-shadow-[0_2px_4px_rgba(34,197,94,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-green-400 to-green-600">!</span> 🎄
-            </h2>
-            <p className="text-white/60 text-sm font-light mt-1 tracking-widest uppercase text-[10px]">Wishing you joy & peace</p>
-          </motion.div>
+              <h2
+                className="text-3xl md:text-5xl font-bold tracking-wide leading-tight"
+                style={{ fontFamily: "'Mountains of Christmas', cursive" }}
+              >
+                <span className="text-red-500 drop-shadow-[0_2px_4px_rgba(220,38,38,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-red-400 to-red-600">Merry</span>{" "}
+                <span className="text-white drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">Christmas</span>{" "}
+                <span className="text-green-500 drop-shadow-[0_2px_4px_rgba(34,197,94,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-green-400 to-green-600">!</span> 🎄
+              </h2>
+              <p className="text-white/60 text-sm font-light mt-1 tracking-widest uppercase text-[10px]">Wishing you joy & peace</p>
+            </motion.div>
+          )}
 
           <div className="space-y-4">
             {isChrome ? <ChromeSearchBar /> : <SearchBar />}
