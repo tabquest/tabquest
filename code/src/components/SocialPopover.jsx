@@ -44,10 +44,23 @@ const SocialPopover = () => {
     return (
         <div className="relative inline-block">
             <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute -top-4 -left-4 text-3xl transform -rotate-12 z-20 filter drop-shadow-lg pointer-events-none"
+                initial={{ scale: 0, rotate: 0 }}
+                animate={{
+                    scale: 1,
+                    rotate: [0, -10, 10, -5, 5, 0]
+                }}
+                transition={{
+                    delay: 0.5,
+                    scale: { type: 'spring' },
+                    rotate: {
+                        delay: 1, // Wait for entry animation
+                        duration: 3,
+                        repeat: Infinity,
+                        repeatDelay: 2, // Pause between shakes
+                        ease: "easeInOut"
+                    }
+                }}
+                className="absolute -top-4 -left-4 text-3xl z-20 filter drop-shadow-lg pointer-events-none origin-bottom"
             >
                 🎅
             </motion.div>
