@@ -326,15 +326,22 @@ const SettingsPanel = () => {
                 </motion.div>
             )}
 
-            <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg z-40"
-            >
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Settings className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
-            </motion.button>
+            <AnimatePresence>
+                {!isOpen && (
+                    <motion.button
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setIsOpen(true)}
+                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg z-40"
+                    >
+                        <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <Settings className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
+                    </motion.button>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {isOpen && (
