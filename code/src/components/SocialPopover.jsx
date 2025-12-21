@@ -43,6 +43,14 @@ const SocialPopover = () => {
 
     return (
         <div className="relative inline-block">
+            <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: 'spring' }}
+                className="absolute -top-4 -left-4 text-3xl transform -rotate-12 z-20 filter drop-shadow-lg pointer-events-none"
+            >
+                🎅
+            </motion.div>
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
@@ -151,7 +159,7 @@ const SocialPopover = () => {
                                             </div>
                                         </motion.div>
                                     )
-            )}
+                            )}
                         </div>
                     </div>
 

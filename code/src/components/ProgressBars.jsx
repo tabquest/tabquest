@@ -28,9 +28,9 @@ const ProgressBars = () => {
     }, []);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-            {/* Left column - Progress bars */}
-            <div className="w-full md:w-[75%]">
+        <div className="w-full max-w-sm">
+            {/* Progress bars container */}
+            <div className="w-full">
                 <motion.div
                     className="space-y-6 py-4 mt-2 ml-2"
                     initial={{ opacity: 0 }}
@@ -71,17 +71,8 @@ const ProgressBars = () => {
                 </motion.div>
             </div>
 
-            {/* Center column - Weather/Additional Widgets */}
-            <div className="flex justify-center items-center my-auto">
-                {/* Uncomment to enable Weather widget */}
-                {/* <Weather /> */}
-            </div>
-
-            {/* Right column - Placeholder for additional content */}
-            <div className="text-gray-200">
-                {/* You can add more components here */}
-            </div>
         </div>
+
     );
 };
 

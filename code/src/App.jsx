@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import ChromeSearchBar from './components/ChromeSearchBar';
 import { checkDueReminders } from './services/reminderService';
 import { setTasks } from './utils/redux/taskSlice';
+import ChristmasSnowfall from './components/ChristmasSnowfall';
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -30,12 +31,12 @@ const AppContent = () => {
         title: `Task Reminder!`,
         body: task.title
       });
-      
+
       // Play notification sound
       const audio = new Audio('/notification.mp3');
-      audio.play().catch(() => {});
-      
-      const updatedTasks = tasks.map(t => 
+      audio.play().catch(() => { });
+
+      const updatedTasks = tasks.map(t =>
         t.id === task.id ? { ...t, reminderSent: true } : t
       );
       dispatch(setTasks(updatedTasks));
@@ -52,10 +53,11 @@ const AppContent = () => {
   return (
     <Provider store={store}>
       <VersionChecker />
-      <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen flex flex-col p-6 md:p-8">
-        
+      <ChristmasSnowfall />
+      <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen h-screen flex flex-col p-4 md:p-6 overflow-hidden relative">
+
         {/* Header Section */}
-        <div className="flex mt-4 justify-between"> {/* Reduced margin-top */}
+        <div className="flex mt-2 justify-between shrink-0 relative z-20">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -74,16 +76,40 @@ const AppContent = () => {
           </motion.div>
         </div>
 
-        {/* Main Content */}
+        {/* Progress Bars Section - Left Aligned */}
+        <div className="w-full px-2 relative z-10">
+          <ProgressBars />
+        </div>
+
+        {/* Main Content - Centered */}
         <motion.div
-          className="space-y-8 mt-4"
+          className="flex-1 flex flex-col justify-center gap-4 md:gap-6 relative z-10 max-w-4xl mx-auto w-full"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <ProgressBars />
-          {isChrome ? <ChromeSearchBar/> : <SearchBar />}
-          <BookmarkBar />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.6, type: "spring", stiffness: 100 }}
+            className="text-center py-2"
+          >
+            <h2
+              className="text-3xl md:text-5xl font-bold tracking-wide leading-tight"
+              style={{ fontFamily: "'Mountains of Christmas', cursive" }}
+            >
+              <span className="text-red-500 drop-shadow-[0_2px_4px_rgba(220,38,38,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-red-400 to-red-600">Merry</span>{" "}
+              <span className="text-white drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">Christmas</span>{" "}
+              <span className="text-green-500 drop-shadow-[0_2px_4px_rgba(34,197,94,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-green-400 to-green-600">!</span> 🎄
+            </h2>
+            <p className="text-white/60 text-sm font-light mt-1 tracking-widest uppercase text-[10px]">Wishing you joy & peace</p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {isChrome ? <ChromeSearchBar /> : <SearchBar />}
+            <BookmarkBar />
+          </div>
         </motion.div>
 
         {/* Footer */}
@@ -91,14 +117,14 @@ const AppContent = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="mt-4"
+          className="mt-auto shrink-0 relative z-20"
         >
           <SettingsPanel />
           <ToolsPanel />
         </motion.div>
       </div>
-      
-      <UINotification 
+
+      <UINotification
         notification={notification}
         onClose={() => setNotification(null)}
       />

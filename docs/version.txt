@@ -11,3 +11,5 @@
 1.0.5 - Enhancement: Added Google Lens Search & fixed minor bugs - window.open.repalce() in bookMark urls
 
 1.0.6 - Introduced Grid View in Bookmarks, enhanced Task Manager with notification timer, fixed storage issues, and added Markdown support in Notes.
+
+1.0.7 - 2025: Christmas Update
