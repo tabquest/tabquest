@@ -6,6 +6,9 @@ export const UPDATE_CHECK_API = "https://halithsmh-updatechecker.web.val.run";
 
 export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxMdCc6s4Ggnx4i1iNq_kVI_4XznCVAlahBC5nS-bSjB99XRoxfElx17aPdFyLAHbsl/exec";
 
+// Toggle for Christmas Features (Snow, Banner, Santa)
+export const CHRISTMAS_MODE = true;
+
 export const initialState = {
     userName: "user_name",
     userRole: "developer",

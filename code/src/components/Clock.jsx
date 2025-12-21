@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 const Clock = () => {
     const [time, setTime] = useState(new Date());
-    
+
     const hideSeconds = useSelector((state) => state.settings.hideSeconds);
     const use12Hour = useSelector((state) => state.settings.use12Hour);
 
@@ -34,7 +34,7 @@ const Clock = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
-            <h1 className="text-4xl sm:text-6xl font-semibold">
+            <h1 className="text-4xl sm:text-6xl font-semibold relative z-0">
                 <span className="text-green-400">{String(hours).padStart(2, '0')}</span>
                 <span className="animate-pulse font-normal">:</span>
                 <span>{String(time.getMinutes()).padStart(2, '0')}</span>

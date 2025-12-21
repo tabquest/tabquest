@@ -11,3 +11,5 @@
 1.0.5 - Enhancement: Added Google Lens Search & fixed minor bugs - window.open.repalce() in bookMark urls
 
 1.0.6 - Introduced Grid View in Bookmarks, enhanced Task Manager with notification timer, fixed storage issues, and added Markdown support in Notes.
+
+1.0.7 - Christmas Edition 🎄: Added festive Snowfall effect, "Merry Christmas" banner, and animated Santa icon (all toggleable via Christmas Mode). Introduced smart Feedback Prompt with reminders. Enhanced UX with auto-hiding settings icon and layout refinements.

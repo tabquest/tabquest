@@ -29,6 +29,10 @@ const FeedbackForm = ({ isOpen, onClose }) => {
         try {
             await fetch(FEEDBACK_FORM_API, { method: 'POST', body: formData });
             setAlert({ type: 'success', message: 'Feedback submitted successfully!' });
+
+            // Mark feedback as submitted
+            localStorage.setItem('tabquest_feedback_submitted', 'true');
+
             setTimeout(() => {
                 onClose();
                 setRating(0);
