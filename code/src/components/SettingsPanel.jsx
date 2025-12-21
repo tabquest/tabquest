@@ -33,6 +33,47 @@ const SettingsPanel = () => {
 
     // Feedback Form Popup
     const [isFeedbackPopup, setIsFeedbackPopup] = useState(false);
+    const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
+    const [isHighlightingFeedback, setIsHighlightingFeedback] = useState(false);
+
+    useEffect(() => {
+        const hasSubmitted = localStorage.getItem('tabquest_feedback_submitted');
+
+        if (!hasSubmitted) {
+            const lastShown = localStorage.getItem('tabquest_feedback_last_shown');
+            const now = Date.now();
+            // Show roughly twice a week (every 3.5 days = 302400000ms)
+            // Using 3.5 days ensures it doesn't feel spammy
+            const REMINDER_INTERVAL = 3.5 * 24 * 60 * 60 * 1000;
+
+            if (!lastShown || (now - parseInt(lastShown) > REMINDER_INTERVAL)) {
+                setShowFeedbackPrompt(true);
+                localStorage.setItem('tabquest_feedback_last_shown', now.toString());
+            } else {
+                setShowFeedbackPrompt(false);
+            }
+        } else {
+            setShowFeedbackPrompt(false);
+        }
+    }, [isOpen]); // Re-check when panel closes
+
+    const handlePromptClick = () => {
+        setIsOpen(true);
+        setIsHighlightingFeedback(true);
+
+        // Wait for panel to open and render
+        setTimeout(() => {
+            const btn = document.getElementById('feedback-btn');
+            if (btn) {
+                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+
+        // Turn off highlight after animation
+        setTimeout(() => {
+            setIsHighlightingFeedback(false);
+        }, 3000);
+    };
 
     // Reset form state when settings change
     useEffect(() => {
@@ -263,11 +304,33 @@ const SettingsPanel = () => {
                 />
             )}
 
+            {showFeedbackPrompt && !isOpen && (
+                <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ delay: 1, type: "spring" }}
+                    className="fixed bottom-20 right-6 z-40 flex flex-col items-center gap-2 cursor-pointer group"
+                    onClick={handlePromptClick}
+                >
+                    <div className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity absolute right-12 top-1/2 -translate-y-1/2">
+                        Give Feedback
+                    </div>
+                    <motion.div
+                        animate={{ y: [0, -8, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }}
+                        className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-white/20 hover:bg-purple-500 transition-colors"
+                    >
+                        <span className="text-xl">👋</span>
+                    </motion.div>
+                </motion.div>
+            )}
+
             <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg"
+                className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg z-40"
             >
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <Settings className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
@@ -586,14 +649,24 @@ const SettingsPanel = () => {
 
                                         {/* Feedback submit btn */}
                                         <motion.a
+                                            id="feedback-btn"
                                             onClick={() => setIsFeedbackPopup(true)}
                                             rel="noopener noreferrer"
                                             initial={{ y: 20, opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ delay: 0.5 }}
+                                            animate={{
+                                                y: 0,
+                                                opacity: 1,
+                                                scale: isHighlightingFeedback ? [1, 1.05, 1, 1.05, 1] : 1,
+                                                borderColor: isHighlightingFeedback ? ['rgba(147, 51, 234, 0.3)', 'rgba(255, 255, 255, 0.8)', 'rgba(147, 51, 234, 0.3)'] : 'rgba(147, 51, 234, 0.3)'
+                                            }}
+                                            transition={{
+                                                delay: 0.5,
+                                                scale: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 },
+                                                borderColor: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 }
+                                            }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className="w-full px-4 py-3 rounded-xl bg-purple-800/20 text-white/90 hover:text-white border border-purple-800/30 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                            className={`w-full px-4 py-3 rounded-xl bg-purple-800/20 text-white/90 hover:text-white border ${isHighlightingFeedback ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'border-purple-800/30'} hover:border-white/20 flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300`}
                                         >
                                             <Send className="w-5 h-5 text-white/70 group-hover:text-white" />
                                             Submit Feedback
