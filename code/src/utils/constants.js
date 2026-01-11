@@ -7,7 +7,10 @@ export const UPDATE_CHECK_API = "https://halithsmh-updatechecker.web.val.run";
 export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxMdCc6s4Ggnx4i1iNq_kVI_4XznCVAlahBC5nS-bSjB99XRoxfElx17aPdFyLAHbsl/exec";
 
 // Toggle for Christmas Features (Snow, Banner, Santa)
-export const CHRISTMAS_MODE = true;
+export const CHRISTMAS_MODE = false;
+
+// Show roughly twice a week (every 2.5 days = 216000000ms)
+export const FEEDBACK_PROMPT_INTERVAL = 2.5 * 24 * 60 * 60 * 1000;
 
 export const initialState = {
     userName: "user_name",

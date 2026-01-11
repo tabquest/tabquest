@@ -14,7 +14,7 @@ import {
     updateSocialProfiles,
     updateBookmarks
 } from '../utils/redux/settingsSlice';
-import { initialState } from '../utils/constants';
+import { FEEDBACK_PROMPT_INTERVAL, initialState } from '../utils/constants';
 import useExtensionVersion from '../utils/hooks/useExtensionVersion';
 
 import { APP_VERSION } from '../utils/version';
@@ -42,11 +42,8 @@ const SettingsPanel = () => {
         if (!hasSubmitted) {
             const lastShown = localStorage.getItem('tabquest_feedback_last_shown');
             const now = Date.now();
-            // Show roughly twice a week (every 3.5 days = 302400000ms)
-            // Using 3.5 days ensures it doesn't feel spammy
-            const REMINDER_INTERVAL = 3.5 * 24 * 60 * 60 * 1000;
 
-            if (!lastShown || (now - parseInt(lastShown) > REMINDER_INTERVAL)) {
+            if (!lastShown || (now - parseInt(lastShown) > FEEDBACK_PROMPT_INTERVAL)) {
                 setShowFeedbackPrompt(true);
                 localStorage.setItem('tabquest_feedback_last_shown', now.toString());
             } else {
@@ -310,19 +307,21 @@ const SettingsPanel = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ delay: 1, type: "spring" }}
-                    className="fixed bottom-20 right-6 z-40 flex flex-col items-center gap-2 cursor-pointer group"
-                    onClick={handlePromptClick}
+                    className="fixed bottom-20 right-6 z-40"
                 >
-                    <div className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity absolute right-12 top-1/2 -translate-y-1/2">
-                        Give Feedback
-                    </div>
-                    <motion.div
-                        animate={{ y: [0, -8, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }}
-                        className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center shadow-lg shadow-purple-600/30 border border-white/20 hover:bg-purple-500 transition-colors"
+                    <motion.button
+                        onClick={handlePromptClick}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{
+                            y: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }
+                        }}
+                        className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-full shadow-lg shadow-purple-600/30 border border-white/20 transition-all font-medium"
                     >
-                        <span className="text-xl">👋</span>
-                    </motion.div>
+                        <span className="text-lg">👋</span>
+                        <span className="text-sm">Feedback</span>
+                    </motion.button>
                 </motion.div>
             )}
 

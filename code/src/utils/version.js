@@ -1,6 +1,7 @@
-export const APP_VERSION = "1.0.7";
+export const APP_VERSION = "1.0.8";
 
 export const VERSION_NOTES = {
+  "1.0.8": "Optimized performance",
   "1.0.7": "Christmas Edition 🎄",
   "1.0.6": "Introduced Grid View in Bookmarks, enhanced Task Manager with notification timer, fixed storage issues, and added Markdown support in Notes.",
   "1.0.5": "Added Google Lens Search & fixed minor bugs",
