@@ -37,7 +37,7 @@
         "framer-motion": "^12.27.4",
         "lucide-react": "^0.575.0",
         "prompts": "^2.4.2",
-        "react": "^18.3.1",
+        "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-icons": "^5.4.0",
         "react-markdown": "^10.1.0",
