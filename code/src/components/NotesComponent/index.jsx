@@ -249,7 +249,7 @@ const NotesComponent = () => {
     return (
         <div className="h-full flex flex-col">
             {/* Fixed header */}
-            <div style={{ backgroundColor: 'rgb(14 26 28)' }} className="sticky top-0 z-30 rounded-lg p-4">
+            <div className="sticky top-0 z-30 rounded-lg p-4 bg-black/20 border border-white/10 backdrop-blur-md">
 
                 <div className="flex items-center gap-4">
                     <motion.button

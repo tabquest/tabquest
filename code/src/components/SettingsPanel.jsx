@@ -12,7 +12,8 @@ import {
     updateUserInfo,
     updateSearchPreferences,
     updateSocialProfiles,
-    updateBookmarks
+    updateBookmarks,
+    updateTheme
 } from '../utils/redux/settingsSlice';
 import { FEEDBACK_PROMPT_INTERVAL, initialState } from '../utils/constants';
 import useExtensionVersion from '../utils/hooks/useExtensionVersion';
@@ -21,6 +22,40 @@ import { APP_VERSION } from '../utils/version';
 import { FeedbackForm } from '../features';
 
 const SettingsPanel = () => {
+    const themeOptions = [
+        {
+            key: 'midnight_default',
+            label: 'Midnight',
+            isDefault: true,
+            preview: 'from-gray-800 via-gray-900 to-gray-950'
+        },
+        {
+            key: 'slate_ocean',
+            label: 'Slate Ocean',
+            preview: 'from-slate-800 via-slate-900 to-gray-950'
+        },
+        {
+            key: 'evergreen_slate',
+            label: 'Evergreen',
+            preview: 'from-emerald-900 via-slate-900 to-gray-950'
+        },
+        {
+            key: 'graphite_navy',
+            label: 'Graphite Navy',
+            preview: 'from-zinc-800 via-slate-900 to-gray-950'
+        },
+        {
+            key: 'blue_ink',
+            label: 'Blue Ink',
+            preview: 'from-blue-900 via-slate-900 to-gray-950'
+        },
+        {
+            key: 'amber_slate',
+            label: 'Amber Slate',
+            preview: 'from-amber-900 via-stone-900 to-gray-950'
+        }
+    ];
+
     const [isOpen, setIsOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dispatch = useDispatch();
@@ -113,6 +148,7 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
+                    formState.theme !== settings.theme ||
                     formState.hideSeconds !== settings.hideSeconds ||
                     formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
@@ -142,6 +178,7 @@ const SettingsPanel = () => {
                     formState.userPortfolioUrl !== settings.userPortfolioUrl ||
                     formState.searchEngine !== settings.searchEngine ||
                     formState.weatherLocation !== settings.weatherLocation ||
+                    formState.theme !== settings.theme ||
                     formState.hideSeconds !== settings.hideSeconds ||
                     formState.use12Hour !== settings.use12Hour ||
                     JSON.stringify(formState.socialProfiles) !== JSON.stringify(settings.socialProfiles) ||
@@ -211,6 +248,7 @@ const SettingsPanel = () => {
             hideSeconds: formState.hideSeconds || false,
             use12Hour: formState.use12Hour || false
         }));
+        dispatch(updateTheme(formState.theme || settings.theme || initialState.theme));
 
         if (formState.socialProfiles) {
             dispatch(updateSocialProfiles(formState.socialProfiles));
@@ -248,6 +286,7 @@ const SettingsPanel = () => {
             hideSeconds: formState.hideSeconds,
             use12Hour: formState.use12Hour
         }));
+        dispatch(updateTheme(formState.theme || initialState.theme));
         dispatch(updateSocialProfiles(formState.socialProfiles));
         dispatch(updateBookmarks(formState.bookmarks));
         setIsOpen(false);
@@ -262,8 +301,11 @@ const SettingsPanel = () => {
         }));
         dispatch(updateSearchPreferences({
             searchEngine: initialState.searchEngine,
-            weatherLocation: initialState.weatherLocation
+            weatherLocation: initialState.weatherLocation,
+            hideSeconds: initialState.hideSeconds,
+            use12Hour: initialState.use12Hour
         }));
+        dispatch(updateTheme(initialState.theme));
         dispatch(updateSocialProfiles(initialState.socialProfiles));
         dispatch(updateBookmarks(initialState.bookmarks));
     };
@@ -484,6 +526,42 @@ const SettingsPanel = () => {
                                                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
                                                 />
                                             </div>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Theme Preferences */}
+                                    <motion.div
+                                        initial={{ y: 20, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        transition={{ delay: 0.12 }}
+                                        className="space-y-3"
+                                    >
+                                        <h3 className="text-sm font-medium text-white/70">Theme</h3>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {themeOptions.map((theme) => {
+                                                const isSelected = (formState.theme || initialState.theme) === theme.key;
+                                                return (
+                                                    <button
+                                                        key={theme.key}
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setFormState({ ...formState, theme: theme.key });
+                                                            dispatch(updateTheme(theme.key));
+                                                        }}
+                                                        className={`rounded-xl border p-2 transition-all ${isSelected ? 'border-emerald-400/60 bg-white/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                                                    >
+                                                        <div className={`h-9 w-full rounded-md bg-gradient-to-r ${theme.preview}`} />
+                                                        <p className="mt-1 text-xs text-white/80 flex items-center justify-center gap-1.5">
+                                                            {theme.label}
+                                                            {theme.isDefault && (
+                                                                <span className="px-0.5 rounded bg-green-500/20 text-green-300 border border-green-400/30 text-[9px]">
+                                                                    Default
+                                                                </span>
+                                                            )}
+                                                        </p>
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </motion.div>
 

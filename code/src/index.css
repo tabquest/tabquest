@@ -34,3 +34,94 @@ body::-webkit-scrollbar {
 .custom-scrollbar {
     scroll-behavior: smooth;
 }
+
+/* App-wide non-default theme tokens */
+.tabquest-app[data-theme="slate_ocean"] {
+    --t-surface-1: rgba(8, 12, 20, 0.42);
+    --t-surface-2: rgba(13, 20, 32, 0.48);
+    --t-surface-3: rgba(46, 72, 104, 0.14);
+    --t-border-1: rgba(165, 188, 218, 0.2);
+    --t-border-2: rgba(186, 205, 231, 0.3);
+    --t-text-1: rgba(241, 247, 255, 0.96);
+    --t-text-2: rgba(219, 229, 244, 0.88);
+}
+
+.tabquest-app[data-theme="evergreen_slate"] {
+    --t-surface-1: rgba(9, 14, 18, 0.43);
+    --t-surface-2: rgba(15, 24, 26, 0.5);
+    --t-surface-3: rgba(52, 91, 82, 0.14);
+    --t-border-1: rgba(163, 201, 191, 0.2);
+    --t-border-2: rgba(188, 220, 211, 0.3);
+    --t-text-1: rgba(243, 248, 246, 0.96);
+    --t-text-2: rgba(218, 231, 227, 0.88);
+}
+
+.tabquest-app[data-theme="graphite_navy"] {
+    --t-surface-1: rgba(14, 18, 28, 0.43);
+    --t-surface-2: rgba(22, 29, 42, 0.51);
+    --t-surface-3: rgba(70, 84, 106, 0.14);
+    --t-border-1: rgba(171, 184, 206, 0.2);
+    --t-border-2: rgba(196, 206, 224, 0.3);
+    --t-text-1: rgba(239, 244, 250, 0.96);
+    --t-text-2: rgba(215, 223, 236, 0.88);
+}
+
+.tabquest-app[data-theme="blue_ink"] {
+    --t-surface-1: rgba(10, 16, 30, 0.43);
+    --t-surface-2: rgba(16, 25, 44, 0.5);
+    --t-surface-3: rgba(62, 88, 141, 0.14);
+    --t-border-1: rgba(162, 186, 224, 0.2);
+    --t-border-2: rgba(186, 206, 235, 0.3);
+    --t-text-1: rgba(236, 243, 255, 0.96);
+    --t-text-2: rgba(213, 225, 244, 0.88);
+}
+
+.tabquest-app[data-theme="amber_slate"] {
+    --t-surface-1: rgba(20, 16, 12, 0.42);
+    --t-surface-2: rgba(31, 24, 18, 0.5);
+    --t-surface-3: rgba(98, 76, 46, 0.14);
+    --t-border-1: rgba(208, 188, 158, 0.2);
+    --t-border-2: rgba(224, 204, 176, 0.3);
+    --t-text-1: rgba(248, 243, 236, 0.97);
+    --t-text-2: rgba(228, 216, 200, 0.88);
+}
+
+/* Recolor the shared glass/panel styles for non-default themes */
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="bg-black/40"] {
+    background-color: var(--t-surface-1) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="bg-black/20"] {
+    background-color: var(--t-surface-2) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="bg-white/5"] {
+    background-color: color-mix(in srgb, var(--t-surface-3) 45%, transparent) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="bg-white/10"] {
+    background-color: color-mix(in srgb, var(--t-surface-3) 65%, transparent) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="bg-white/20"] {
+    background-color: color-mix(in srgb, var(--t-surface-3) 85%, transparent) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="border-white/10"] {
+    border-color: var(--t-border-1) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="border-white/20"] {
+    border-color: var(--t-border-2) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="text-white/90"],
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="text-white/80"],
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="text-white/70"],
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class*="text-white/60"] {
+    color: var(--t-text-2) !important;
+}
+
+.tabquest-app[data-theme]:not([data-theme="midnight_default"]) [class~="text-white"] {
+    color: var(--t-text-1) !important;
+}

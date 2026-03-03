@@ -1,6 +1,7 @@
-export const APP_VERSION = "1.0.8";
+export const APP_VERSION = "1.0.9";
 
 export const VERSION_NOTES = {
+  "1.0.9": "Fresh themes and improved visual consistency. Open Settings and try it now.",
   "1.0.8": "Optimized performance",
   "1.0.7": "Christmas Edition 🎄",
   "1.0.6": "Introduced Grid View in Bookmarks, enhanced Task Manager with notification timer, fixed storage issues, and added Markdown support in Notes.",
