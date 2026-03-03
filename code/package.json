@@ -43,5 +43,8 @@
         "react-icons": "^5.4.0",
         "react-markdown": "^10.1.0",
         "react-redux": "^9.2.0"
+    },
+    "volta": {
+        "node": "24.14.0"
     }
 }
