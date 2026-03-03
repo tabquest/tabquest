@@ -34,7 +34,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "^2.11.2",
         "@tailwindcss/typography": "^0.5.19",
-        "framer-motion": "^12.34.3",
+        "framer-motion": "^12.34.4",
         "lucide-react": "^0.576.0",
         "prompts": "^2.4.2",
         "react": "^19.2.4",
