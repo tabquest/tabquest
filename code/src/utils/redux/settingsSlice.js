@@ -20,11 +20,11 @@ const saveToLocalStorage = (state) => {
     }
 };
 
-// Initial state
-const initialState = loadFromLocalStorage() || {
+const defaultSettings = {
     userName: "user_name",
     userRole: "developer",
     userPortfolioUrl: "",
+    theme: "midnight_default",
     searchEngine: "Google",
     weatherLocation: "Chennai",
     hideSeconds: false,
@@ -49,6 +49,24 @@ const initialState = loadFromLocalStorage() || {
     ],
 };
 
+const themeAliases = {
+    ocean_mist: "slate_ocean",
+    forest_night: "evergreen_slate",
+    sunset_glow: "amber_slate",
+    aurora_bloom: "blue_ink",
+    graphite_steel: "graphite_navy",
+};
+
+// Initial state
+const initialState = {
+    ...defaultSettings,
+    ...(loadFromLocalStorage() || {}),
+};
+
+if (initialState.theme && themeAliases[initialState.theme]) {
+    initialState.theme = themeAliases[initialState.theme];
+}
+
 const settingsSlice = createSlice({
     name: "settings",
     initialState,
@@ -64,8 +82,8 @@ const settingsSlice = createSlice({
             const { searchEngine, weatherLocation } = action.payload;
             state.searchEngine = searchEngine;
             state.weatherLocation = weatherLocation;
-            state.hideSeconds = action.payload.hideSeconds;
-            state.use12Hour = action.payload.use12Hour;
+            state.hideSeconds = action.payload.hideSeconds ?? state.hideSeconds;
+            state.use12Hour = action.payload.use12Hour ?? state.use12Hour;
             saveToLocalStorage(state);
         },
         updateSocialProfiles: (state, action) => {
@@ -79,6 +97,10 @@ const settingsSlice = createSlice({
             state.bookmarks = action.payload;
             saveToLocalStorage(state);
         },
+        updateTheme: (state, action) => {
+            state.theme = action.payload || defaultSettings.theme;
+            saveToLocalStorage(state);
+        },
     },
 });
 
@@ -87,6 +109,7 @@ export const {
     updateSearchPreferences,
     updateSocialProfiles,
     updateBookmarks,
+    updateTheme,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

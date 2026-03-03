@@ -16,6 +16,7 @@ export const initialState = {
     userName: "user_name",
     userRole: "developer",
     userPortfolioUrl: "",
+    theme: "midnight_default",
     searchEngine: "Google",
     weatherLocation: "Chennai",
     hideSeconds: false,

@@ -22,7 +22,27 @@ import { CHRISTMAS_MODE } from './utils/constants';
 const AppContent = () => {
   const dispatch = useDispatch();
   const { tasks } = useSelector(state => state.tasks);
+  const selectedTheme = useSelector(state => state.settings.theme) || 'midnight_default';
   const [notification, setNotification] = useState(null);
+
+  const legacyThemeAlias = {
+    ocean_mist: 'slate_ocean',
+    forest_night: 'evergreen_slate',
+    sunset_glow: 'amber_slate',
+    aurora_bloom: 'blue_ink',
+    graphite_steel: 'graphite_navy'
+  };
+
+  const resolvedTheme = legacyThemeAlias[selectedTheme] || selectedTheme;
+
+  const themeClasses = {
+    midnight_default: 'bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950',
+    slate_ocean: 'bg-gradient-to-b from-slate-800 via-slate-900 to-gray-950',
+    evergreen_slate: 'bg-gradient-to-b from-emerald-900 via-slate-900 to-gray-950',
+    graphite_navy: 'bg-gradient-to-b from-zinc-800 via-slate-900 to-gray-950',
+    blue_ink: 'bg-gradient-to-b from-blue-900 via-slate-900 to-gray-950',
+    amber_slate: 'bg-gradient-to-b from-amber-900 via-stone-900 to-gray-950'
+  };
 
   useEffect(() => {
     const dueReminders = checkDueReminders(tasks);
@@ -55,7 +75,10 @@ const AppContent = () => {
     <Provider store={store}>
       <VersionChecker />
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
-      <div className="bg-gradient-to-b from-gray-800 via-gray-900 to-gray-950 text-white min-h-screen h-screen flex flex-col p-4 md:p-6 overflow-hidden relative">
+      <div
+        data-theme={resolvedTheme}
+        className={`tabquest-app ${themeClasses[resolvedTheme] || themeClasses.midnight_default} text-white min-h-screen h-screen flex flex-col p-4 md:p-6 overflow-hidden relative`}
+      >
 
         {/* Header Section */}
         <div className="flex mt-2 justify-between shrink-0 relative z-20">
