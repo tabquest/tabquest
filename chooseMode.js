@@ -70,7 +70,7 @@ async function prepareManifest(browser) {
   try {
     await prepareManifest(browser);
 
-    const command = 'npx';
+    const command = 'pnpm';
     const args = action === 'dev' 
       ? ['vite', '--mode', browser, '--host', '--open'] 
       : ['vite', 'build', '--mode', browser];
@@ -79,7 +79,7 @@ async function prepareManifest(browser) {
 
     const child = spawn(command, args, {
       stdio: 'inherit',
-      shell: true,
+      shell: false,
       env: {
         ...process.env,
         VITE_BROWSER: browser
