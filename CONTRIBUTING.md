@@ -4,8 +4,6 @@ We welcome contributions from the open-source community! Whether you want to fix
 
 ## Development Setup
 
-Tabquest is structured as a pnpm monorepo. 
-
 ### Prerequisites
 - Node.js >= 18
 - [pnpm](https://pnpm.io/installation) >= 9
@@ -24,7 +22,7 @@ Tabquest is structured as a pnpm monorepo.
    ```
 4. **Run the extension in development mode**:
    ```bash
-   pnpm dev:extension
+   pnpm dev
    ```
 
 ### Making Changes

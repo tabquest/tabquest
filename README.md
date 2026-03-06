@@ -1,34 +1,33 @@
-# Tabquest
+# TabQuest: Open Source Browser Extension
 
-Tabquest is an open-source productivity monorepo designed to help you manage bookmarks, tasks, and notes with a clean and customizable interface.
+TabQuest is a productivity-focused **Open Source Browser Extension** designed to help you manage bookmarks, tasks, and notes with a clean and customizable interface.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Project Structure
+## Getting Started
 
-This project is a `pnpm` monorepo containing multiple packages:
-- `extension/` - The core Chrome/Firefox/Edge browser extension.
-- `web/` - Web dashboard (Coming soon).
-- `api/` - Backend services (Coming soon).
-
-## Development
-
-First, install dependencies from the root:
+First, install dependencies:
 ```bash
   pnpm install
 ```
 
-To start the extension development server, run:
+To start the development server:
 ```bash
-  pnpm dev:extension
+  pnpm dev
 ```
 
 ## Build
 
-To create a production build for the extension:
+To create a production build for Chrome, Firefox, or Edge:
 
 ```bash
-  pnpm build:extension
+  pnpm build
+```
+
+Individual platform builds:
+```bash
+  pnpm build:chrome
+  pnpm build:firefox_edge
 ```
 
 ## Features
