@@ -1,7 +1,6 @@
 {
-    "name": "tabquest",
+    "name": "extension",
     "version": "1.0.9",
-    "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
     "type": "module",
     "scripts": {
         "dev": "node chooseMode.js dev --host --open",
@@ -14,8 +13,6 @@
         "test:chrome": "node test",
         "test:firefox_edge": "node test"
     },
-    "author": "Mohamed Halith",
-    "license": "ISC",
     "devDependencies": {
         "@babel/core": "^7.28.6",
         "@babel/preset-env": "^7.29.0",
@@ -44,8 +41,5 @@
         "react-icons": "^5.4.0",
         "react-markdown": "^10.1.0",
         "react-redux": "^9.2.0"
-    },
-    "volta": {
-        "node": "24.14.0"
     }
 }

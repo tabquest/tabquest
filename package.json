@@ -1,0 +1,17 @@
+{
+  "name": "tabquest",
+  "description": "TabQuest: A productivity-focused extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
+  "scripts": {
+    "dev:extension": "pnpm -F extension dev",
+    "build:extension": "pnpm -F extension build",
+    "test:extension": "pnpm -F extension test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "volta": {
+    "node": "24.14.0",
+    "pnpm": "10.30.3"
+  }
+}
