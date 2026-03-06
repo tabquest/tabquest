@@ -5,14 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "node chooseMode.js dev --host --open",
-    "dev:chrome": "vite --mode chrome --host --open",
-    "dev:firefox_edge": "vite --mode firefox_edge --host --open",
+    "dev:chrome": "node scripts/prepare-manifest.js chrome && vite --mode chrome --host --open",
+    "dev:edge": "node scripts/prepare-manifest.js edge && vite --mode edge --host --open",
+    "dev:firefox": "node scripts/prepare-manifest.js firefox && vite --mode firefox --host --open",
     "build": "node chooseMode.js build",
-    "build:chrome": "vite build --mode chrome",
-    "build:firefox_edge": "vite build --mode firefox_edge",
+    "build:chrome": "node scripts/prepare-manifest.js chrome && vite build --mode chrome",
+    "build:edge": "node scripts/prepare-manifest.js edge && vite build --mode edge",
+    "build:firefox": "node scripts/prepare-manifest.js firefox && vite build --mode firefox",
     "test": "node test",
     "test:chrome": "node test",
-    "test:firefox_edge": "node test"
+    "test:firefox": "node test"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",

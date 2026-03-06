@@ -43,24 +43,24 @@ jobs:
           cd release-assets/chrome
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_chrome_build.zip" .
 
-      - name: Build Firefox/Edge package
-        run: pnpm build:firefox_edge
+      - name: Build Firefox package
+        run: pnpm build:firefox
 
-      - name: Package Firefox and Edge ZIPs
+      - name: Package Firefox ZIP
         run: |
           mkdir -p release-assets/firefox
-          mkdir -p release-assets/edge
           cp -r dist/* release-assets/firefox/
-          cp -r dist/* release-assets/edge/
-
-          # Following legacy removal logic from original release.yml
-          rm -f release-assets/firefox/manifest.json release-assets/firefox/background.js
-          rm -f release-assets/edge/manifest.json release-assets/edge/background.js
-
+          # Custom removal logic for Firefox if needed
           cd release-assets/firefox
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_firefox_build.zip" .
-          
-          cd ../../
+
+      - name: Build Edge package
+        run: pnpm build:edge
+
+      - name: Package Edge ZIP
+        run: |
+          mkdir -p release-assets/edge
+          cp -r dist/* release-assets/edge/
           cd release-assets/edge
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip" .
 

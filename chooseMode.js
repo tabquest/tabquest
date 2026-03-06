@@ -8,7 +8,8 @@ const questions = [
         message: 'Choose a mode:',
         choices: [
             { title: 'Chrome', value: 'chrome' },
-            { title: 'Firefox Edge', value: 'firefox_edge' }
+            { title: 'Edge', value: 'edge' },
+            { title: 'Firefox', value: 'firefox' }
         ]
     }
 ];
