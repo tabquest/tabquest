@@ -4,14 +4,11 @@
   "description": "TabQuest: A productivity-focused Open Source Browser extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
   "type": "module",
   "scripts": {
-    "dev": "node chooseMode.js dev --host --open",
-    "dev:chrome": "node scripts/prepare-manifest.js chrome && vite --mode chrome --host --open",
-    "dev:edge": "node scripts/prepare-manifest.js edge && vite --mode edge --host --open",
-    "dev:firefox": "node scripts/prepare-manifest.js firefox && vite --mode firefox --host --open",
+    "dev": "node chooseMode.js dev",
     "build": "node chooseMode.js build",
-    "build:chrome": "node scripts/prepare-manifest.js chrome && vite build --mode chrome",
-    "build:edge": "node scripts/prepare-manifest.js edge && vite build --mode edge",
-    "build:firefox": "node scripts/prepare-manifest.js firefox && vite build --mode firefox",
+    "build:chrome": "node chooseMode.js build chrome",
+    "build:edge": "node chooseMode.js build edge",
+    "build:firefox": "node chooseMode.js build firefox",
     "test": "node test",
     "test:chrome": "node test",
     "test:firefox": "node test"
