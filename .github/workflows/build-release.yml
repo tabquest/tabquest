@@ -64,6 +64,10 @@ jobs:
           cd release-assets/edge
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip" .
 
+      - name: Package Source Code (for Firefox review)
+        run: |
+          zip -r "TabQuest_v${{ steps.version.outputs.value }}_source.zip" . -x "node_modules/*" ".git/*" "dist/*" "release-assets/*" "*.zip" ".vscode/*" ".editorconfig" ".gitignore"
+
       - name: Create or Update GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -76,4 +80,5 @@ jobs:
             TabQuest_v${{ steps.version.outputs.value }}_chrome_build.zip
             TabQuest_v${{ steps.version.outputs.value }}_firefox_build.zip
             TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
+            TabQuest_v${{ steps.version.outputs.value }}_source.zip
           token: ${{ secrets.GITHUB_TOKEN }}
