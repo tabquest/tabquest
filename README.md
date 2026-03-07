@@ -1,25 +1,33 @@
-# TabQuest
+# TabQuest: Open Source Browser Extension
 
-TabQuest is a productivity-focused extension designed to help you manage bookmarks, tasks, and notes with a clean and customizable interface.
+TabQuest is a productivity-focused **Open Source Browser Extension** designed to help you manage bookmarks, tasks, and notes with a clean and customizable interface.
 
-## Development
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Getting Started
+
+First, install dependencies:
 ```bash
-  cd code
+  pnpm install
 ```
 
-To start the development server run:
-
+To start the development server:
 ```bash
-  npm run dev
+  pnpm dev
 ```
 
 ## Build
 
-Create production build, run:
+To create a production build for Chrome, Firefox, or Edge:
 
 ```bash
-  npm run build
+  pnpm build
+```
+
+Individual platform builds:
+```bash
+  pnpm build:chrome
+  pnpm build:firefox_edge
 ```
 
 ## Features
@@ -39,3 +47,10 @@ Create production build, run:
 **Client:** React, Redux, TailwindCSS, Vite, Framer-motion
 
 
+## Contributing
+
+Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to learn how you can help!
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

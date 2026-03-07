@@ -1,9 +1,9 @@
-name: Build And Release Extensions
+name: Build and Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 permissions:
   contents: write
@@ -20,46 +20,53 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
-          cache-dependency-path: code/package-lock.json
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.3
 
       - name: Install dependencies
-        run: npm ci
-        working-directory: code
+        run: pnpm install --frozen-lockfile
 
       - name: Read package version
         id: version
         run: echo "value=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
-        working-directory: code
 
       - name: Build Chrome package
-        run: npm run build:chrome
-        working-directory: code
+        run: pnpm build:chrome
 
       - name: Package Chrome ZIP
         run: |
-          mkdir -p release-assets
-          cp -r code/dist "release-assets/chrome"
+          mkdir -p release-assets/chrome
+          cp -r dist/* release-assets/chrome/
           cd release-assets/chrome
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_chrome_build.zip" .
 
-      - name: Build Firefox/Edge package
-        run: npm run build:firefox_edge
-        working-directory: code
+      - name: Build Firefox package
+        run: pnpm build:firefox
 
-      - name: Package Firefox and Edge ZIPs
+      - name: Package Firefox ZIP
         run: |
-          rm -rf release-assets/firefox release-assets/edge
-          cp -r code/dist "release-assets/firefox"
-          cp -r code/dist "release-assets/edge"
-
-          rm -f release-assets/firefox/manifest.json release-assets/firefox/background.js
-          rm -f release-assets/edge/manifest.json release-assets/edge/background.js
-
+          mkdir -p release-assets/firefox
+          cp -r dist/* release-assets/firefox/
+          # Custom removal logic for Firefox if needed
           cd release-assets/firefox
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_firefox_build.zip" .
-          cd ../edge
+
+      - name: Build Edge package
+        run: pnpm build:edge
+
+      - name: Package Edge ZIP
+        run: |
+          mkdir -p release-assets/edge
+          cp -r dist/* release-assets/edge/
+          cd release-assets/edge
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip" .
+
+      - name: Package Source Code (for Firefox review)
+        run: |
+          zip -r "TabQuest_v${{ steps.version.outputs.value }}_source.zip" . -x "node_modules/*" ".git/*" "dist/*" "release-assets/*" "*.zip" ".vscode/*" ".editorconfig" ".gitignore"
 
       - name: Create or Update GitHub Release
         uses: ncipollo/release-action@v1
@@ -73,3 +80,5 @@ jobs:
             TabQuest_v${{ steps.version.outputs.value }}_chrome_build.zip
             TabQuest_v${{ steps.version.outputs.value }}_firefox_build.zip
             TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
+            TabQuest_v${{ steps.version.outputs.value }}_source.zip
+          token: ${{ secrets.GITHUB_TOKEN }}

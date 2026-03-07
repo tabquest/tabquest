@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-blue-600: #2563eb;
+  --color-blue-800: #1e3a8a;
+}
+
 
 html {
     user-select: none;

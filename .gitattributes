@@ -1,0 +1,30 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Code files
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+*.css linguist-language=CSS
+*.html linguist-language=HTML
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.json linguist-language=JSON
+
+# Mark markdown files as docs
+*.md linguist-documentation text eol=lf
+
+# Enforce LF for all code files to prevent Windows CRLF issues
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.mjs text eol=lf
+
+# Ignore certain files from GitHub language statistics
+package-lock.json linguist-generated
+pnpm-lock.yaml linguist-generated
