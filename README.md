@@ -4,6 +4,10 @@ TabQuest is a productivity-focused **Open Source Browser Extension** designed to
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+<div align="center">
+  <img src=".github/assets/preview.png" alt="TabQuest Preview" width="100%" />
+</div>
+
 ## Getting Started
 
 First, install dependencies:
