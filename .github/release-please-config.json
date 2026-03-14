@@ -2,7 +2,24 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "tabquest"
+      "package-name": "tabquest",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "manifests/manifest.chrome.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "manifests/manifest.edge.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "manifests/manifest.firefox.json",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }
