@@ -53,7 +53,7 @@ const ChromeSearchBar = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-10"
+                        className="fixed inset-0 z-50"
                         style={{
                             backgroundColor: 'rgba(0,0,0,.20)',
                             backdropFilter: 'blur(12px)',
@@ -63,7 +63,7 @@ const ChromeSearchBar = () => {
                 )}
             </AnimatePresence>
 
-            <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-10 space-y-4">
+            <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-50 space-y-4">
                 <motion.div
                     className="relative backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl"
                     style={{

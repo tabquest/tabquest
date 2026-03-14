@@ -11,7 +11,7 @@ const UINotification = ({ notification, onClose }) => {
                 initial={{ opacity: 0, y: -50, x: 50 }}
                 animate={{ opacity: 1, y: 0, x: 0 }}
                 exit={{ opacity: 0, y: -50, x: 50 }}
-                className="fixed top-4 right-4 z-50 backdrop-blur-xl rounded-lg p-4 shadow-lg max-w-sm"
+                className="fixed top-4 right-4 z-[2000] backdrop-blur-xl rounded-lg p-4 shadow-lg max-w-sm"
                 style={{
                     background: 'var(--tq-glass-bg)',
                     border: '1px solid var(--tq-border-2)',

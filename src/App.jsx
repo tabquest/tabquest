@@ -57,7 +57,7 @@ const AppContent = () => {
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
 
       {/* Header Section */}
-      <div className="flex mt-2 justify-between shrink-0 relative z-20">
+      <div className="flex mt-2 justify-between shrink-0 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ const AppContent = () => {
 
       {/* Main Content — Centered */}
       <motion.div
-        className="flex-1 flex flex-col justify-center gap-4 md:gap-6 relative z-10 max-w-4xl mx-auto w-full"
+        className="flex-1 flex flex-col justify-center gap-4 md:gap-6 relative z-20 max-w-4xl mx-auto w-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
@@ -116,11 +116,11 @@ const AppContent = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.6 }}
-        className="mt-auto shrink-0 relative z-20"
-      >
-        <SettingsPanel />
-        <ToolsPanel />
-      </motion.div>
+        className="mt-auto shrink-0 relative z-10"
+      />
+
+      <SettingsPanel />
+      <ToolsPanel />
 
       <UINotification
         notification={notification}
