@@ -33,7 +33,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                         type="checkbox"
                         checked={task.completed}
                         onChange={handleComplete}
-                        className="w-4 h-4 rounded-md tq-border-1 tq-surface-1 tq-success focus:ring-emerald-500/30 focus:ring-2 focus:ring-offset-0 cursor-pointer hover:border-emerald-500/40 hover:tq-surface-1 transition-colors"
+                        className="w-4 h-4 rounded-md tq-border-1 tq-surface-1 tq-success focus:ring-tq-success/30 focus:ring-2 focus:ring-offset-0 cursor-pointer hover:tq-border-success hover:tq-surface-1 transition-colors"
                     />
                     <div>
                         <div className="relative">
@@ -99,7 +99,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                             <Edit2 className="stroke-[1.5]" size={16} />
                         </button>
                         <button
-                            className="p-2 rounded-lg tq-text-muted hover:tq-danger hover:tq-danger-bg transition-all duration-200"
+                            className="p-2 rounded-lg tq-text-muted hover:text-white hover:tq-danger-bg transition-all duration-200"
                             onClick={onDelete}
                         >
                             <Trash2 className="stroke-[1.5]" size={16} />

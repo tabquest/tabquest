@@ -265,7 +265,7 @@ const BookmarkComponent = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] p-3 tq-danger-bg border border-red-500 rounded-lg tq-text-primary text-sm shadow-lg backdrop-blur-sm"
+              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] p-3 tq-danger-bg border tq-border-danger rounded-lg text-white text-sm shadow-lg backdrop-blur-sm"
             >
               {error}
             </motion.div>
@@ -415,7 +415,7 @@ const BookmarkComponent = () => {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 tq-text-muted hover:tq-danger hover:tq-danger-bg rounded-lg transition-colors"
+                          className="p-2 tq-text-muted hover:text-white hover:tq-danger-bg rounded-lg transition-colors"
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });

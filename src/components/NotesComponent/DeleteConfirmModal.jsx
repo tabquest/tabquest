@@ -31,7 +31,7 @@ const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 tq-danger-bg hover:tq-danger-bg rounded-lg tq-text-primary"
+                        className="px-4 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 transition-opacity"
                     >
                         Delete
                     </button>

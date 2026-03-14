@@ -147,7 +147,10 @@ const IntegratedSearch = () => {
       )}
 
       <div className="relative w-full max-w-3xl mx-auto px-4 mt-28 z-30">
-        <div className="relative tq-gradient-subtle backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-purple-500/20">
+        <div className="relative tq-surface-1 backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-white/5">
+          <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: 'var(--tq-gradient-subtle)' }} />
+          <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: 'var(--tq-gradient-glass)', opacity: 0.5 }} />
+
           <form
             onSubmit={handleSearch}
             className="relative flex"
@@ -165,7 +168,7 @@ const IntegratedSearch = () => {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="h-full w-full px-4 py-4 flex items-center justify-between 
                   tq-surface-3 backdrop-blur-md rounded-l-xl
-                  border-r border-purple-500/20
+                  border-r border-white/5
                   hover:tq-hover-bg transition-all duration-200"
               >
                 <div className="flex items-center gap-2">
@@ -186,9 +189,9 @@ const IntegratedSearch = () => {
 
               {isDropdownOpen && (
                 <div className="absolute top-full left-0 mt-1 w-full 
-                  tq-gradient-subtle backdrop-blur-xl 
-                  rounded-xl border border-purple-500/20 overflow-hidden z-50
-                  shadow-lg shadow-purple-500/20">
+                  tq-surface-2 backdrop-blur-xl 
+                  rounded-xl border border-white/10 overflow-hidden z-50
+                  shadow-xl shadow-black/20">
                   <button
                     type="button"
                     onClick={() => {
@@ -224,16 +227,16 @@ const IntegratedSearch = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
               className="flex-1 px-4 py-4 tq-surface-3 backdrop-blur-md
-                tq-text-primary placeholder-gray-400
-                focus:outline-none focus:ring-0 focus:ring-purple-500/50"
+                tq-text-primary placeholder:tq-text-muted
+                focus:outline-none focus:ring-0"
             />
 
             {/* Search Button */}
             <button
               type="submit"
               className="px-6 tq-surface-3 backdrop-blur-md rounded-r-xl
-                border-l border-purple-500/20
-                hover:tq-hover-bg transition-all duration-200"
+                border-l border-white/5
+              hover:tq-hover-bg transition-all duration-200"
             >
               <Search size={20} className="tq-text-primary" />
             </button>

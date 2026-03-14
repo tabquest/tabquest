@@ -17,8 +17,8 @@ const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
                 className="tq-glass shadow-2xl p-6 rounded-2xl  max-w-md w-full mx-4"
             >
                 <div className="flex items-center gap-4 mb-4">
-                    <div className="p-3 tq-danger-bg rounded-full">
-                        <AlertTriangle className="tq-danger" size={24} />
+                    <div className="p-3 tq-danger-bg rounded-full flex items-center justify-center">
+                        <AlertTriangle className="text-white" size={24} />
                     </div>
                     <h2 className="text-xl font-semibold tq-text-primary">
                         Delete {type === 'folder' ? 'List' : 'Task'}
@@ -40,7 +40,7 @@ const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 tq-danger-bg tq-text-primary rounded-lg hover:opacity-80 transition-opacity"
+                        className="px-4 py-2 tq-danger-bg text-white rounded-lg hover:opacity-80 transition-opacity"
                     >
                         Delete
                     </button>

@@ -354,7 +354,7 @@ const TaskComponent = () => {
                                 const updatedFolders = calculateFolderCounts(folders, nonArchivedTasks);
                                 dispatch(setFolders(updatedFolders));
                             }}
-                            className="px-3 py-2 tq-danger-bg hover:tq-danger-bg rounded-lg tq-danger flex items-center gap-2"
+                            className="px-3 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 flex items-center gap-2"
                         >
                             <Trash2 size={16} />
                             <span>Clear Archive</span>
