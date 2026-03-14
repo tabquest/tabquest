@@ -14,24 +14,24 @@ const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+                className="tq-glass shadow-2xl rounded-2xl p-6 w-full max-w-md"
             >
-                <h3 className="text-lg font-medium text-white mb-2">
+                <h3 className="text-lg font-medium tq-text-primary mb-2">
                     Delete {type}?
                 </h3>
-                <p className="text-white/70 mb-6">
+                <p className="tq-text-secondary mb-6">
                     Are you sure you want to delete this {type}? This action cannot be undone.
                 </p>
                 <div className="flex justify-end gap-3">
                     <button
                         onClick={onCancel}
-                        className="px-4 py-2 text-white/70 hover:text-white"
+                        className="px-4 py-2 tq-text-secondary hover:tq-text-primary"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 bg-red-500/80 hover:bg-red-500 rounded-lg text-white"
+                        className="px-4 py-2 tq-danger-bg hover:tq-danger-bg rounded-lg tq-text-primary"
                     >
                         Delete
                     </button>

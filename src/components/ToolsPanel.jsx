@@ -22,7 +22,6 @@ const ToolsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("bookmarks");
 
-
   // Handle escape key to close panel
   useEffect(() => {
     const handleEscKey = (event) => {
@@ -45,56 +44,82 @@ const ToolsPanel = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="px-4 h-12 rounded-xl bg-black/20 backdrop-blur-md flex items-center gap-2 group shadow-lg relative"
+          className="px-4 h-12 rounded-xl backdrop-blur-md flex items-center gap-2 group shadow-lg relative"
+          style={{
+            background: 'var(--tq-glass-bg)',
+            border: '1px solid var(--tq-glass-border)',
+          }}
           aria-label="Open Pro Tools"
         >
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <SquareChevronRight className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
-          <span className="text-sm text-white/70 group-hover:text-white/90 transition-colors">Pro Tools</span>
+          <div
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ background: 'var(--tq-gradient-glass)' }}
+          />
+          <SquareChevronRight
+            className="w-5 h-5 transition-colors"
+            style={{ color: 'var(--tq-text-secondary)' }}
+          />
+          <span
+            className="text-sm transition-colors"
+            style={{ color: 'var(--tq-text-secondary)' }}
+          >
+            Pro Tools
+          </span>
         </motion.button>
       </div>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            // initial={{ opacity: 0, scale: 0.95 }}
-            // animate={{ opacity: 1, scale: 1 }}
-            // exit={{ opacity: 0, scale: 0.95 }}
-            // // transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed inset-0 flex items-center justify-center z-50 text-[18px]"
           >
             {/* Backdrop */}
             <motion.div
-              // initial={{ opacity: 0, scale: 0 }}
-              // animate={{ opacity: 1, scale: 1 }}
-              // exit={{ opacity: 0, scale: 0 }}
-              // transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0"
+              style={{
+                backgroundColor: 'rgba(0,0,0,.40)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+              }}
               onClick={() => setIsOpen(false)}
             />
 
             {/* Panel Container */}
             <motion.div
-              className="relative w-[1200px] h-[800px] bg-black/40 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
+              className="relative w-[1200px] h-[800px] backdrop-blur-2xl rounded-2xl shadow-2xl overflow-hidden"
+              style={{
+                background: 'var(--tq-surface-1)',
+                border: '1px solid var(--tq-border-1)',
+              }}
             >
               {/* Gradient Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'var(--tq-gradient-subtle)' }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'var(--tq-gradient-glass)' }}
+              />
 
               {/* Content Container */}
               <div className="relative h-full flex flex-col">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-white/10">
-                  <h2 className="text-xl font-medium text-white/80 flex items-center gap-2 overflow-hidden">
+                <div
+                  className="flex items-center justify-between p-6"
+                  style={{ borderBottom: '1px solid var(--tq-border-1)' }}
+                >
+                  <h2
+                    className="text-xl font-medium flex items-center gap-2 overflow-hidden"
+                    style={{ color: 'var(--tq-text-secondary)' }}
+                  >
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={activeTab}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        transition={{
-                          duration: 0.3,
-                        }}
+                        transition={{ duration: 0.3 }}
                         className="flex items-center gap-2"
                       >
                         {React.cloneElement(tabDetails[activeTab].icon, { size: 24 })}
@@ -104,14 +129,21 @@ const ToolsPanel = () => {
                   </h2>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="text-white/50 hover:text-white/80 transition-colors"
+                    className="transition-colors"
+                    style={{ color: 'var(--tq-text-muted)' }}
                   >
                     <X size={24} />
                   </button>
                 </div>
 
                 {/* Content Area */}
-                <div className="flex-1 overflow-y-auto p-2 [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-black/20 [&::-webkit-scrollbar-thumb]:bg-white/10 rounded-[4px]">
+                <div
+                  className="flex-1 overflow-y-auto p-2 [&::-webkit-scrollbar]:w-[5px] rounded-[4px]"
+                  style={{
+                    '--scrollbar-track': 'var(--tq-scrollbar-track)',
+                    '--scrollbar-thumb': 'var(--tq-scrollbar-thumb)',
+                  }}
+                >
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeTab}
@@ -128,7 +160,10 @@ const ToolsPanel = () => {
                 </div>
 
                 {/* Footer Navigation */}
-                <div className="border-t border-white/10 p-4">
+                <div
+                  className="p-4"
+                  style={{ borderTop: '1px solid var(--tq-border-1)' }}
+                >
                   <div className="flex justify-center space-x-8">
                     {Object.keys(tabDetails).map((tab) => (
                       <TabButton
@@ -143,7 +178,6 @@ const ToolsPanel = () => {
                 </div>
               </div>
             </motion.div>
-
           </motion.div>
         )}
       </AnimatePresence>
@@ -154,10 +188,11 @@ const ToolsPanel = () => {
 const TabButton = ({ icon, isActive, onClick, label }) => (
   <button
     onClick={onClick}
-    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${isActive
-      ? "text-white bg-white/10"
-      : "text-white/50 hover:text-white/80"
-      }`}
+    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors"
+    style={{
+      color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
+      background: isActive ? 'var(--tq-surface-elevated)' : 'transparent',
+    }}
   >
     {React.cloneElement(icon, { size: 22 })}
     <span className="text-base">{label}</span>

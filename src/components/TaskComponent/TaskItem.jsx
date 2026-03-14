@@ -25,7 +25,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
             animate={{ opacity: 1, y: 0 }}
             // exit={{ opacity: 0, y: -10 }}
             layout
-            className="group p-2.5 bg-gradient-to-br from-gray-900/40 to-gray-800/40 hover:from-gray-800/40 hover:to-gray-700/40 rounded-xl border border-white/[0.08] shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-white/[0.12] hover:shadow-emerald-500/5"
+            className="group p-2.5 tq-gradient-subtle hover:from-gray-800/40 hover:to-gray-700/40 rounded-xl border tq-border-1 shadow-lg backdrop-blur-sm transition-all duration-300 hover:tq-border-1 hover:shadow-emerald-500/5"
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-5">
@@ -33,11 +33,11 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                         type="checkbox"
                         checked={task.completed}
                         onChange={handleComplete}
-                        className="w-4 h-4 rounded-md border-gray-600/40 bg-gray-800/60 text-emerald-500 focus:ring-emerald-500/30 focus:ring-2 focus:ring-offset-0 cursor-pointer hover:border-emerald-500/40 hover:bg-gray-700/60 transition-colors"
+                        className="w-4 h-4 rounded-md tq-border-1 tq-surface-1 tq-success focus:ring-emerald-500/30 focus:ring-2 focus:ring-offset-0 cursor-pointer hover:border-emerald-500/40 hover:tq-surface-1 transition-colors"
                     />
                     <div>
                         <div className="relative">
-                            <h3 className={`text-lg font-medium tracking-tight ${task.completed ? 'text-white/40' : 'text-white/90'}`}>
+                            <h3 className={`text-lg font-medium tracking-tight ${task.completed ? 'tq-text-muted' : 'tq-text-primary'}`}>
                                 {task.title.length  > 30 ? `${task.title.slice(0, 30)}.....` : task.title}
                             </h3>
                             <AnimatePresence>
@@ -81,7 +81,7 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                         </div>
                         {task.reminderDateTime && (
                             <div className="mt-2">
-                                <span className="text-sm flex items-center gap-2 text-white/60 hover:text-white/80 transition-colors">
+                                <span className="text-sm flex items-center gap-2 tq-text-muted hover:tq-text-primary transition-colors">
                                     <Bell className="stroke-[1.5]" size={14} />
                                     {new Date(task.reminderDateTime).toLocaleString()}
                                 </span>
@@ -93,13 +93,13 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 translate-x-2">
                     <div className="flex gap-3">
                         <button
-                            className="p-2 rounded-lg text-white/50 hover:text-white/90 hover:bg-white/5 transition-all duration-200"
+                            className="p-2 rounded-lg tq-text-muted hover:tq-text-primary hover:tq-surface-2 transition-all duration-200"
                             onClick={onEdit}
                         >
                             <Edit2 className="stroke-[1.5]" size={16} />
                         </button>
                         <button
-                            className="p-2 rounded-lg text-white/50 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
+                            className="p-2 rounded-lg tq-text-muted hover:tq-danger hover:tq-danger-bg transition-all duration-200"
                             onClick={onDelete}
                         >
                             <Trash2 className="stroke-[1.5]" size={16} />

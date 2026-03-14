@@ -21,14 +21,14 @@ const BookmarkList = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             layout
-            className="group p-2 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors duration-200"
+            className="group p-2 tq-surface-2 hover:tq-surface-3 rounded-lg border tq-border-1 transition-colors duration-200"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <motion.button
                   whileHover={{ scale: 1.2, rotate: 180 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'
+                  className={`transition-colors duration-200 ${bookmark.starred ? 'tq-yellow' : 'tq-text-muted hover:tq-yellow'
                     }`}
                   onClick={() => handleStarBookmark(bookmark)}
                 >
@@ -39,11 +39,11 @@ const BookmarkList = ({
                   <div
                   onClick={() => window.location.replace(bookmark.url)}
                     // href={bookmark.url}
-                    className="text-white/90 font-medium hover:underline"
+                    className="tq-text-primary font-medium hover:underline"
                   >
                     {highlightText(bookmark.title, searchQuery)}
                   </div>
-                  <p className="text-sm text-white/50">
+                  <p className="text-sm tq-text-muted">
                     {highlightText(bookmark.url, searchQuery)}
                   </p>
                   {bookmark.tags.length > 0 && (
@@ -51,7 +51,7 @@ const BookmarkList = ({
                       {bookmark.tags.map(tag => (
                         <span
                           key={tag}
-                          className="text-xs px-2 py-0.5 bg-white/10 rounded transition-colors duration-200 hover:bg-white/20"
+                          className="text-xs px-2 py-0.5 tq-surface-3 rounded transition-colors duration-200 hover:tq-hover-bg"
                         >
                           {highlightText(tag, searchQuery)}
                         </span>
@@ -66,7 +66,7 @@ const BookmarkList = ({
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-1 text-white/50 hover:text-white/90"
+                    className="p-1 tq-text-muted hover:tq-text-primary"
                     onClick={() => setEditingBookmark(bookmark)}
                   >
                     <Edit2 size={16} />
@@ -74,7 +74,7 @@ const BookmarkList = ({
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-1 text-white/50 hover:text-red-400"
+                    className="p-1 tq-text-muted hover:tq-danger"
                     onClick={() => setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id })}
                   >
                     <Trash2 size={16} />

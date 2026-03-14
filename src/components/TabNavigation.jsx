@@ -10,15 +10,15 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="flex justify-around bg-opacity-90 bg-gray-800 py-3">
+    <div className="flex justify-around bg-opacity-90 tq-surface-1 py-3">
       {tabs.map((tab) => (
         <button
           key={tab.name}
           onClick={() => setActiveTab(tab.name)}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all ${
             activeTab === tab.name
-              ? "bg-blue-600 text-white"
-              : "bg-transparent text-gray-400"
+              ? "tq-surface-elevated tq-accent tq-text-primary"
+              : "bg-transparent tq-text-muted hover:tq-text-primary"
           }`}
         >
           {/* <LucideIcon name={tab.icon} size={16} /> */}

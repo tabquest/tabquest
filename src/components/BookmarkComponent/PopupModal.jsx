@@ -56,13 +56,13 @@ const PopupModal = ({
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-[#0b1518] rounded-lg p-6 w-full max-w-md"
+                className="tq-glass shadow-2xl rounded-2xl p-6 w-full max-w-md"
             >
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-medium text-white">{title}</h3>
+                    <h3 className="text-lg font-medium tq-text-primary">{title}</h3>
                     <button
                         onClick={onClose}
-                        className="text-white/70 hover:text-white"
+                        className="tq-text-secondary hover:tq-text-primary"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -71,11 +71,11 @@ const PopupModal = ({
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {fields.map(field => (
                         <div key={field.name}>
-                            <label className="block text-sm font-medium text-white/70 mb-1">
+                            <label className="block text-sm font-medium tq-text-secondary mb-1">
                                 {field.label}
                             </label>
                             <div className="relative flex items-center">
-                                <div className="absolute left-3 text-white/50">
+                                <div className="absolute left-3 tq-text-muted">
                                     {getIconForField(field.name)}
                                 </div>
                                 <input
@@ -95,11 +95,11 @@ const PopupModal = ({
                                             }));
                                         }
                                     }}
-                                    className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
+                                    className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary placeholder:tq-text-muted focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
                                 />
                             </div>
                             {errors[field.name] && (
-                                <p className="mt-1 text-sm text-red-400">{errors[field.name]}</p>
+                                <p className="mt-1 text-sm tq-danger">{errors[field.name]}</p>
                             )}
                         </div>
                     ))}
@@ -107,13 +107,13 @@ const PopupModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-white/70 hover:text-white"
+                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary"
                         >
                             Save
                         </button>

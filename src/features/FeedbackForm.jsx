@@ -64,7 +64,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                             stiffness: 350,
                             duration: 0.3
                         }}
-                        className="w-full max-w-sm bg-[#1a1b26] rounded-xl shadow-2xl mx-4 border border-gray-800/50"
+                        className="w-full max-w-sm tq-surface-1 rounded-xl shadow-2xl mx-4 border tq-border-1"
                     >
                         <div className="p-5">
                             <AnimatePresence mode="wait">
@@ -75,8 +75,8 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2 }}
                                         className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${alert.type === 'success'
-                                            ? 'bg-green-500/10 text-green-400 border border-green-500/20'
-                                            : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                                            ? 'tq-success-bg tq-success border border-green-500/20'
+                                            : 'tq-danger-bg tq-red border border-red-500/20'
                                             }`}
                                     >
                                         {alert.type === 'success' ?
@@ -89,13 +89,13 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                             </AnimatePresence>
 
                             <div className="flex items-center justify-between mb-5">
-                                <h3 className="text-lg font-semibold text-white">Share Your Feedback</h3>
+                                <h3 className="text-lg font-semibold tq-text-primary">Share Your Feedback</h3>
                                 <motion.button
                                     whileHover={{ scale: 1.1, rotate: 90 }}
                                     whileTap={{ scale: 0.9 }}
                                     transition={{ duration: 0.2 }}
                                     onClick={onClose}
-                                    className="text-gray-400 hover:text-white"
+                                    className="tq-text-muted hover:tq-text-primary"
                                 >
                                     <X className="w-5 h-5" />
                                 </motion.button>
@@ -103,7 +103,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
 
                             <form onSubmit={submitFeedback} className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-300">
+                                    <label className="block text-sm font-medium tq-text-muted">
                                         Rate your experience
                                     </label>
                                     <div className="flex gap-1">
@@ -118,7 +118,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                                 className="focus:outline-none"
                                             >
                                                 <Star
-                                                    className={`w-6 h-6 transition-colors duration-200 ${star <= rating ? 'fill-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
+                                                    className={`w-6 h-6 transition-colors duration-200 ${star <= rating ? 'fill-purple-500 text-purple-400' : 'tq-text-muted hover:tq-text-muted'
                                                         }`}
                                                 />
                                             </motion.button>
@@ -127,33 +127,33 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-300">
+                                    <label className="block text-sm font-medium tq-text-muted">
                                         Your Feedback
                                     </label>
                                     <textarea
                                         name="feedback"
                                         required
                                         rows={3}
-                                        className="w-full custom-scrollbar bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Tell us what you think..."
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="block text-sm font-medium text-gray-300">
+                                    <label className="block text-sm font-medium tq-text-muted">
                                         Feature Request (Optional)
                                     </label>
                                     <textarea
                                         name="feature_request"
                                         rows={3}
-                                        className="w-full custom-scrollbar bg-[#11121a] text-white rounded-lg p-3 border border-gray-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Suggest new features..."
                                     />
                                 </div>
 
                                 <motion.button type="submit"
                                     disabled={isSubmitting || rating === 0} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                    className={`w-full py-2 rounded-lg text-white font-medium transition-all ${isSubmitting || rating === 0 ? 'bg-gray-700 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-500/20'}`} >
+                                    className={`w-full py-2 rounded-lg tq-text-primary font-medium transition-all ${isSubmitting || rating === 0 ? 'tq-surface-1 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-500/20'}`} >
                                     {isSubmitting ? (<div className="flex items-center justify-center gap-2"> <FiLoader className="animate-spin" /> Submitting... </div>) : ('Submit Feedback')}
                                 </motion.button>
                             </form>

@@ -21,42 +21,9 @@ import useExtensionVersion from '../utils/hooks/useExtensionVersion';
 import { APP_VERSION } from '../utils/version';
 import { FeedbackForm } from '../features';
 import TabQuestLogo from '../images/TabQuest.png';
+import { THEME_LIST } from '../utils/themes';
 
 const SettingsPanel = () => {
-    const themeOptions = [
-        {
-            key: 'midnight_default',
-            label: 'Midnight',
-            isDefault: true,
-            preview: 'from-gray-800 via-gray-900 to-gray-950'
-        },
-        {
-            key: 'slate_ocean',
-            label: 'Slate Ocean',
-            preview: 'from-slate-800 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'evergreen_slate',
-            label: 'Evergreen',
-            preview: 'from-emerald-900 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'graphite_navy',
-            label: 'Graphite Navy',
-            preview: 'from-zinc-800 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'blue_ink',
-            label: 'Blue Ink',
-            preview: 'from-blue-900 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'amber_slate',
-            label: 'Amber Slate',
-            preview: 'from-amber-900 via-stone-900 to-gray-950'
-        }
-    ];
-
     const [isOpen, setIsOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dispatch = useDispatch();
@@ -88,13 +55,12 @@ const SettingsPanel = () => {
         } else {
             setShowFeedbackPrompt(false);
         }
-    }, [isOpen]); // Re-check when panel closes
+    }, [isOpen]);
 
     const handlePromptClick = () => {
         setIsOpen(true);
         setIsHighlightingFeedback(true);
 
-        // Wait for panel to open and render
         setTimeout(() => {
             const btn = document.getElementById('feedback-btn');
             if (btn) {
@@ -102,7 +68,6 @@ const SettingsPanel = () => {
             }
         }, 500);
 
-        // Turn off highlight after animation
         setTimeout(() => {
             setIsHighlightingFeedback(false);
         }, 3000);
@@ -204,13 +169,11 @@ const SettingsPanel = () => {
         const currentValue = formState[settingName];
         const newValue = !currentValue;
 
-        // Update the local form state
         setFormState({
             ...formState,
             [settingName]: newValue
         });
 
-        // Dispatch the update immediately to Redux
         dispatch(updateSearchPreferences({
             ...formState,
             [settingName]: newValue
@@ -223,7 +186,12 @@ const SettingsPanel = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 right-4 bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-lg p-4 flex items-center gap-2 text-sm text-white/90 z-50"
+            className="fixed top-4 right-4 backdrop-blur-md rounded-lg p-4 flex items-center gap-2 text-sm z-50"
+            style={{
+                background: 'rgba(239,68,68,.10)',
+                border: '1px solid rgba(239,68,68,.20)',
+                color: 'var(--tq-text-primary)',
+            }}
         >
             <AlertCircle className="w-4 h-4" />
             {message}
@@ -231,7 +199,6 @@ const SettingsPanel = () => {
     );
 
     const handleAutoSave = () => {
-        // Validate required fields before auto-saving
         if (!formState.userName.trim() || !formState.userRole.trim() || !formState.weatherLocation.trim()) {
             setError('Please fill in all required fields');
             return;
@@ -331,6 +298,16 @@ const SettingsPanel = () => {
 
     const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
 
+    /* ── Shared input styles (theme-aware) ─── */
+    const inputStyle = {
+        background: 'var(--tq-surface-3)',
+        border: '1px solid var(--tq-border-1)',
+        color: 'var(--tq-text-primary)',
+    };
+
+    const inputClass =
+        'w-full pl-11 pr-4 py-3 rounded-xl focus:outline-none transition-colors';
+
     return (
         <>
             <AnimatePresence>
@@ -360,7 +337,13 @@ const SettingsPanel = () => {
                         transition={{
                             y: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }
                         }}
-                        className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-full shadow-lg shadow-purple-600/30 border border-white/20 transition-all font-medium"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all font-medium"
+                        style={{
+                            background: 'var(--tq-accent)',
+                            color: '#fff',
+                            border: '1px solid var(--tq-border-2)',
+                            boxShadow: `0 8px 24px var(--tq-accent-glow)`,
+                        }}
                     >
                         <span className="text-lg">👋</span>
                         <span className="text-sm">Feedback</span>
@@ -377,10 +360,20 @@ const SettingsPanel = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg z-40"
+                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl backdrop-blur-md flex items-center justify-center group shadow-lg z-40"
+                        style={{
+                            background: 'var(--tq-glass-bg)',
+                            border: '1px solid var(--tq-glass-border)',
+                        }}
                     >
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <Settings className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
+                        <div
+                            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: 'var(--tq-gradient-glass)' }}
+                        />
+                        <Settings
+                            className="w-5 h-5 transition-colors"
+                            style={{ color: 'var(--tq-text-secondary)' }}
+                        />
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -393,14 +386,22 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-base inset-y-0 right-0 w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
+                        className="fixed text-base inset-y-0 right-0 w-[400px] backdrop-blur-2xl shadow-2xl z-30"
+                        style={{
+                            background: 'var(--tq-surface-1)',
+                            borderLeft: '1px solid var(--tq-border-1)',
+                        }}
                     >
                         {/* Main scrollable container */}
-                        <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600">
-                            {/* Background and gradient container - fixed position */}
-                            <div className="absolute inset-0 bg-black/40">
-                                <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+                        <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full"
+                            style={{
+                                '--scrollbar-thumb': 'var(--tq-scrollbar-thumb)',
+                            }}
+                        >
+                            {/* Background gradients */}
+                            <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-surface-1)' }}>
+                                <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-subtle)' }} />
+                                <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-glass)' }} />
                             </div>
 
                             {/* Content container */}
@@ -409,7 +410,8 @@ const SettingsPanel = () => {
                                     <motion.h2
                                         initial={{ x: -20, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
-                                        className="text-xl font-semibold text-white/90"
+                                        className="text-xl font-semibold"
+                                        style={{ color: 'var(--tq-text-primary)' }}
                                     >
                                         Settings
                                     </motion.h2>
@@ -418,9 +420,10 @@ const SettingsPanel = () => {
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                                        className="p-2 rounded-lg transition-colors"
+                                        style={{ color: 'var(--tq-text-secondary)' }}
                                     >
-                                        <X className="w-5 h-5 text-white/70" />
+                                        <X className="w-5 h-5" />
                                     </motion.button>
                                 </div>
 
@@ -428,118 +431,140 @@ const SettingsPanel = () => {
                                     {/* User Details */}
                                     <div className="space-y-3">
                                         <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                             <input
                                                 type="text"
                                                 value={formState.userName}
                                                 onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
                                                 placeholder="Username"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                className={inputClass}
+                                                style={inputStyle}
+                                                data-no-theme-transition="true"
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                             <input
                                                 type="text"
                                                 value={formState.userRole}
                                                 onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
                                                 placeholder="Role"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                className={inputClass}
+                                                style={inputStyle}
+                                                data-no-theme-transition="true"
                                             />
                                         </div>
                                         <div className="relative">
-                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                             <input
                                                 type="text"
                                                 value={formState.userPortfolioUrl}
                                                 onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
                                                 placeholder="Portfolio URL"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                className={inputClass}
+                                                style={inputStyle}
+                                                data-no-theme-transition="true"
                                             />
                                         </div>
                                     </div>
 
-                                    {/* Weather Preferences */}
+                                    {/* Weather / Search Preferences */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-
-                                        <h3 className="text-sm font-medium text-white/70">{isChrome ? 'Weather' : ""}</h3>
+                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
+                                            {isChrome ? 'Weather' : ""}
+                                        </h3>
                                         <div className="space-y-3">
-
-                                            {!isChrome && <div className="relative w-full">
-                                                {/* Selected Value */}
-                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
-                                                <button
-                                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20"
-                                                >
-                                                    {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
-                                                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                                                        {/* Dropdown Arrow Icon */}
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="16"
-                                                            height="16"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        >
-                                                            <path d="m6 9 6 6 6-6" />
-                                                        </svg>
-                                                    </span>
-                                                </button>
-
-                                                {/* Dropdown Options */}
-                                                {isDropdownOpen && (
-                                                    <ul className="absolute w-full mt-2 bg-[#2d2d2dd5] border border-white/10 rounded-xl shadow-lg z-20">
-                                                        {["Google", "Bing", "DuckDuckGo"].map((engine) => (
-                                                            <li
-                                                                key={engine}
-                                                                onClick={() => {
-                                                                    setFormState({ ...formState, searchEngine: engine });
-                                                                    setIsDropdownOpen(false);
-                                                                }}
-                                                                className="px-4 py-3 cursor-pointer text-inherit hover:bg-white/20"
+                                            {!isChrome && (
+                                                <div className="relative w-full">
+                                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
+                                                    <button
+                                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                        className="w-full pl-11 pr-4 py-3 rounded-xl text-left focus:outline-none"
+                                                        style={{
+                                                            background: 'transparent',
+                                                            border: '1px solid var(--tq-border-1)',
+                                                            color: 'var(--tq-text-primary)',
+                                                        }}
+                                                    >
+                                                        {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
+                                                        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="16"
+                                                                height="16"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="2"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
                                                             >
-                                                                {engine}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                            </div>}
+                                                                <path d="m6 9 6 6 6-6" />
+                                                            </svg>
+                                                        </span>
+                                                    </button>
 
-
+                                                    {isDropdownOpen && (
+                                                        <ul
+                                                            className="absolute w-full mt-2 rounded-xl shadow-lg z-20"
+                                                            style={{
+                                                                background: 'var(--tq-glass-bg)',
+                                                                border: '1px solid var(--tq-border-1)',
+                                                                backdropFilter: 'blur(24px)',
+                                                            }}
+                                                        >
+                                                            {["Google", "Bing", "DuckDuckGo"].map((engine) => (
+                                                                <li
+                                                                    key={engine}
+                                                                    onClick={() => {
+                                                                        setFormState({ ...formState, searchEngine: engine });
+                                                                        setIsDropdownOpen(false);
+                                                                    }}
+                                                                    className="px-4 py-3 cursor-pointer transition-colors"
+                                                                    style={{ color: 'var(--tq-text-primary)' }}
+                                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
+                                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                                >
+                                                                    {engine}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            )}
 
                                             <div className="relative">
-                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                 <input
                                                     type="text"
                                                     value={formState.weatherLocation}
                                                     onChange={(e) => setFormState({ ...formState, weatherLocation: e.target.value })}
                                                     placeholder="Weather Location"
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
                                                 />
                                             </div>
                                         </div>
                                     </motion.div>
 
-                                    {/* Theme Preferences */}
+                                    {/* ── Theme Selector ── */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.12 }}
                                         className="space-y-3"
                                     >
-                                        <h3 className="text-sm font-medium text-white/70">Theme</h3>
+                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
+                                            Theme
+                                        </h3>
                                         <div className="grid grid-cols-3 gap-2">
-                                            {themeOptions.map((theme) => {
+                                            {THEME_LIST.map((theme) => {
                                                 const isSelected = (formState.theme || initialState.theme) === theme.key;
                                                 return (
                                                     <button
@@ -549,13 +574,40 @@ const SettingsPanel = () => {
                                                             setFormState({ ...formState, theme: theme.key });
                                                             dispatch(updateTheme(theme.key));
                                                         }}
-                                                        className={`rounded-xl border p-2 transition-all ${isSelected ? 'border-emerald-400/60 bg-white/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                                                        className="rounded-xl p-2 transition-all"
+                                                        style={{
+                                                            border: isSelected
+                                                                ? `2px solid var(--tq-accent)`
+                                                                : '1px solid var(--tq-border-1)',
+                                                            background: isSelected
+                                                                ? 'var(--tq-surface-elevated)'
+                                                                : 'var(--tq-surface-3)',
+                                                            boxShadow: isSelected
+                                                                ? '0 0 12px var(--tq-accent-glow)'
+                                                                : 'none',
+                                                        }}
                                                     >
-                                                        <div className={`h-9 w-full rounded-md bg-gradient-to-r ${theme.preview}`} />
-                                                        <p className="mt-1 text-xs text-white/80 flex items-center justify-center gap-1.5">
+                                                        {/* Preview swatch */}
+                                                        <div
+                                                            className="h-9 w-full rounded-md"
+                                                            style={{
+                                                                background: `linear-gradient(to right, ${theme.preview[0]}, ${theme.preview[1]}, ${theme.preview[2]})`,
+                                                            }}
+                                                        />
+                                                        <p
+                                                            className="mt-1 text-xs flex items-center justify-center gap-1.5"
+                                                            style={{ color: 'var(--tq-text-secondary)' }}
+                                                        >
                                                             {theme.label}
                                                             {theme.isDefault && (
-                                                                <span className="px-0.5 rounded bg-green-500/20 text-green-300 border border-green-400/30 text-[9px]">
+                                                                <span
+                                                                    className="px-1 rounded text-[9px]"
+                                                                    style={{
+                                                                        background: 'rgba(var(--tq-accent-rgb),.15)',
+                                                                        color: 'var(--tq-accent)',
+                                                                        border: '1px solid rgba(var(--tq-accent-rgb),.30)',
+                                                                    }}
+                                                                >
                                                                     Default
                                                                 </span>
                                                             )}
@@ -568,34 +620,58 @@ const SettingsPanel = () => {
 
                                     {/* Clock */}
                                     <div className="space-y-3">
-                                        <h3 className="text-sm font-medium text-white/70">Clock</h3>
+                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>Clock</h3>
                                         <div className="flex flex-row gap-3">
                                             {/* 12-hour format */}
-                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-sm text-white/90">12-hour</span>
+                                            <div
+                                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                                                style={{
+                                                    background: 'var(--tq-surface-3)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                }}
+                                            >
+                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>12-hour</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('use12Hour')}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.use12Hour ? 'bg-emerald-500/50' : 'bg-white/10'
-                                                        }`}
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                                    style={{
+                                                        backgroundColor: formState.use12Hour
+                                                            ? 'rgba(var(--tq-accent-rgb),.50)'
+                                                            : 'var(--tq-surface-elevated)',
+                                                    }}
                                                 >
                                                     <span
-                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.use12Hour ? 'translate-x-6' : 'translate-x-1'
-                                                            }`}
+                                                        className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
+                                                        style={{
+                                                            transform: formState.use12Hour ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                                                        }}
                                                     />
                                                 </button>
                                             </div>
 
                                             {/* Hide seconds */}
-                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-sm text-white/90">Hide seconds</span>
+                                            <div
+                                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                                                style={{
+                                                    background: 'var(--tq-surface-3)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                }}
+                                            >
+                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>Hide seconds</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('hideSeconds')}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.hideSeconds ? 'bg-emerald-500/50' : 'bg-white/10'
-                                                        }`}
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                                    style={{
+                                                        backgroundColor: formState.hideSeconds
+                                                            ? 'rgba(var(--tq-accent-rgb),.50)'
+                                                            : 'var(--tq-surface-elevated)',
+                                                    }}
                                                 >
                                                     <span
-                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.hideSeconds ? 'translate-x-6' : 'translate-x-1'
-                                                            }`}
+                                                        className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
+                                                        style={{
+                                                            transform: formState.hideSeconds ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                                                        }}
                                                     />
                                                 </button>
                                             </div>
@@ -609,7 +685,7 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.2 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/70">Social Profiles</h3>
+                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>Social Profiles</h3>
 
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
@@ -622,7 +698,7 @@ const SettingsPanel = () => {
 
                                             return (
                                                 <div key={platform} className="relative">
-                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                     <input
                                                         type="url"
                                                         value={value}
@@ -634,14 +710,16 @@ const SettingsPanel = () => {
                                                             }
                                                         })}
                                                         placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
-                                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                        className={inputClass}
+                                                        style={inputStyle}
+                                                        data-no-theme-transition="true"
                                                     />
                                                 </div>
                                             );
                                         })}
                                     </motion.div>
 
-                                    {/* Bookmarks - Favourites  */}
+                                    {/* Bookmarks - Favourites */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -649,15 +727,18 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex justify-between items-center">
-                                            <h3 className="text-sm font-medium text-white/70">Favourites (upto 8)</h3>
+                                            <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
+                                                Favourites (upto 8)
+                                            </h3>
                                             <motion.button
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
                                                 onClick={addBookmark}
                                                 disabled={formState.bookmarks.length >= 8}
-                                                className="p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+                                                className="p-2 rounded-lg transition-colors disabled:opacity-50"
+                                                style={{ color: 'var(--tq-text-secondary)' }}
                                             >
-                                                <Plus className="w-4 h-4 text-white/70" />
+                                                <Plus className="w-4 h-4" />
                                             </motion.button>
                                         </div>
                                         <div className="space-y-3">
@@ -673,7 +754,9 @@ const SettingsPanel = () => {
                                                                 setFormState({ ...formState, bookmarks: newBookmarks });
                                                             }}
                                                             placeholder="Name"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                            className="w-1/2 px-4 py-3 rounded-xl focus:outline-none transition-colors"
+                                                            style={inputStyle}
+                                                            data-no-theme-transition="true"
                                                         />
                                                         <input
                                                             type="url"
@@ -684,7 +767,9 @@ const SettingsPanel = () => {
                                                                 setFormState({ ...formState, bookmarks: newBookmarks });
                                                             }}
                                                             placeholder="Website URL"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                            className="w-1/2 px-4 py-3 rounded-xl focus:outline-none transition-colors"
+                                                            style={inputStyle}
+                                                            data-no-theme-transition="true"
                                                         />
                                                     </div>
 
@@ -692,9 +777,10 @@ const SettingsPanel = () => {
                                                         whileHover={{ scale: 1.1 }}
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => removeBookmark(index)}
-                                                        className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                                                        className="p-3 rounded-xl transition-colors"
+                                                        style={{ color: 'var(--tq-text-secondary)' }}
                                                     >
-                                                        <Trash2 className="w-4 h-4 text-white/70" />
+                                                        <Trash2 className="w-4 h-4" />
                                                     </motion.button>
                                                 </div>
                                             ))}
@@ -703,7 +789,6 @@ const SettingsPanel = () => {
 
                                     {/* Action Buttons */}
                                     <div className="space-y-3">
-                                        {/* Save and Reset in a Row */}
                                         <div className="flex gap-3">
                                             <motion.button
                                                 initial={{ y: 20, opacity: 0 }}
@@ -712,9 +797,14 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleSave}
-                                                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group"
+                                                style={{
+                                                    background: 'var(--tq-gradient-subtle)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                    color: 'var(--tq-text-primary)',
+                                                }}
                                             >
-                                                <Save className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                <Save className="w-4 h-4" style={{ color: 'var(--tq-text-secondary)' }} />
                                                 Save Changes
                                             </motion.button>
 
@@ -725,9 +815,14 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleReset}
-                                                className="flex-1 px-4 py-3 rounded-xl bg-red-500/10 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group"
+                                                style={{
+                                                    background: 'rgba(var(--tq-accent-rgb),.06)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                    color: 'var(--tq-text-primary)',
+                                                }}
                                             >
-                                                <RotateCcw className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                <RotateCcw className="w-4 h-4" style={{ color: 'var(--tq-text-secondary)' }} />
                                                 Reset Settings
                                             </motion.button>
                                         </div>
@@ -742,64 +837,59 @@ const SettingsPanel = () => {
                                                 y: 0,
                                                 opacity: 1,
                                                 scale: isHighlightingFeedback ? [1, 1.05, 1, 1.05, 1] : 1,
-                                                borderColor: isHighlightingFeedback ? ['rgba(147, 51, 234, 0.3)', 'rgba(255, 255, 255, 0.8)', 'rgba(147, 51, 234, 0.3)'] : 'rgba(147, 51, 234, 0.3)'
                                             }}
                                             transition={{
                                                 delay: 0.5,
                                                 scale: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 },
-                                                borderColor: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 }
                                             }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className={`w-full px-4 py-3 rounded-xl bg-purple-800/20 text-white/90 hover:text-white border ${isHighlightingFeedback ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'border-purple-800/30'} hover:border-white/20 flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300`}
+                                            className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300"
+                                            style={{
+                                                background: 'rgba(var(--tq-accent-sec-rgb),.10)',
+                                                border: isHighlightingFeedback
+                                                    ? '1px solid var(--tq-accent-secondary)'
+                                                    : '1px solid rgba(var(--tq-accent-sec-rgb),.25)',
+                                                color: 'var(--tq-text-primary)',
+                                                boxShadow: isHighlightingFeedback
+                                                    ? '0 0 15px rgba(var(--tq-accent-sec-rgb),.40)'
+                                                    : 'none',
+                                            }}
                                         >
-                                            <Send className="w-5 h-5 text-white/70 group-hover:text-white" />
+                                            <Send className="w-5 h-5" style={{ color: 'var(--tq-text-secondary)' }} />
                                             Submit Feedback
                                         </motion.a>
-
-
-
 
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            // transition={{ duration: 0.3 }}
-                                            className="w-full flex items-center justify-center mt-4 text-gray-400"
+                                            className="w-full flex items-center justify-center mt-4"
+                                            style={{ color: 'var(--tq-text-muted)' }}
                                         >
                                             <img
                                                 src={TabQuestLogo}
                                                 alt="TabQuest Logo"
                                                 className="w-5 h-4.5 mr-2 object-contain"
                                             />
-                                            <span className="text-sm font-bold tracking-wide mr-2 text-white/90">
+                                            <span
+                                                className="text-sm font-bold tracking-wide mr-2"
+                                                style={{ color: 'var(--tq-text-primary)' }}
+                                            >
                                                 TabQuest
                                             </span>
-                                            <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
+                                            <span
+                                                className="text-xs px-2 py-1 rounded-full"
+                                                style={{
+                                                    background: 'var(--tq-surface-1)',
+                                                    color: 'var(--tq-text-muted)',
+                                                }}
+                                            >
                                                 {APP_VERSION}
                                             </span>
                                         </motion.div>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-
-
-
-                        <div
-                            className="relative h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600 rounded-[4px]">
-                            {/* 
-                            // Fixed background wrapper that extends full height 
-                            <div className="absolute inset-0 bg-black/40">
-                                <div className="relative h-full">
-
-                                    <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
-
-                                   
-
-                                </div>
-                            </div> */}
                         </div>
                     </motion.div>
                 )}

@@ -5,13 +5,13 @@ import { FaLaptop, FaMobileAlt, FaExclamationTriangle } from 'react-icons/fa';
 const MobileView = () => {
     return (
         <motion.div
-            className="fixed top-0 left-0 right-0 min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6 z-50 flex flex-col items-center justify-center gap-6"
+            className="fixed top-0 left-0 right-0 min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 tq-text-primary p-6 z-50 flex flex-col items-center justify-center gap-6"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
         >
             <motion.div
-                className="text-amber-500 text-6xl"
+                className="tq-warning text-6xl"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
@@ -38,7 +38,7 @@ const MobileView = () => {
                     whileHover={{ scale: 1.2, color: "#ef4444" }}
                     transition={{ type: "spring", stiffness: 300 }}
                 >
-                    <FaMobileAlt className="text-gray-400" />
+                    <FaMobileAlt className="tq-text-muted" />
                 </motion.div>
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -51,12 +51,12 @@ const MobileView = () => {
                     whileHover={{ scale: 1.2, color: "#22c55e" }}
                     transition={{ type: "spring", stiffness: 300 }}
                 >
-                    <FaLaptop className="text-gray-400" />
+                    <FaLaptop className="tq-text-muted" />
                 </motion.div>
             </motion.div>
 
             <motion.div
-                className="text-sm text-gray-400 text-center mt-4"
+                className="text-sm tq-text-muted text-center mt-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2 }}

@@ -52,7 +52,7 @@ const NotesComponent = () => {
             <>
                 {parts.map((part, index) =>
                     part.toLowerCase() === searchQuery.toLowerCase() ? (
-                        <span key={index} className="bg-yellow-500/30 rounded px-0.5">{part}</span>
+                        <span key={index} className="tq-warning-bg rounded px-0.5">{part}</span>
                     ) : part
                 )}
             </>
@@ -70,7 +70,7 @@ const NotesComponent = () => {
             return (
                 <div className="relative bg-black/50 rounded-md p-3 font-mono text-sm">
                     <div className="absolute top-2 right-2">
-                        <Code size={14} className="text-white/40" />
+                        <Code size={14} className="tq-text-muted" />
                     </div>
                     <pre className="whitespace-pre-wrap overflow-x-auto break-words">
                         {searchQuery ? (
@@ -89,9 +89,9 @@ const NotesComponent = () => {
             return (
                 <div className="relative bg-black/30 rounded-md p-3">
                     <div className="absolute top-2 right-2">
-                        <FileType size={14} className="text-white/40" />
+                        <FileType size={14} className="tq-text-muted" />
                     </div>
-                    <p className="text-white/60 break-words font-mono text-sm">
+                    <p className="tq-text-muted break-words font-mono text-sm">
                         {searchQuery ? (
                             <Highlight text={note.content} searchQuery={searchQuery} />
                         ) : (
@@ -105,7 +105,7 @@ const NotesComponent = () => {
         }
 
         return (
-            <p className="text-white/60 break-words">
+            <p className="tq-text-muted break-words">
                 {searchQuery ? (
                     <Highlight text={note.content} searchQuery={searchQuery} />
                 ) : (
@@ -249,13 +249,13 @@ const NotesComponent = () => {
     return (
         <div className="h-full flex flex-col">
             {/* Fixed header */}
-            <div className="sticky top-0 z-30 rounded-lg p-4 bg-black/20 border border-white/10 backdrop-blur-md">
+            <div className="sticky top-0 z-30 rounded-lg p-4 bg-black/20 border tq-border-1 backdrop-blur-md">
 
                 <div className="flex items-center gap-4">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90"
+                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary"
                         onClick={() => setShowAddModal(true)}
                     >
                         <Plus size={18} />
@@ -263,13 +263,13 @@ const NotesComponent = () => {
                     </motion.button>
 
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted" size={18} />
                         <input
                             type="text"
                             placeholder="Search notes..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
                         />
                     </div>
 
@@ -284,7 +284,7 @@ const NotesComponent = () => {
                     {/* <select
                         value={filter}
                         onChange={(e) => dispatch(setFilter(e.target.value))}
-                        className="bg-white/10 hover:bg-white/20 rounded-lg flex items-center gap-2 text-white/90 px-4 py-2"
+                        className="tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary px-4 py-2"
                         style={{
                             WebkitAppearance: 'none',
                             MozAppearance: 'none',
@@ -295,8 +295,8 @@ const NotesComponent = () => {
                             paddingRight: '2.5rem'
                         }}
                     >
-                        <option value="all" className="bg-[#1a1a1a] text-white/80">All Notes</option>
-                        <option value="favorites" className="bg-[#1a1a1a] text-white/80">Favorites</option>
+                        <option value="all" className="tq-surface-1 tq-text-primary">All Notes</option>
+                        <option value="favorites" className="tq-surface-1 tq-text-primary">Favorites</option>
                     </select> */}
                 </div>
             </div>
@@ -323,16 +323,16 @@ const NotesComponent = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     whileHover={{ scale: 1.02 }}
-                                    className="group bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer"
+                                    className="group tq-surface-2 border tq-border-1 rounded-lg p-4 cursor-pointer"
                                     onClick={() => dispatch(setSelectedNote(note))}
                                 >
                                     {/* Note content */}
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
                                             {note.type === 'snippet' ? (
-                                                <Code size={16} className="text-white/40" />
+                                                <Code size={16} className="tq-text-muted" />
                                             ) : (
-                                                <StickyNote size={16} className="text-white/40" />
+                                                <StickyNote size={16} className="tq-text-muted" />
                                             )}
                                             <h3 className="font-medium">
                                                 <Highlight
@@ -348,7 +348,7 @@ const NotesComponent = () => {
                                                 e.stopPropagation();
                                                 dispatch(toggleStarred(note.id));
                                             }}
-                                            className={`${note.starred ? 'text-yellow-400' : 'text-white/30'}`}
+                                            className={`${note.starred ? 'tq-warning' : 'tq-text-muted'}`}
                                         >
                                             <Star
                                                 size={16}
@@ -365,14 +365,14 @@ const NotesComponent = () => {
                                         {note.tags.map(tag => (
                                             <span
                                                 key={tag}
-                                                className="text-xs px-2 py-0.5 bg-white/10 rounded"
+                                                className="text-xs px-2 py-0.5 tq-surface-3 rounded"
                                             >
                                                 <Highlight text={tag} searchQuery={searchQuery} />
                                             </span>
                                         ))}
                                     </div>
 
-                                    <p className="text-xs text-white/40">{formatDate(note.timestamp)}</p>
+                                    <p className="text-xs tq-text-muted">{formatDate(note.timestamp)}</p>
 
                                 </motion.div>
                             ))

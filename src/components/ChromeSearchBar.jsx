@@ -29,7 +29,6 @@ const ChromeSearchBar = () => {
         e.preventDefault();
         if (!searchTerm.trim()) return;
 
-        // Send message to background script to perform search
         chrome.runtime.sendMessage({
             type: 'PERFORM_SEARCH',
             searchTerm: searchTerm.trim()
@@ -37,7 +36,6 @@ const ChromeSearchBar = () => {
         setSearchTerm('');
     };
 
-    // Handle Google Lens click
     const handleGoogleLensClick = () => {
         window.location.href = "https://lens.google.com";
     };
@@ -55,18 +53,33 @@ const ChromeSearchBar = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/20 backdrop-blur-md z-10"
+                        className="fixed inset-0 z-10"
+                        style={{
+                            backgroundColor: 'rgba(0,0,0,.20)',
+                            backdropFilter: 'blur(12px)',
+                            WebkitBackdropFilter: 'blur(12px)',
+                        }}
                     />
                 )}
             </AnimatePresence>
 
             <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-10 space-y-4">
                 <motion.div
-                    className="relative bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl border border-purple-500/20"
+                    className="relative backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl"
+                    style={{
+                        background: 'var(--tq-search-bg)',
+                        border: '1px solid var(--tq-search-border)',
+                    }}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
+                    {/* Subtle inner glow */}
+                    <div
+                        className="absolute inset-0 rounded-2xl pointer-events-none"
+                        style={{ background: 'var(--tq-gradient-glass)' }}
+                    />
+
                     <form
                         onSubmit={handleSearch}
                         className="relative flex flex-col sm:flex-row gap-2 sm:gap-0"
@@ -80,9 +93,12 @@ const ChromeSearchBar = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search..."
-                            className="flex-1 text-lg px-4 py-3 sm:py-4 bg-white/10 backdrop-blur-md
-                                text-white placeholder-gray-400 rounded-l-xl
-                                focus:outline-none focus:ring-0 focus:ring-purple-500/50"
+                            className="flex-1 text-lg px-4 py-3 sm:py-4 backdrop-blur-md rounded-l-xl focus:outline-none focus:ring-0"
+                            style={{
+                                background: 'var(--tq-surface-elevated)',
+                                color: 'var(--tq-text-primary)',
+                            }}
+                            data-no-theme-transition="true"
                         />
 
                         <div className="flex">
@@ -90,30 +106,36 @@ const ChromeSearchBar = () => {
                             <motion.button
                                 type="button"
                                 onClick={handleGoogleLensClick}
-                                className="px-4 py-3 sm:py-4 bg-white/10 backdrop-blur-md
-                                    border-r border-purple-500/20
-                                    hover:bg-white/20 transition-all duration-200"
+                                className="px-4 py-3 sm:py-4 backdrop-blur-md transition-all duration-200"
+                                style={{
+                                    background: 'var(--tq-surface-elevated)',
+                                    borderRight: '1px solid var(--tq-border-1)',
+                                    color: 'var(--tq-text-primary)',
+                                }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 title="Search with Google Lens"
                             >
-                                <SiGooglelens size={20} className="text-white" />
+                                <SiGooglelens size={20} />
                             </motion.button>
 
                             {/* Search Button */}
                             <motion.button
                                 type="submit"
-                                className="px-4 py-3 sm:py-4 bg-white/10 backdrop-blur-md rounded-r-xl
-                                    hover:bg-white/20 transition-all duration-200"
+                                className="px-4 py-3 sm:py-4 backdrop-blur-md rounded-r-xl transition-all duration-200"
+                                style={{
+                                    background: 'var(--tq-surface-elevated)',
+                                    color: 'var(--tq-text-primary)',
+                                }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
-                                <Search size={20} className="text-white" />
+                                <Search size={20} />
                             </motion.button>
                         </div>
                     </form>
                 </motion.div>
-                <Weather/>
+                <Weather />
             </div>
         </motion.div>
     );
