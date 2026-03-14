@@ -20,6 +20,7 @@ import useExtensionVersion from '../utils/hooks/useExtensionVersion';
 
 import { APP_VERSION } from '../utils/version';
 import { FeedbackForm } from '../features';
+import TabQuestLogo from '../images/TabQuest.png';
 
 const SettingsPanel = () => {
     const themeOptions = [
@@ -763,9 +764,14 @@ const SettingsPanel = () => {
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             // transition={{ duration: 0.3 }}
-                                            className="w-full text-center mt-4 text-gray-400"
+                                            className="w-full flex items-center justify-center mt-4 text-gray-400"
                                         >
-                                            <span className="text-sm font-medium mr-2">
+                                            <img
+                                                src={TabQuestLogo}
+                                                alt="TabQuest Logo"
+                                                className="w-5 h-4.5 mr-2 object-contain"
+                                            />
+                                            <span className="text-sm font-bold tracking-wide mr-2 text-white/90">
                                                 TabQuest
                                             </span>
                                             <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
