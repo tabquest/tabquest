@@ -5,7 +5,7 @@ import { FaGoogle, FaSearch } from 'react-icons/fa';
 import Weather from './Weather';
 import { SiGooglelens } from 'react-icons/si';
 
-const ChromeSearchBar = () => {
+const ChromeSearchBar = ({ onFocusChange }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -24,6 +24,10 @@ const ChromeSearchBar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    useEffect(() => {
+        onFocusChange?.(isTyping);
+    }, [isTyping, onFocusChange]);
 
     const handleSearch = (e) => {
         e.preventDefault();

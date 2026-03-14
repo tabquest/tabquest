@@ -24,6 +24,7 @@ const AppContent = () => {
   const dispatch = useDispatch();
   const { tasks } = useSelector(state => state.tasks);
   const [notification, setNotification] = useState(null);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   useEffect(() => {
     const dueReminders = checkDueReminders(tasks);
@@ -57,7 +58,7 @@ const AppContent = () => {
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
 
       {/* Header Section */}
-      <div className="flex mt-2 justify-between shrink-0 relative z-10">
+      <div className={`flex mt-2 justify-between shrink-0 relative ${isSearchActive ? 'z-10' : 'z-40'}`}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +82,7 @@ const AppContent = () => {
 
       {/* Main Content — Centered */}
       <motion.div
-        className="flex-1 flex flex-col justify-center gap-4 md:gap-6 relative z-20 max-w-4xl mx-auto w-full"
+        className={`flex-1 flex flex-col justify-center gap-4 md:gap-6 relative ${isSearchActive ? 'z-50' : 'z-10'} max-w-4xl mx-auto w-full`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
@@ -106,7 +107,11 @@ const AppContent = () => {
         )}
 
         <div className="space-y-4">
-          {isChrome ? <ChromeSearchBar /> : <SearchBar />}
+          {isChrome ? (
+            <ChromeSearchBar onFocusChange={setIsSearchActive} />
+          ) : (
+            <SearchBar onFocusChange={setIsSearchActive} />
+          )}
           <BookmarkBar />
         </div>
       </motion.div>
@@ -116,7 +121,7 @@ const AppContent = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.6 }}
-        className="mt-auto shrink-0 relative z-10"
+        className={`mt-auto shrink-0 relative ${isSearchActive ? 'z-10' : 'z-40'}`}
       />
 
       <SettingsPanel />

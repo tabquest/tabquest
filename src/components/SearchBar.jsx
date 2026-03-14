@@ -8,7 +8,7 @@ import { FaGoogle } from 'react-icons/fa';
 import { BiLogoBing } from "react-icons/bi";
 import { SiDuckduckgo } from "react-icons/si";
 
-const SearchBar = ({ onSearch }) => {
+const SearchBar = ({ onFocusChange }) => {
   const SearchEngineName = useSelector((state) => state.settings.searchEngine);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchEngine, setSearchEngine] = useState('webSearch');
@@ -28,6 +28,10 @@ const SearchBar = ({ onSearch }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    onFocusChange?.(isTyping);
+  }, [isTyping, onFocusChange]);
 
   const handleSearch = (e) => {
     e.preventDefault();
