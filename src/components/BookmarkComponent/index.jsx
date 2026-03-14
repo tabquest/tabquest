@@ -108,13 +108,18 @@ const BookmarkComponent = () => {
 
   const handleUpdateBookmark = (id, updates) => {
     if (updates.title.trim() && updates.url.trim()) {
-      dispatch(updateBookmark({ id, updates }));
+      const url = updates.url.trim();
+      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+      dispatch(updateBookmark({ id, updates: { ...updates, url: formattedUrl } }));
       setEditingBookmark(null);
     }
   };
 
   const handleAddBookmark = (bookmark) => {
     if (bookmark.title.trim() && bookmark.url.trim()) {
+      const url = bookmark.url.trim();
+      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+
       const tags = bookmark.tags
         .split(', ')
         .map(tag => tag.trim())
@@ -124,6 +129,7 @@ const BookmarkComponent = () => {
       const newBookmark = {
         id: Date.now().toString(),
         ...bookmark,
+        url: formattedUrl,
         tags,
         folder: selectedFolder,
         dateAdded: Date.now(),
@@ -572,7 +578,19 @@ const BookmarkComponent = () => {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
-                placeholder: 'https://example.com'
+                placeholder: 'https://example.com',
+                validate: value => {
+                  if (!value || !value.trim()) return 'URL is required';
+                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  try {
+                    new URL(formatted);
+                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                      return 'Please enter a valid URL';
+                    }
+                  } catch (e) {
+                    return 'Please enter a valid URL';
+                  }
+                }
               },
               {
                 name: 'tags',
@@ -622,7 +640,19 @@ const BookmarkComponent = () => {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
-                placeholder: 'https://example.com'
+                placeholder: 'https://example.com',
+                validate: value => {
+                  if (!value || !value.trim()) return 'URL is required';
+                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  try {
+                    new URL(formatted);
+                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                      return 'Please enter a valid URL';
+                    }
+                  } catch (e) {
+                    return 'Please enter a valid URL';
+                  }
+                }
               },
               {
                 name: 'tags',
