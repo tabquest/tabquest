@@ -25,13 +25,15 @@ const DeleteConfirmModal = ({ type, onConfirm, onCancel }) => {
                 <div className="flex justify-end gap-3">
                     <button
                         onClick={onCancel}
-                        className="px-4 py-2 tq-text-secondary hover:tq-text-primary"
+                        className="px-4 py-2 tq-text-secondary hover:tq-text-primary cursor-pointer"
+                        title="Cancel"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 transition-opacity"
+                        className="px-4 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 transition-opacity cursor-pointer"
+                        title="Confirm Delete"
                     >
                         Delete
                     </button>

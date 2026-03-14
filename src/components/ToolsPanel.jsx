@@ -44,12 +44,13 @@ const ToolsPanel = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="px-4 h-12 rounded-xl backdrop-blur-md flex items-center gap-2 group shadow-lg relative"
+          className="px-4 h-12 rounded-xl backdrop-blur-md flex items-center gap-2 group shadow-lg relative cursor-pointer"
           style={{
             background: 'var(--tq-glass-bg)',
             border: '1px solid var(--tq-glass-border)',
           }}
           aria-label="Open Pro Tools"
+          title="Open Pro Tools"
         >
           <div
             className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -75,13 +76,14 @@ const ToolsPanel = () => {
           >
             {/* Backdrop */}
             <motion.div
-              className="absolute inset-0"
+              className="absolute inset-0 cursor-pointer"
               style={{
                 backgroundColor: 'rgba(0,0,0,.40)',
                 backdropFilter: 'blur(4px)',
                 WebkitBackdropFilter: 'blur(4px)',
               }}
               onClick={() => setIsOpen(false)}
+              title="Close Panel"
             />
 
             {/* Panel Container */}
@@ -129,8 +131,9 @@ const ToolsPanel = () => {
                   </h2>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="transition-colors"
+                    className="transition-colors cursor-pointer"
                     style={{ color: 'var(--tq-text-muted)' }}
+                    title="Close"
                   >
                     <X size={24} />
                   </button>
@@ -188,11 +191,12 @@ const ToolsPanel = () => {
 const TabButton = ({ icon, isActive, onClick, label }) => (
   <button
     onClick={onClick}
-    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors"
+    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors cursor-pointer"
     style={{
       color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
       background: isActive ? 'var(--tq-surface-elevated)' : 'transparent',
     }}
+    title={`Switch to ${label}`}
   >
     {React.cloneElement(icon, { size: 22 })}
     <span className="text-base">{label}</span>

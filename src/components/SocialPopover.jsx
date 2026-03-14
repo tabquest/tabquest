@@ -67,7 +67,8 @@ const SocialPopover = () => {
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
-                className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base backdrop-blur-lg transition-all"
+                className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base backdrop-blur-lg transition-all cursor-pointer"
+                title="View Profile"
                 style={{
                     background: 'var(--tq-glass-bg)',
                     border: '1px solid var(--tq-glass-border)',
@@ -133,8 +134,9 @@ const SocialPopover = () => {
                             <div className="flex gap-1.5">
                                 <a
                                     href="https://mail.google.com/"
-                                    className="rounded-lg p-1.5 transition-colors"
+                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
                                     style={{ color: 'var(--tq-text-secondary)' }}
+                                    title="Open Gmail"
                                 >
                                     <Mail className="h-4 w-4" />
                                 </a>
@@ -142,7 +144,7 @@ const SocialPopover = () => {
                                     <>
                                         <button
                                             onClick={() => copyToClipboard(userPortfolioUrl)}
-                                            className="rounded-lg p-1.5 transition-colors"
+                                            className="rounded-lg p-1.5 transition-colors cursor-pointer"
                                             style={{ color: 'var(--tq-text-secondary)' }}
                                             title="Copy portfolio URL"
                                         >
@@ -152,7 +154,7 @@ const SocialPopover = () => {
                                             href={validateUrl(userPortfolioUrl)}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="rounded-lg p-1.5 transition-colors"
+                                            className="rounded-lg p-1.5 transition-colors cursor-pointer"
                                             style={{ color: 'var(--tq-text-secondary)' }}
                                             title="Open portfolio website"
                                         >
@@ -181,7 +183,7 @@ const SocialPopover = () => {
                                             <a
                                                 href={value}
                                                 rel="noopener noreferrer"
-                                                className="flex flex-1 items-center gap-3"
+                                                className="flex flex-1 items-center gap-3 cursor-pointer"
                                                 style={{ color: 'var(--tq-text-primary)' }}
                                             >
                                                 <span className="text-lg" style={{ color: 'var(--tq-text-secondary)' }}>
@@ -192,7 +194,7 @@ const SocialPopover = () => {
                                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => copyToClipboard(value)}
-                                                    className="rounded-lg p-1.5 transition-colors"
+                                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
                                                     style={{ color: 'var(--tq-text-secondary)' }}
                                                     title="Copy URL"
                                                 >
@@ -202,7 +204,7 @@ const SocialPopover = () => {
                                                     href={value}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="rounded-lg p-1.5 transition-colors"
+                                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
                                                     style={{ color: 'var(--tq-text-secondary)' }}
                                                     title="Open link"
                                                 >

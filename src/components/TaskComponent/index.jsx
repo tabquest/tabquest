@@ -271,8 +271,9 @@ const TaskComponent = () => {
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2"
+                    className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
                     onClick={() => setShowFolderPopup(true)}
+                    title="Create New List"
                 >
                     <Plus size={16} />
                     <span>New List</span>
@@ -292,6 +293,7 @@ const TaskComponent = () => {
                                 <div
                                     className="flex-1 flex items-center gap-2 cursor-pointer"
                                     onClick={() => setSelectedFolder(folder.id)}
+                                    title={`Switch to ${folder.title}`}
                                 >
                                     {/* <Folder  /> */}
                                     {folder.id === 'today' ? <CalendarDays size={16} /> : folder.id === 'archive' ? <ArchiveRestore size={16} /> : <Paperclip size={16} />}
@@ -302,16 +304,18 @@ const TaskComponent = () => {
                                     </span>
                                 </div>
                                 {!folder.isDefault && (
-                                    <div className="opacity-0 group-hover:opacity-100 flex gap-2">
+                                     <div className="opacity-0 group-hover:opacity-100 flex gap-2">
                                         <button
-                                            className="tq-text-muted hover:tq-text-primary"
+                                            className="tq-text-muted hover:tq-text-primary cursor-pointer"
                                             onClick={() => setEditingFolder(folder)}
+                                            title="Edit List"
                                         >
                                             <Edit2 size={16} />
                                         </button>
                                         <button
-                                            className="tq-text-muted hover:tq-danger"
+                                            className="tq-text-muted hover:tq-danger cursor-pointer"
                                             onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                                            title="Delete List"
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -336,8 +340,9 @@ const TaskComponent = () => {
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2"
+                            className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
                             onClick={() => setShowTaskPopup(true)}
+                            title="Add New Task"
                         >
                             <Plus size={16} />
                             <span>New Task</span>
@@ -354,7 +359,8 @@ const TaskComponent = () => {
                                 const updatedFolders = calculateFolderCounts(folders, nonArchivedTasks);
                                 dispatch(setFolders(updatedFolders));
                             }}
-                            className="px-3 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 flex items-center gap-2"
+                            className="px-3 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 flex items-center gap-2 cursor-pointer"
+                            title="Permanently clear all archived tasks"
                         >
                             <Trash2 size={16} />
                             <span>Clear Archive</span>

@@ -28,18 +28,19 @@ const BookmarkList = ({
                 <motion.button
                   whileHover={{ scale: 1.2, rotate: 180 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`transition-colors duration-200 ${bookmark.starred ? 'tq-yellow' : 'tq-text-muted hover:tq-yellow'
+                  className={`cursor-pointer transition-colors duration-200 ${bookmark.starred ? 'tq-yellow' : 'tq-text-muted hover:tq-yellow'
                     }`}
                   onClick={() => handleStarBookmark(bookmark)}
+                  title={bookmark.starred ? "Unstar Bookmark" : "Star Bookmark"}
                 >
                   <Star size={16} />
                 </motion.button>
 
                 <div>
                   <div
-                  onClick={() => window.location.replace(bookmark.url)}
-                    // href={bookmark.url}
-                    className="tq-text-primary font-medium hover:underline"
+                    onClick={() => window.location.replace(bookmark.url)}
+                    className="tq-text-primary font-medium hover:underline cursor-pointer"
+                    title="Open Bookmark"
                   >
                     {highlightText(bookmark.title, searchQuery)}
                   </div>
@@ -66,16 +67,18 @@ const BookmarkList = ({
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-1 tq-text-muted hover:tq-text-primary"
+                    className="p-1 tq-text-muted hover:tq-text-primary cursor-pointer"
                     onClick={() => setEditingBookmark(bookmark)}
+                    title="Edit Bookmark"
                   >
                     <Edit2 size={16} />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-1 tq-text-muted hover:tq-danger"
+                    className="p-1 tq-text-muted hover:tq-danger cursor-pointer"
                     onClick={() => setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id })}
+                    title="Delete Bookmark"
                   >
                     <Trash2 size={16} />
                   </motion.button>

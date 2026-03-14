@@ -106,7 +106,7 @@ const ChromeSearchBar = () => {
                             <motion.button
                                 type="button"
                                 onClick={handleGoogleLensClick}
-                                className="px-4 py-3 sm:py-4 backdrop-blur-md transition-all duration-200"
+                                className="px-4 py-3 sm:py-4 backdrop-blur-md transition-all duration-200 cursor-pointer"
                                 style={{
                                     background: 'var(--tq-surface-elevated)',
                                     borderRight: '1px solid var(--tq-border-1)',
@@ -122,13 +122,14 @@ const ChromeSearchBar = () => {
                             {/* Search Button */}
                             <motion.button
                                 type="submit"
-                                className="px-4 py-3 sm:py-4 backdrop-blur-md rounded-r-xl transition-all duration-200"
+                                className="px-4 py-3 sm:py-4 backdrop-blur-md rounded-r-xl transition-all duration-200 cursor-pointer"
                                 style={{
                                     background: 'var(--tq-surface-elevated)',
                                     color: 'var(--tq-text-primary)',
                                 }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
+                                title="Perform Search"
                             >
                                 <Search size={20} />
                             </motion.button>

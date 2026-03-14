@@ -62,7 +62,8 @@ const PopupModal = ({
                     <h3 className="text-lg font-medium tq-text-primary">{title}</h3>
                     <button
                         onClick={onClose}
-                        className="tq-text-secondary hover:tq-text-primary"
+                        className="tq-text-secondary hover:tq-text-primary cursor-pointer"
+                        title="Close"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -107,13 +108,15 @@ const PopupModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary"
+                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary cursor-pointer"
+                            title="Cancel"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary"
+                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                            title="Save changes"
                         >
                             Save
                         </button>

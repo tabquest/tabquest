@@ -79,7 +79,8 @@ const PopupModal = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1 tq-text-muted hover:tq-text-primary transition-colors rounded-full hover:tq-surface-3"
+                        className="p-1 tq-text-muted hover:tq-text-primary transition-colors rounded-full hover:tq-surface-3 cursor-pointer"
+                        title="Close"
                     >
                         <X size={20} />
                     </button>
@@ -121,13 +122,15 @@ const PopupModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary transition-colors rounded-lg hover:tq-surface-2"
+                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary transition-colors rounded-lg hover:tq-surface-2 cursor-pointer"
+                            title="Cancel"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors"
+                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors cursor-pointer"
+                            title="Save changes"
                         >
                             Save
                         </button>

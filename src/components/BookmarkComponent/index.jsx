@@ -200,8 +200,9 @@ const BookmarkComponent = () => {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2"
+          className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
           onClick={() => setShowFolderPopup(true)}
+          title="Create New Folder"
         >
           <Plus size={16} />
           <span>New Folder</span>
@@ -218,6 +219,7 @@ const BookmarkComponent = () => {
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer"
                 onClick={() => setSelectedFolder(folder.id)}
+                title={`Switch to ${folder.title}`}
               >
                 {folder.id === 'favorites' ? <Heart size={18} /> : <Folder size={16} />}
                 <span>
@@ -232,16 +234,18 @@ const BookmarkComponent = () => {
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="tq-text-muted hover:tq-text-primary"
+                    className="tq-text-muted hover:tq-text-primary cursor-pointer"
                     onClick={() => setEditingFolder(folder)}
+                    title="Edit Folder"
                   >
                     <Edit2 size={16} />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="tq-text-muted hover:tq-danger"
+                    className="tq-text-muted hover:tq-danger cursor-pointer"
                     onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                    title="Delete Folder"
                   >
                     <Trash2 size={16} />
                   </motion.button>
@@ -293,7 +297,7 @@ const BookmarkComponent = () => {
                   localStorage.setItem('bookmarkViewMode', 'list');
                 }}
                 title="List View"
-                className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
+                className={`p-2 rounded transition-colors cursor-pointer ${viewMode === 'list' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
               >
                 <List size={16} />
               </button>
@@ -304,7 +308,7 @@ const BookmarkComponent = () => {
                     localStorage.setItem('bookmarkViewMode', 'grid');
                   }}
                   title="Grid View"
-                  className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
+                  className={`p-2 rounded transition-colors cursor-pointer ${viewMode === 'grid' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
                 >
                   <Grid3X3 size={16} />
                 </button>
@@ -321,8 +325,9 @@ const BookmarkComponent = () => {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2"
+                className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
                 onClick={() => setShowBookmarkPopup(true)}
+                title="Add New Bookmark"
               >
                 <Plus size={16} />
                 <span>Add URL</span>
@@ -348,17 +353,19 @@ const BookmarkComponent = () => {
                   whileHover={{ scale: 1.01, x: 4 }}
                   className="group p-4 tq-gradient-subtle hover:from-white/10 hover:to-white/15 rounded-xl border tq-border-1 transition-all duration-200 cursor-pointer"
                   onClick={() => window.open(bookmark.url, '_blank')}
+                  title="Open Bookmark"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
                       <motion.button
                         whileHover={{ scale: 1.2, rotate: 360 }}
                         whileTap={{ scale: 0.9 }}
-                        className={`transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'}`}
+                        className={`transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'} cursor-pointer`}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleStarBookmark(bookmark);
                         }}
+                        title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
                       >
                         {bookmark.starred ? (
                           <Star fill="currentColor" size={18} />
@@ -404,22 +411,24 @@ const BookmarkComponent = () => {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 tq-text-muted hover:tq-text-primary hover:tq-surface-3 rounded-lg transition-colors"
+                          className="p-2 tq-text-muted hover:tq-text-primary hover:tq-surface-3 rounded-lg transition-colors cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingBookmark(bookmark);
                           }}
+                          title="Edit Bookmark"
                         >
                           <Edit2 size={16} />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 tq-text-muted hover:text-white hover:tq-danger-bg rounded-lg transition-colors"
+                          className="p-2 tq-text-muted hover:text-white hover:tq-danger-bg rounded-lg transition-colors cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
                           }}
+                          title="Delete Bookmark"
                         >
                           <Trash2 size={16} />
                         </motion.button>
@@ -446,11 +455,12 @@ const BookmarkComponent = () => {
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`absolute top-3 right-3 z-10 transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'}`}
+                    className={`absolute top-3 right-3 z-10 transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'} cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleStarBookmark(bookmark);
                     }}
+                    title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
                   >
                     {bookmark.starred ? (
                       <Star fill="currentColor" size={18} />
@@ -463,22 +473,24 @@ const BookmarkComponent = () => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-text-primary"
+                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-text-primary cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         setEditingBookmark(bookmark);
                       }}
+                      title="Edit Bookmark"
                     >
                       <Edit2 size={14} />
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-danger"
+                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-danger cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
                       }}
+                      title="Delete Bookmark"
                     >
                       <Trash2 size={14} />
                     </motion.button>

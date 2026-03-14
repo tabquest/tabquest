@@ -337,7 +337,8 @@ const SettingsPanel = () => {
                         transition={{
                             y: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }
                         }}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all font-medium"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all font-medium cursor-pointer"
+                        title="Submit Feedback"
                         style={{
                             background: 'var(--tq-accent)',
                             color: '#fff',
@@ -360,7 +361,8 @@ const SettingsPanel = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl backdrop-blur-md flex items-center justify-center group shadow-lg z-40"
+                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl backdrop-blur-md flex items-center justify-center group shadow-lg z-40 cursor-pointer"
+                        title="Open Settings"
                         style={{
                             background: 'var(--tq-glass-bg)',
                             border: '1px solid var(--tq-glass-border)',
@@ -420,7 +422,8 @@ const SettingsPanel = () => {
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-lg transition-colors"
+                                        className="p-2 rounded-lg transition-colors cursor-pointer"
+                                        title="Close Settings"
                                         style={{ color: 'var(--tq-text-secondary)' }}
                                     >
                                         <X className="w-5 h-5" />
@@ -484,7 +487,8 @@ const SettingsPanel = () => {
                                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                     <button
                                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                        className="w-full pl-11 pr-4 py-3 rounded-xl text-left focus:outline-none"
+                                                        className="w-full pl-11 pr-4 py-3 rounded-xl text-left focus:outline-none cursor-pointer"
+                                                        title="Select Search Engine"
                                                         style={{
                                                             background: 'transparent',
                                                             border: '1px solid var(--tq-border-1)',
@@ -526,6 +530,7 @@ const SettingsPanel = () => {
                                                                         setIsDropdownOpen(false);
                                                                     }}
                                                                     className="px-4 py-3 cursor-pointer transition-colors"
+                                                                    title={`Select ${engine}`}
                                                                     style={{ color: 'var(--tq-text-primary)' }}
                                                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
                                                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -574,7 +579,8 @@ const SettingsPanel = () => {
                                                             setFormState({ ...formState, theme: theme.key });
                                                             dispatch(updateTheme(theme.key));
                                                         }}
-                                                        className="rounded-xl p-2 transition-all"
+                                                        className="rounded-xl p-2 transition-all cursor-pointer"
+                                                        title={`Switch to ${theme.name} theme`}
                                                         style={{
                                                             border: isSelected
                                                                 ? `2px solid var(--tq-accent)`
@@ -633,7 +639,8 @@ const SettingsPanel = () => {
                                                 <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>12-hour</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('use12Hour')}
-                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
+                                                    title="Toggle 12/24 hour format"
                                                     style={{
                                                         backgroundColor: formState.use12Hour
                                                             ? 'rgba(var(--tq-accent-rgb),.50)'
@@ -660,7 +667,8 @@ const SettingsPanel = () => {
                                                 <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>Hide seconds</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('hideSeconds')}
-                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
+                                                    title="Toggle seconds visibility"
                                                     style={{
                                                         backgroundColor: formState.hideSeconds
                                                             ? 'rgba(var(--tq-accent-rgb),.50)'
@@ -735,7 +743,8 @@ const SettingsPanel = () => {
                                                 whileTap={{ scale: 0.9 }}
                                                 onClick={addBookmark}
                                                 disabled={formState.bookmarks.length >= 8}
-                                                className="p-2 rounded-lg transition-colors disabled:opacity-50"
+                                                className="p-2 rounded-lg transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                                title="Add to Favourites"
                                                 style={{ color: 'var(--tq-text-secondary)' }}
                                             >
                                                 <Plus className="w-4 h-4" />
@@ -777,7 +786,8 @@ const SettingsPanel = () => {
                                                         whileHover={{ scale: 1.1 }}
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => removeBookmark(index)}
-                                                        className="p-3 rounded-xl transition-colors"
+                                                        className="p-3 rounded-xl transition-colors cursor-pointer"
+                                                        title="Remove from Favourites"
                                                         style={{ color: 'var(--tq-text-secondary)' }}
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -797,7 +807,8 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleSave}
-                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                title="Save all changes"
                                                 style={{
                                                     background: 'var(--tq-gradient-subtle)',
                                                     border: '1px solid var(--tq-border-1)',
@@ -815,7 +826,8 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleReset}
-                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                title="Reset settings to default"
                                                 style={{
                                                     background: 'rgba(var(--tq-accent-rgb),.06)',
                                                     border: '1px solid var(--tq-border-1)',
@@ -845,6 +857,7 @@ const SettingsPanel = () => {
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300"
+                                            title="Submit Feedback"
                                             style={{
                                                 background: 'rgba(var(--tq-accent-sec-rgb),.10)',
                                                 border: isHighlightingFeedback

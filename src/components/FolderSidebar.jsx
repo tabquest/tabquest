@@ -20,8 +20,9 @@ const FolderSidebar = ({
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2"
+        className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
         onClick={() => setShowFolderPopup(true)}
+        title="Create New Folder"
       >
         <Plus size={16} />
         <span>New Folder</span>
@@ -38,6 +39,7 @@ const FolderSidebar = ({
             <div
               className="flex-1 flex items-center gap-2 cursor-pointer"
               onClick={() => setSelectedFolder(folder.id)}
+              title={`Switch to ${folder.title}`}
             >
               <Folder size={16} />
               <span>{folder.title}</span>
@@ -50,16 +52,18 @@ const FolderSidebar = ({
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="tq-text-muted hover:tq-text-primary"
+                  className="tq-text-muted hover:tq-text-primary cursor-pointer"
                   onClick={() => setEditingFolder(folder)}
+                  title="Edit Folder"
                 >
                   <Edit2 size={16} />
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="tq-text-muted hover:tq-danger"
+                  className="tq-text-muted hover:tq-danger cursor-pointer"
                   onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                  title="Delete Folder"
                 >
                   <Trash2 size={16} />
                 </motion.button>

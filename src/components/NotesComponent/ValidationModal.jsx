@@ -23,7 +23,8 @@ const ValidationModal = ({ message, onClose }) => {
                 <div className="flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary"
+                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                        title="OK"
                     >
                         OK
                     </button>

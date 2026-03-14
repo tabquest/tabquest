@@ -43,7 +43,8 @@ const SimpleTaskModal = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1 tq-text-secondary hover:tq-text-primary transition-colors rounded-full hover:tq-surface-3"
+                        className="p-1 tq-text-secondary hover:tq-text-primary transition-colors rounded-full hover:tq-surface-3 cursor-pointer"
+                        title="Close"
                     >
                         <X size={20} />
                     </button>
@@ -97,13 +98,15 @@ const SimpleTaskModal = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary hover:tq-surface-2 rounded-lg transition-colors"
+                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary hover:tq-surface-2 rounded-lg transition-colors cursor-pointer"
+                            title="Cancel"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors"
+                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors cursor-pointer"
+                            title={isEditing ? 'Save Changes' : 'Add Task'}
                         >
                             {isEditing ? 'Save Changes' : 'Add Task'}
                         </button>

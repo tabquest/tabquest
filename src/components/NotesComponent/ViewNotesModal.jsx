@@ -43,14 +43,16 @@ const ViewNotesModal = ({
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={onEdit}
-                                className="p-2 hover:tq-surface-3 rounded-lg tq-text-primary"
+                                className="p-2 hover:tq-surface-3 rounded-lg tq-text-primary cursor-pointer"
+                                title="Edit Note"
                             >
                                 <Edit2 size={20} />
                             </motion.button>
                             <motion.button
                                 whileTap={{ scale: 0.9 }}
                                 onClick={onDelete}
-                                className="p-2 hover:tq-surface-3 rounded-lg tq-danger"
+                                className="p-2 hover:tq-surface-3 rounded-lg tq-danger cursor-pointer"
+                                title="Delete Note"
                             >
                                 <Trash2 size={20} />
                             </motion.button>
@@ -58,7 +60,8 @@ const ViewNotesModal = ({
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={onClose}
-                                className="p-2 hover:tq-surface-3 rounded-lg tq-text-primary"
+                                className="p-2 hover:tq-surface-3 rounded-lg tq-text-primary cursor-pointer"
+                                title="Close"
                             >
                                 <X size={20} />
                             </motion.button>
@@ -86,11 +89,12 @@ const ViewNotesModal = ({
                         {/* Content */}
                         {note.type === 'snippet' ? (
                             <div className="relative tq-surface-1 p-4 rounded-lg font-mono text-sm">
-                                <motion.button
+                                 <motion.button
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={() => handleCopyCode(note.content)}
-                                    className="absolute top-2 right-2 p-2 hover:tq-surface-1 rounded-lg tq-text-muted hover:tq-text-muted z-10"
+                                    className="absolute top-2 right-2 p-2 hover:tq-surface-1 rounded-lg tq-text-muted hover:tq-text-muted z-10 cursor-pointer"
+                                    title="Copy code"
                                 >
                                     <AnimatePresence mode="wait">
                                         {copied ? (

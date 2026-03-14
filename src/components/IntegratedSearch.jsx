@@ -169,7 +169,8 @@ const IntegratedSearch = () => {
                 className="h-full w-full px-4 py-4 flex items-center justify-between 
                   tq-surface-3 backdrop-blur-md rounded-l-xl
                   border-r border-white/5
-                  hover:tq-hover-bg transition-all duration-200"
+                  hover:tq-hover-bg transition-all duration-200 cursor-pointer"
+                title="Change Search Engine"
               >
                 <div className="flex items-center gap-2">
                   {searchEngine === 'google' ? (
@@ -199,7 +200,8 @@ const IntegratedSearch = () => {
                       setIsDropdownOpen(false);
                     }}
                     className="flex items-center gap-2 w-full px-4 py-3 
-                      tq-text-primary hover:tq-surface-3 transition-all duration-200"
+                      tq-text-primary hover:tq-surface-3 transition-all duration-200 cursor-pointer"
+                    title="Search via Google"
                   >
                     <Globe size={16} />
                     Google
@@ -211,7 +213,8 @@ const IntegratedSearch = () => {
                       setIsDropdownOpen(false);
                     }}
                     className="flex items-center gap-2 w-full px-4 py-3 
-                      tq-text-primary hover:tq-surface-3 transition-all duration-200"
+                      tq-text-primary hover:tq-surface-3 transition-all duration-200 cursor-pointer"
+                    title="Search via YouTube"
                   >
                     <Youtube size={16} />
                     YouTube
@@ -236,7 +239,8 @@ const IntegratedSearch = () => {
               type="submit"
               className="px-6 tq-surface-3 backdrop-blur-md rounded-r-xl
                 border-l border-white/5
-              hover:tq-hover-bg transition-all duration-200"
+              hover:tq-hover-bg transition-all duration-200 cursor-pointer"
+              title="Search"
             >
               <Search size={20} className="tq-text-primary" />
             </button>

@@ -255,8 +255,9 @@ const NotesComponent = () => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary"
+                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary cursor-pointer"
                         onClick={() => setShowAddModal(true)}
+                        title="Add Note"
                     >
                         <Plus size={18} />
                         <span>Add Note</span>
@@ -325,6 +326,7 @@ const NotesComponent = () => {
                                     whileHover={{ scale: 1.02 }}
                                     className="group tq-surface-2 border tq-border-1 rounded-lg p-4 cursor-pointer"
                                     onClick={() => dispatch(setSelectedNote(note))}
+                                    title="View Note Details"
                                 >
                                     {/* Note content */}
                                     <div className="flex items-center justify-between mb-2">
@@ -348,7 +350,8 @@ const NotesComponent = () => {
                                                 e.stopPropagation();
                                                 dispatch(toggleStarred(note.id));
                                             }}
-                                            className={`${note.starred ? 'tq-warning' : 'tq-text-muted'}`}
+                                            className={`${note.starred ? 'tq-warning' : 'tq-text-muted'} cursor-pointer`}
+                                            title={note.starred ? "Remove from Favorites" : "Add to Favorites"}
                                         >
                                             <Star
                                                 size={16}

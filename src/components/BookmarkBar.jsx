@@ -87,8 +87,9 @@ const BookmarkBar = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="group flex flex-col items-center gap-2"
+              className="group flex flex-col items-center gap-2 cursor-pointer"
               whileTap={{ scale: 0.95 }}
+              title={bookmark.name}
             >
               <motion.div
                 className="relative flex items-center justify-center w-14 h-14"

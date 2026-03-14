@@ -93,14 +93,16 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 translate-x-2">
                     <div className="flex gap-3">
                         <button
-                            className="p-2 rounded-lg tq-text-muted hover:tq-text-primary hover:tq-surface-2 transition-all duration-200"
+                            className="p-2 rounded-lg tq-text-muted hover:tq-text-primary hover:tq-surface-2 transition-all duration-200 cursor-pointer"
                             onClick={onEdit}
+                            title="Edit Task"
                         >
                             <Edit2 className="stroke-[1.5]" size={16} />
                         </button>
                         <button
-                            className="p-2 rounded-lg tq-text-muted hover:text-white hover:tq-danger-bg transition-all duration-200"
+                            className="p-2 rounded-lg tq-text-muted hover:text-white hover:tq-danger-bg transition-all duration-200 cursor-pointer"
                             onClick={onDelete}
+                            title="Delete Task"
                         >
                             <Trash2 className="stroke-[1.5]" size={16} />
                         </button>

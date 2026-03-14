@@ -69,7 +69,8 @@ const PopupModal = ({
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9 }}
                                     onClick={onClose}
-                                    className="p-2 hover:tq-surface-3 rounded-lg"
+                                    className="p-2 hover:tq-surface-3 rounded-lg cursor-pointer"
+                                    title="Close"
                                 >
                                     <X size={20} />
                                 </motion.button>
@@ -85,8 +86,9 @@ const PopupModal = ({
                                         <button
                                             type="button"
                                             onClick={() => setFormData({ ...formData, type: 'note' })}
-                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
                           ${formData.type === 'note' ? 'bg-white/20 tq-text-primary' : 'tq-surface-3 tq-text-muted hover:bg-white/15'}`}
+                                            title="Switch to Note type"
                                         >
                                             <StickyNote size={16} />
                                             Note
@@ -94,8 +96,9 @@ const PopupModal = ({
                                         <button
                                             type="button"
                                             onClick={() => setFormData({ ...formData, type: 'snippet' })}
-                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                                            className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
                           ${formData.type === 'snippet' ? 'bg-white/20 tq-text-primary' : 'tq-surface-3 tq-text-muted hover:bg-white/15'}`}
+                                            title="Switch to Snippet type"
                                         >
                                             <Code size={16} />
                                             Code Snippet
@@ -104,8 +107,9 @@ const PopupModal = ({
                                             <button
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, type: 'markdown' })}
-                                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 
+                                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer
                               ${formData.type === 'markdown' ? 'bg-white/20 tq-text-primary' : 'tq-surface-3 tq-text-muted hover:bg-white/15'}`}
+                                                title="Switch to Markdown type"
                                             >
                                                 <FileType size={16} />
                                                 Markdown
@@ -185,7 +189,8 @@ const PopupModal = ({
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleSubmit}
-                                    className="px-6 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary"
+                                    className="px-6 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                                    title={isEditing ? 'Save Changes' : 'Add Note'}
                                 >
                                     {isEditing ? 'Save Changes' : 'Add Note'}
                                 </motion.button>

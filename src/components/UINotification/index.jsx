@@ -40,7 +40,8 @@ const UINotification = ({ notification, onClose }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="transition-colors"
+                        className="transition-colors cursor-pointer"
+                        title="Close Notification"
                         style={{ color: 'var(--tq-text-muted)' }}
                     >
                         <X size={16} />
