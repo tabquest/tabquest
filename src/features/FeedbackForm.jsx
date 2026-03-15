@@ -64,8 +64,13 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                             stiffness: 350,
                             duration: 0.3
                         }}
-                        className="w-full max-w-sm tq-surface-1 rounded-xl shadow-2xl mx-4 border tq-border-1"
+                        className="w-full max-w-sm rounded-xl shadow-2xl mx-4 border backdrop-blur-2xl"
+                        style={{
+                            background: 'var(--tq-glass-bg)',
+                            borderColor: 'var(--tq-glass-border)',
+                        }}
                     >
+                        <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-glass)' }} />
                         <div className="p-5">
                             <AnimatePresence mode="wait">
                                 {alert && (
@@ -74,9 +79,9 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.2 }}
-                                        className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${alert.type === 'success'
-                                            ? 'tq-success-bg tq-success border border-green-500/20'
-                                            : 'tq-danger-bg tq-red border border-red-500/20'
+                                        className={`mb-4 p-3 rounded-lg flex items-center gap-2 border ${alert.type === 'success'
+                                            ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                                            : 'bg-red-500/10 text-red-500 border-red-500/20'
                                             }`}
                                     >
                                         {alert.type === 'success' ?
@@ -118,7 +123,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                                 className="focus:outline-none"
                                             >
                                                 <Star
-                                                    className={`w-6 h-6 transition-colors duration-200 ${star <= rating ? 'fill-purple-500 text-purple-400' : 'tq-text-muted hover:tq-text-muted'
+                                                    className={`w-6 h-6 transition-colors duration-200 cursor-pointer ${star <= rating ? 'fill-[var(--tq-accent)] text-[var(--tq-accent)]' : 'tq-text-muted hover:tq-text-muted'
                                                         }`}
                                                 />
                                             </motion.button>
@@ -146,14 +151,18 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                     <textarea
                                         name="feature_request"
                                         rows={3}
-                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-[var(--tq-accent)] focus:ring-1 focus:ring-[var(--tq-accent)]/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Suggest new features..."
                                     />
                                 </div>
 
                                 <motion.button type="submit"
                                     disabled={isSubmitting || rating === 0} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                    className={`w-full py-2 rounded-lg tq-text-primary font-medium transition-all ${isSubmitting || rating === 0 ? 'tq-surface-1 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-500 shadow-lg shadow-purple-500/20'}`} >
+                                    className={`w-full py-2 rounded-lg font-medium transition-all cursor-pointer ${isSubmitting || rating === 0 ? 'tq-surface-1 tq-text-muted cursor-not-allowed' : 'text-black shadow-lg shadow-[var(--tq-accent-glow)]'}`}
+                                    style={{
+                                        background: !(isSubmitting || rating === 0) ? 'var(--tq-accent)' : undefined
+                                    }}
+                                >
                                     {isSubmitting ? (<div className="flex items-center justify-center gap-2"> <FiLoader className="animate-spin" /> Submitting... </div>) : ('Submit Feedback')}
                                 </motion.button>
                             </form>

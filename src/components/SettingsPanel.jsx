@@ -340,14 +340,15 @@ const SettingsPanel = () => {
                         className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all font-medium cursor-pointer"
                         title="Submit Feedback"
                         style={{
-                            background: 'var(--tq-accent)',
-                            color: '#fff',
-                            border: '1px solid var(--tq-border-2)',
-                            boxShadow: `0 8px 24px var(--tq-accent-glow)`,
+                            background: 'var(--tq-glass-bg)',
+                            backdropFilter: 'blur(12px)',
+                            WebkitBackdropFilter: 'blur(12px)',
+                            border: '1px solid var(--tq-glass-border)',
+                            color: 'var(--tq-text-primary)',
                         }}
                     >
                         <span className="text-lg">👋</span>
-                        <span className="text-sm">Feedback</span>
+                        <span className="text-sm font-medium" style={{ color: 'var(--tq-accent)' }}>Feedback</span>
                     </motion.button>
                 </motion.div>
             )}
@@ -388,7 +389,7 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-base inset-y-0 right-0 w-[400px] backdrop-blur-2xl shadow-2xl z-30"
+                        className="fixed text-base inset-y-0 right-0 w-[400px] backdrop-blur-2xl shadow-2xl z-[100]"
                         style={{
                             background: 'var(--tq-surface-1)',
                             borderLeft: '1px solid var(--tq-border-1)',

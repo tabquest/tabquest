@@ -138,7 +138,6 @@ const AppContent = () => {
 function App() {
   return (
     <Provider store={store}>
-      <VersionChecker />
       <AppContent />
     </Provider>
   );
