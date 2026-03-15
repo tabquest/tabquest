@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "release" to confirm publishing to browser stores'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -85,6 +91,7 @@ jobs:
 
       - name: Publish to Firefox Add-ons
         id: publish-firefox
+        if: github.event_name == 'push' || github.event.inputs.confirm == 'release'
         continue-on-error: true
         env:
           FIREFOX_ISSUER: ${{ secrets.FIREFOX_ISSUER }}
@@ -100,6 +107,7 @@ jobs:
 
       - name: Publish to Chrome Web Store
         id: publish-chrome
+        if: github.event_name == 'push' || github.event.inputs.confirm == 'release'
         continue-on-error: true
         uses: wdzeng/chrome-extension@df7fcb73378f72fc4a6ec29b2cb2ef74a1f23faf # v1
         with:
@@ -111,6 +119,7 @@ jobs:
 
       - name: Publish to Edge Add-ons
         id: publish-edge
+        if: github.event_name == 'push' || github.event.inputs.confirm == 'release'
         continue-on-error: true
         uses: wdzeng/edge-addon@b34b7f1a15d0cee2d5d17cee1f5e2d1f2e5a2f4f # v2
         with:
