@@ -64,7 +64,7 @@ const SimpleTaskModal = ({
                                 value={values.title}
                                 onChange={(e) => setValues(prev => ({ ...prev, title: e.target.value }))}
                                 placeholder="What needs to be done?"
-                                className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:ring-2 focus:ring-white/20 focus:outline-none placeholder:tq-text-muted"
+                                className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:border-[var(--tq-accent)] focus:ring-1 focus:ring-[var(--tq-accent)]/20 focus:outline-none placeholder:tq-text-muted transition-all duration-200"
                                 autoFocus
                             />
                         </div>
@@ -83,7 +83,7 @@ const SimpleTaskModal = ({
                                 type="datetime-local"
                                 value={values.reminderDateTime}
                                 onChange={(e) => setValues((prev) => ({ ...prev, reminderDateTime: e.target.value }))}
-                                className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:ring-2 focus:ring-white/20 focus:outline-none [color-scheme:dark]"
+                                className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:border-[var(--tq-accent)] focus:ring-1 focus:ring-[var(--tq-accent)]/20 focus:outline-none [color-scheme:dark] transition-all duration-200"
                                 placeholder="Set reminder date and time"
                                 required
                             />
@@ -103,13 +103,15 @@ const SimpleTaskModal = ({
                         >
                             Cancel
                         </button>
-                        <button
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                             type="submit"
-                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors cursor-pointer"
+                            className="px-6 py-2 tq-accent-bg rounded-lg text-black font-bold cursor-pointer shadow-lg shadow-[var(--tq-accent)]/10"
                             title={isEditing ? 'Save Changes' : 'Add Task'}
                         >
                             {isEditing ? 'Save Changes' : 'Add Task'}
-                        </button>
+                        </motion.button>
                     </div>
                 </form>
             </motion.div>

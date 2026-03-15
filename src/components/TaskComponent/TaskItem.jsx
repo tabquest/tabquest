@@ -33,7 +33,10 @@ const TaskItem = forwardRef(({ task, onComplete, onEdit, onDelete }, ref) => {
                         type="checkbox"
                         checked={task.completed}
                         onChange={handleComplete}
-                        className="w-4 h-4 rounded-md tq-border-1 tq-surface-1 tq-success focus:ring-tq-success/30 focus:ring-2 focus:ring-offset-0 cursor-pointer hover:tq-border-success hover:tq-surface-1 transition-colors"
+                        className="w-4 h-4 rounded-md border tq-border-1 tq-surface-2 focus:ring-offset-0 cursor-pointer transition-all duration-200"
+                        style={{
+                            accentColor: 'var(--tq-accent)',
+                        }}
                     />
                     <div>
                         <div className="relative">

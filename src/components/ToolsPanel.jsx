@@ -189,9 +189,11 @@ const ToolsPanel = () => {
 };
 
 const TabButton = ({ icon, isActive, onClick, label }) => (
-  <button
+  <motion.button
+    whileHover={{ scale: 1.05, background: isActive ? 'var(--tq-surface-elevated)' : 'var(--tq-surface-2)' }}
+    whileTap={{ scale: 0.95 }}
     onClick={onClick}
-    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors cursor-pointer"
+    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
     style={{
       color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
       background: isActive ? 'var(--tq-surface-elevated)' : 'transparent',
@@ -199,8 +201,8 @@ const TabButton = ({ icon, isActive, onClick, label }) => (
     title={`Switch to ${label}`}
   >
     {React.cloneElement(icon, { size: 22 })}
-    <span className="text-base">{label}</span>
-  </button>
+    <span className="text-base font-medium">{label}</span>
+  </motion.button>
 );
 
 export default ToolsPanel;
