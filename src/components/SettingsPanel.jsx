@@ -913,29 +913,37 @@ const SettingsPanel = () => {
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            className="w-full flex items-center justify-center mt-4"
-                                            style={{ color: 'var(--tq-text-muted)' }}
+                                            className="w-full flex flex-col items-center gap-4 mt-6 pt-6 border-t tq-border-1"
                                         >
-                                            <img
-                                                src={TabQuestLogo}
-                                                alt="TabQuest Logo"
-                                                className="w-5 h-4.5 mr-2 object-contain"
-                                            />
-                                            <span
-                                                className="text-sm font-bold tracking-wide mr-2"
-                                                style={{ color: 'var(--tq-text-primary)' }}
-                                            >
-                                                TabQuest
-                                            </span>
-                                            <span
-                                                className="text-xs px-2 py-1 rounded-full"
+                                            <div className="flex items-center justify-center opacity-80">
+                                                <img
+                                                    src={TabQuestLogo}
+                                                    alt="TabQuest Logo"
+                                                    className="w-4 h-4 mr-2 object-contain grayscale brightness-125"
+                                                />
+                                                <span className="text-[11px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--tq-text-muted)' }}>
+                                                    TabQuest <span className="opacity-40 ml-1">v{APP_VERSION}</span>
+                                                </span>
+                                            </div>
+
+                                            <motion.a
+                                                href="https://github.com/tabquest/tabquest"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                whileHover={{ y: -2, background: 'rgba(251, 191, 36, 0.1)' }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className="flex items-center gap-2.5 px-5 py-2 rounded-full transition-all group relative overflow-hidden"
                                                 style={{
-                                                    background: 'var(--tq-surface-1)',
-                                                    color: 'var(--tq-text-muted)',
+                                                    background: 'rgba(251, 191, 36, 0.05)',
+                                                    border: '1px solid rgba(251, 191, 36, 0.15)',
                                                 }}
                                             >
-                                                {APP_VERSION}
-                                            </span>
+                                                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 group-hover:scale-110 transition-transform" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-amber-200/70 group-hover:text-amber-400 transition-colors">
+                                                    Star us on GitHub
+                                                </span>
+                                                <Github className="w-3.5 h-3.5 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
+                                            </motion.a>
                                         </motion.div>
                                     </div>
                                 </div>
