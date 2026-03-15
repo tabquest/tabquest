@@ -19,4 +19,5 @@ jobs:
         with:
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Using a PAT (RELEASE_PLEASE_TOKEN) instead of GITHUB_TOKEN allows the tag creation to trigger the Build workflow
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}

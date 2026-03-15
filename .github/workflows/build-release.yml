@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch: # Allow manual triggering from Actions tab
 
 permissions:
   contents: write
