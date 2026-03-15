@@ -49,7 +49,14 @@ Individual platform builds:
 ## Tech Stack
 
 **Client:** React, Redux, TailwindCSS, Vite, Framer-motion
+**Backend (Val Town):** [Weather API](https://www.val.town/x/TabQuest/weatherAPI)
 
+## External APIs
+
+TabQuest leverages public and custom APIs to provide dynamic features:
+- **Weather API**: Powered by a custom [Val Town](https://www.val.town/x/TabQuest/weatherAPI) endpoint that aggregates weather data. The backend code is open-source and unlisted for transparency.
+- **Favicon Service**: Uses Google's S2 favicon service for bookmark icons.
+- **Feedback**: Integrated via a custom Google Apps Script.
 
 ## Contributing
 

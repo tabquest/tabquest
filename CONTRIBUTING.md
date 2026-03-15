@@ -30,4 +30,9 @@ We welcome contributions from the open-source community! Whether you want to fix
 2. **Make your changes** and commit them with descriptive messages.
 3. **Push to your fork** and submit a **Pull Request** to the `main` branch.
 
+### Backend Contributions
+Since this is an open-source project, our backend components are also public. The **Weather API** is hosted on Val Town and can be viewed/contributed to here:
+- [TabQuest Weather API on Val Town](https://www.val.town/x/TabQuest/weatherAPI)
+
 Please ensure your code follows the existing style and that you are not committing any sensitive API keys or personal data.
+

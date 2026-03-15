@@ -1,6 +1,6 @@
 export const FAVICON_URL = "https://www.google.com/s2/favicons?sz=64&domain=";
 
-export const OPENWEATHER_API_URL = "https://halithsmh-weatherapi.web.val.run/?city=";
+export const OPENWEATHER_API_URL = "https://tabquest.val.run/weather?city=";
 
 export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxMdCc6s4Ggnx4i1iNq_kVI_4XznCVAlahBC5nS-bSjB99XRoxfElx17aPdFyLAHbsl/exec";
 

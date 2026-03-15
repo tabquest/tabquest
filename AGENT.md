@@ -134,7 +134,18 @@ We use **Conventional Commits**. Husky and Commitlint will reject non-compliant 
 
 ---
 
+## 🌐 External Services & APIs
+TabQuest depends on the following external services. AI Agents should be aware of these when debugging or proposing features:
+- **Weather API**: `https://tabquest.val.run/weather?city=`
+  - **Backend**: [Val Town Weather API](https://www.val.town/x/TabQuest/weatherAPI)
+  - **Note**: This is a custom proxy to protect API keys and aggregate data.
+- **Favicon Service**: `https://www.google.com/s2/favicons?sz=64&domain=`
+- **Feedback API**: Google Apps Script endpoint.
+
+---
+
 ## 🤖 Interaction Guardrails
+
 - **No Refactor Sprawl**: If asked to fix a bug, do not refactor the entire file unless explicitly requested.
 - **Preserve Aesthetic**: If adding a new UI element, ensure it uses the glassy/premium design language.
 - **Ask Before Deleting**: Never remove features or legacy themes without confirmation.
