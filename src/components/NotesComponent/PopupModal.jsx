@@ -119,9 +119,9 @@ const PopupModal = ({
                                             </span>
                                         </div>
                                     </div>
-                                    <p className="text-xs text-orange-400 bg-orange-400/10 p-2 rounded border border-orange-400/20">
+                                    {/* <p className="text-xs text-orange-400 bg-orange-400/10 p-2 rounded border border-orange-400/20">
                                         ⚠️ Code Snippets will be deprecated soon. Please switch to Markdown for code blocks.
-                                    </p>
+                                    </p> */}
                                 </div>
 
                                 {/* Title Input */}

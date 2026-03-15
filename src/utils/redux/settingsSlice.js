@@ -32,7 +32,7 @@ const defaultSettings = {
     use12Hour: false,
     socialProfiles: {
         linkedin: "https://www.linkedin.com/",
-        github: "https://github.com/",
+        github: "https://github.com/tabquest",
         twitter: "",
         instagram: "https://www.instagram.com",
         reddit: "",

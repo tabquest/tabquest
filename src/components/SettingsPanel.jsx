@@ -4,7 +4,7 @@ import {
     Settings, X, Plus, Save, RotateCcw, Send, Trash2,
     User, Briefcase, Globe, MapPin, Search, AlertCircle,
     Github, Twitter, Linkedin, Instagram,
-    Link
+    Link, Layout, Palette, Clock3, Share2, Star, Tag, MousePointer2
 } from 'lucide-react';
 import { RiRedditLine } from "react-icons/ri";
 import { motion, AnimatePresence } from 'framer-motion';
@@ -409,21 +409,26 @@ const SettingsPanel = () => {
 
                             {/* Content container */}
                             <div className="relative z-100 px-6 py-8">
-                                <div className="flex justify-between items-center mb-8">
-                                    <motion.h2
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        className="text-xl font-semibold"
-                                        style={{ color: 'var(--tq-text-primary)' }}
-                                    >
-                                        Settings
-                                    </motion.h2>
+                                <div className="flex justify-between items-center mb-8 pb-4" style={{ borderBottom: '1px solid var(--tq-border-1)' }}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-xl" style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}>
+                                            <Settings className="w-6 h-6" style={{ color: 'var(--tq-accent)' }} />
+                                        </div>
+                                        <motion.h2
+                                            initial={{ x: -20, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            className="text-xl font-bold tracking-tight"
+                                            style={{ color: 'var(--tq-text-primary)' }}
+                                        >
+                                            Settings
+                                        </motion.h2>
+                                    </div>
                                     <motion.button
                                         aria-label="Close Settings"
-                                        whileHover={{ scale: 1.1 }}
+                                        whileHover={{ scale: 1.1, rotate: 90 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-lg transition-colors cursor-pointer"
+                                        className="p-2 rounded-lg transition-all cursor-pointer"
                                         title="Close Settings"
                                         style={{ color: 'var(--tq-text-secondary)' }}
                                     >
@@ -433,42 +438,48 @@ const SettingsPanel = () => {
 
                                 <div className="space-y-8">
                                     {/* User Details */}
-                                    <div className="space-y-3">
-                                        <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
-                                            <input
-                                                type="text"
-                                                value={formState.userName}
-                                                onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
-                                                placeholder="Username"
-                                                className={inputClass}
-                                                style={inputStyle}
-                                                data-no-theme-transition="true"
-                                            />
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <User className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
                                         </div>
-                                        <div className="relative">
-                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
-                                            <input
-                                                type="text"
-                                                value={formState.userRole}
-                                                onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
-                                                placeholder="Role"
-                                                className={inputClass}
-                                                style={inputStyle}
-                                                data-no-theme-transition="true"
-                                            />
-                                        </div>
-                                        <div className="relative">
-                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
-                                            <input
-                                                type="text"
-                                                value={formState.userPortfolioUrl}
-                                                onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
-                                                placeholder="Portfolio URL"
-                                                className={inputClass}
-                                                style={inputStyle}
-                                                data-no-theme-transition="true"
-                                            />
+                                        <div className="space-y-3">
+                                            <div className="relative group">
+                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userName}
+                                                    onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
+                                                    placeholder="Username"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
+                                            <div className="relative group">
+                                                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userRole}
+                                                    onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
+                                                    placeholder="Role"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
+                                            <div className="relative group">
+                                                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userPortfolioUrl}
+                                                    onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
+                                                    placeholder="Portfolio URL"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -479,9 +490,12 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
-                                            {isChrome ? 'Weather' : ""}
-                                        </h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Layout className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                                {!isChrome ? 'Weather & Search' : "Weather"}
+                                            </h3>
+                                        </div>
                                         <div className="space-y-3">
                                             {!isChrome && (
                                                 <div className="relative w-full">
@@ -564,11 +578,12 @@ const SettingsPanel = () => {
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.12 }}
-                                        className="space-y-3"
+                                        className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
-                                            Theme
-                                        </h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Palette className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
+                                        </div>
                                         <div className="grid grid-cols-3 gap-2">
                                             {THEME_LIST.map((theme) => {
                                                 const isSelected = (formState.theme || initialState.theme) === theme.key;
@@ -626,8 +641,11 @@ const SettingsPanel = () => {
                                     </motion.div>
 
                                     {/* Clock */}
-                                    <div className="space-y-3">
-                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>Clock</h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Clock3 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
+                                        </div>
                                         <div className="flex flex-row gap-3">
                                             {/* 12-hour format */}
                                             <div
@@ -694,7 +712,10 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.2 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>Social Profiles</h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Share2 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
+                                        </div>
 
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
@@ -735,10 +756,13 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.3 }}
                                         className="space-y-4"
                                     >
-                                        <div className="flex justify-between items-center">
-                                            <h3 className="text-sm font-medium" style={{ color: 'var(--tq-text-secondary)' }}>
-                                                Favourites (upto 8)
-                                            </h3>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <Star className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                                <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                                    Favourites (upto 8)
+                                                </h3>
+                                            </div>
                                             <motion.button
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
@@ -753,42 +777,54 @@ const SettingsPanel = () => {
                                         </div>
                                         <div className="space-y-3">
                                             {formState.bookmarks.map((bookmark, index) => (
-                                                <div key={index} className="flex gap-2">
+                                                <div key={index} className="flex gap-2 group">
                                                     <div className="flex-1 flex gap-2">
-                                                        <input
-                                                            type="text"
-                                                            value={bookmark.name}
-                                                            onChange={(e) => {
-                                                                const newBookmarks = [...formState.bookmarks];
-                                                                newBookmarks[index] = { ...bookmark, name: e.target.value };
-                                                                setFormState({ ...formState, bookmarks: newBookmarks });
-                                                            }}
-                                                            placeholder="Name"
-                                                            className="w-1/2 px-4 py-3 rounded-xl focus:outline-none transition-colors"
-                                                            style={inputStyle}
-                                                            data-no-theme-transition="true"
-                                                        />
-                                                        <input
-                                                            type="url"
-                                                            value={bookmark.url}
-                                                            onChange={(e) => {
-                                                                const newBookmarks = [...formState.bookmarks];
-                                                                newBookmarks[index] = { ...bookmark, url: e.target.value };
-                                                                setFormState({ ...formState, bookmarks: newBookmarks });
-                                                            }}
-                                                            placeholder="Website URL"
-                                                            className="w-1/2 px-4 py-3 rounded-xl focus:outline-none transition-colors"
-                                                            style={inputStyle}
-                                                            data-no-theme-transition="true"
-                                                        />
+                                                        <div className="relative flex-1">
+                                                            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
+                                                            <input
+                                                                type="text"
+                                                                value={bookmark.name}
+                                                                onChange={(e) => {
+                                                                    const newBookmarks = [...formState.bookmarks];
+                                                                    newBookmarks[index] = { ...bookmark, name: e.target.value };
+                                                                    setFormState({ ...formState, bookmarks: newBookmarks });
+                                                                }}
+                                                                placeholder="Name"
+                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
+                                                                style={{
+                                                                    ...inputStyle,
+                                                                    background: 'var(--tq-surface-2)'
+                                                                }}
+                                                                data-no-theme-transition="true"
+                                                            />
+                                                        </div>
+                                                        <div className="relative flex-1">
+                                                            <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
+                                                            <input
+                                                                type="url"
+                                                                value={bookmark.url}
+                                                                onChange={(e) => {
+                                                                    const newBookmarks = [...formState.bookmarks];
+                                                                    newBookmarks[index] = { ...bookmark, url: e.target.value };
+                                                                    setFormState({ ...formState, bookmarks: newBookmarks });
+                                                                }}
+                                                                placeholder="URL"
+                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
+                                                                style={{
+                                                                    ...inputStyle,
+                                                                    background: 'var(--tq-surface-2)'
+                                                                }}
+                                                                data-no-theme-transition="true"
+                                                            />
+                                                        </div>
                                                     </div>
 
                                                     <motion.button
-                                                        whileHover={{ scale: 1.1 }}
+                                                        whileHover={{ scale: 1.1, color: 'var(--tq-danger)' }}
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => removeBookmark(index)}
-                                                        className="p-3 rounded-xl transition-colors cursor-pointer"
-                                                        title="Remove from Favourites"
+                                                        className="p-3 rounded-xl transition-all cursor-pointer opacity-40 group-hover:opacity-100"
+                                                        title="Remove"
                                                         style={{ color: 'var(--tq-text-secondary)' }}
                                                     >
                                                         <Trash2 className="w-4 h-4" />
@@ -857,21 +893,21 @@ const SettingsPanel = () => {
                                             }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300"
+                                            className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-3 group cursor-pointer transition-all duration-300"
                                             title="Submit Feedback"
                                             style={{
                                                 background: 'rgba(var(--tq-accent-sec-rgb),.10)',
                                                 border: isHighlightingFeedback
-                                                    ? '1px solid var(--tq-accent-secondary)'
+                                                    ? '2px solid var(--tq-accent-secondary)'
                                                     : '1px solid rgba(var(--tq-accent-sec-rgb),.25)',
                                                 color: 'var(--tq-text-primary)',
                                                 boxShadow: isHighlightingFeedback
-                                                    ? '0 0 15px rgba(var(--tq-accent-sec-rgb),.40)'
+                                                    ? '0 0 20px rgba(var(--tq-accent-sec-rgb),.50)'
                                                     : 'none',
                                             }}
                                         >
-                                            <Send className="w-5 h-5" style={{ color: 'var(--tq-text-secondary)' }} />
-                                            Submit Feedback
+                                            <MousePointer2 className="w-5 h-5" style={{ color: 'var(--tq-accent-secondary)' }} />
+                                            <span className="font-semibold">Submit Feedback</span>
                                         </motion.a>
 
                                         <motion.div
