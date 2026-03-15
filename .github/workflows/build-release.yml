@@ -132,7 +132,8 @@ jobs:
           echo "| Chrome | ${{ steps.publish-chrome.outcome == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Edge | ${{ steps.publish-edge.outcome == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           
-          if [[ "${{ steps.publish-firefox.outcome }}" == "failure" || "${{ steps.publish-chrome.outcome }}" == "failure" || "${{ steps.publish-edge.outcome }}" == "failure" ]]; then
+          if [[ "${{ steps.publish-firefox.outcome }}" != "success" || "${{ steps.publish-chrome.outcome }}" != "success" || "${{ steps.publish-edge.outcome }}" != "success" ]]; then
             echo "::error::One or more publishing steps failed. Check the logs above for details."
             exit 1
+          fi
           fi
