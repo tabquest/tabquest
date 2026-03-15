@@ -101,9 +101,6 @@ jobs:
       - name: Publish to Chrome Web Store
         id: publish-chrome
         continue-on-error: true
-      - name: Publish to Chrome Web Store
-        id: publish-chrome
-        continue-on-error: true
         uses: wdzeng/chrome-extension@df7fcb73378f72fc4a6ec29b2cb2ef74a1f23faf # v1
         with:
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
@@ -135,5 +132,4 @@ jobs:
           if [[ "${{ steps.publish-firefox.outcome }}" != "success" || "${{ steps.publish-chrome.outcome }}" != "success" || "${{ steps.publish-edge.outcome }}" != "success" ]]; then
             echo "::error::One or more publishing steps failed. Check the logs above for details."
             exit 1
-          fi
           fi
