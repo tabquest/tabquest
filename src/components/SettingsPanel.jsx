@@ -7,6 +7,7 @@ import {
     Link, Layout, Palette, Clock3, Share2, Star, Tag, MousePointer2
 } from 'lucide-react';
 import { RiRedditLine } from "react-icons/ri";
+import { FaXTwitter } from "react-icons/fa6";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -720,11 +721,13 @@ const SettingsPanel = () => {
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
                                                 github: Github,
-                                                twitter: Twitter,
+                                                twitter: FaXTwitter,
                                                 linkedin: Linkedin,
                                                 instagram: Instagram,
                                                 reddit: RiRedditLine
                                             }[platform] || Link;
+
+                                            const displayName = platform === 'twitter' ? 'X' : platform.charAt(0).toUpperCase() + platform.slice(1);
 
                                             return (
                                                 <div key={platform} className="relative">
@@ -739,7 +742,7 @@ const SettingsPanel = () => {
                                                                 [platform]: e.target.value
                                                             }
                                                         })}
-                                                        placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
+                                                        placeholder={`${displayName} URL`}
                                                         className={inputClass}
                                                         style={inputStyle}
                                                         data-no-theme-transition="true"

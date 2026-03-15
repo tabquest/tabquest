@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { CHRISTMAS_MODE } from "../utils/constants";
 
 import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaReddit } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaInstagram, FaReddit, FaXTwitter } from "react-icons/fa6";
 
 const SocialPopover = () => {
     const SocialProfiles = useSelector((state) => state.settings.socialProfiles);
@@ -22,7 +22,7 @@ const SocialPopover = () => {
     const SocialIcons = {
         linkedin: <FaLinkedin />,
         github: <FaGithub />,
-        twitter: <FaTwitter />,
+        twitter: <FaXTwitter />,
         instagram: <FaInstagram />,
         reddit: <FaReddit />,
     };
@@ -189,7 +189,7 @@ const SocialPopover = () => {
                                                 <span className="text-lg" style={{ color: 'var(--tq-text-secondary)' }}>
                                                     {SocialIcons[key]}
                                                 </span>
-                                                <p className="text-base capitalize">{key}</p>
+                                                <p className="text-base capitalize">{key === 'twitter' ? 'X' : key}</p>
                                             </a>
                                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
