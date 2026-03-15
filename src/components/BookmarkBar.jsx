@@ -8,14 +8,13 @@ const getFaviconUrl = (url) => {
   try {
     const hostname = new URL(url).hostname;
 
-    // Ensure Gmail and Google Mail URLs are correctly handled
     if (hostname === 'mail.google.com' || hostname.includes('gmail')) {
-      return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico'; // Use Google's global favicon
+      return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico';
     }
 
     return FAVICON_URL + hostname;
   } catch {
-    return ''; // Fallback for invalid URLs
+    return '';
   }
 };
 
@@ -48,15 +47,6 @@ const BookmarkBar = () => {
     loadFavicons();
   }, [bookmarks]);
 
-  // const containerWidth = useMemo(() => {
-  //   const itemWidth = 80;
-  //   const minWidth = 320;
-  //   const maxWidth = 1200;
-  //   const calculatedWidth = bookmarks.length * itemWidth;
-
-  //   return Math.min(Math.max(calculatedWidth, minWidth), maxWidth);
-  // }, [bookmarks.length]);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -69,11 +59,19 @@ const BookmarkBar = () => {
       }}
     >
       <motion.div
-        className="relative backdrop-blur-xl bg-black/20 rounded-2xl py-5 px-8 shadow-lg border border-white/10"
+        className="relative backdrop-blur-xl rounded-2xl py-5 px-8 shadow-lg"
+        style={{
+          background: 'var(--tq-glass-bg)',
+          border: '1px solid var(--tq-glass-border)',
+        }}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/5 to-transparent opacity-50" />
+        {/* Subtle gradient overlay */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-50 pointer-events-none"
+          style={{ background: 'var(--tq-gradient-glass)' }}
+        />
 
         <div
           className="relative grid auto-cols-min gap-7 z-10"
@@ -89,19 +87,27 @@ const BookmarkBar = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="group flex flex-col items-center gap-2"
+              className="group flex flex-col items-center gap-2 cursor-pointer"
               whileTap={{ scale: 0.95 }}
+              title={bookmark.name}
             >
               <motion.div
                 className="relative flex items-center justify-center w-14 h-14"
                 whileHover={{ scale: 1.1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
-                <div className="absolute inset-0 rounded-xl bg-black/40 border border-white/10 group-hover:border-white/20 transition-all duration-300" />
+                <div
+                  className="absolute inset-0 rounded-xl transition-all duration-300"
+                  style={{
+                    background: 'var(--tq-surface-1)',
+                    border: '1px solid var(--tq-border-1)',
+                  }}
+                />
 
                 <div className="relative">
                   <motion.div
-                    className="absolute inset-0 bg-emerald-500/10 blur-md rounded-full"
+                    className="absolute inset-0 blur-md rounded-full"
+                    style={{ backgroundColor: 'var(--tq-accent-glow)' }}
                     initial={{ scale: 0 }}
                     whileHover={{ scale: 1 }}
                     transition={{ duration: 0.2 }}
@@ -116,11 +122,17 @@ const BookmarkBar = () => {
                       e.target.nextElementSibling.style.display = 'block';
                     }}
                   />
-                  <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-white/70 hidden" />
+                  <Globe
+                    className="w-6 h-6 sm:w-8 sm:h-8 hidden"
+                    style={{ color: 'var(--tq-text-secondary)' }}
+                  />
                 </div>
               </motion.div>
 
-              <span className="text-xs font-medium text-white/70 group-hover:text-white transition-colors duration-200 text-center truncate w-full px-1">
+              <span
+                className="text-xs font-medium transition-colors duration-200 text-center truncate w-full px-1"
+                style={{ color: 'var(--tq-text-secondary)' }}
+              >
                 {bookmark.name.length > 8 ? `${bookmark.name.slice(0, 8)}...` : bookmark.name}
               </span>
             </motion.a>

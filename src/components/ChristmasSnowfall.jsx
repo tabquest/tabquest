@@ -24,7 +24,7 @@ const Snowflake = ({ id }) => {
                 ease: "linear",
                 delay: Math.random() * 10
             }}
-            className="fixed text-white pointer-events-none z-0"
+            className="fixed tq-text-primary pointer-events-none z-0"
             style={{
                 left: `${Math.random() * 100}vw`,
                 fontSize: `${Math.random() * 1.5 + 0.5}rem`,

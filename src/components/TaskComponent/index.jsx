@@ -266,16 +266,17 @@ const TaskComponent = () => {
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 style={{overflowY: 'auto', height: "72vh"}}
-                className="w-64 border-r border-white/10 p-4 custom-scrollbar"
+                className="w-64 border-r tq-border-1 p-4 custom-scrollbar"
             >
                 <motion.button
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, background: 'var(--tq-surface-3)' }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full mb-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+                    className="w-full mb-4 px-4 py-2 tq-surface-2 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer transition-colors shadow-sm"
                     onClick={() => setShowFolderPopup(true)}
+                    title="Create New List"
                 >
-                    <Plus size={16} />
-                    <span>New List</span>
+                    <Plus size={16} style={{ color: 'var(--tq-accent)' }} />
+                    <span className="font-medium">New List</span>
                 </motion.button>
 
                 <div className="space-y-1">
@@ -286,32 +287,35 @@ const TaskComponent = () => {
                             <motion.div
                                 key={folder.id}
                                 whileHover={{ x: 2 }}
-                                className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
+                                className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'tq-surface-3 tq-text-primary' : 'tq-text-secondary hover:tq-text-primary'
                                     }`}
                             >
                                 <div
                                     className="flex-1 flex items-center gap-2 cursor-pointer"
                                     onClick={() => setSelectedFolder(folder.id)}
+                                    title={`Switch to ${folder.title}`}
                                 >
                                     {/* <Folder  /> */}
                                     {folder.id === 'today' ? <CalendarDays size={16} /> : folder.id === 'archive' ? <ArchiveRestore size={16} /> : <Paperclip size={16} />}
                                     {/* <Paperclip size={16}/> */}
                                     <span>{folder.title.length > 11 ? `${folder.title.slice(0, 11)}..` : folder.title}</span>
-                                    <span className="text-sm text-white/50">
+                                    <span className="text-sm tq-text-muted">
                                         ({folder.count})
                                     </span>
                                 </div>
                                 {!folder.isDefault && (
-                                    <div className="opacity-0 group-hover:opacity-100 flex gap-2">
+                                     <div className="opacity-0 group-hover:opacity-100 flex gap-2">
                                         <button
-                                            className="text-white/50 hover:text-white/90"
+                                            className="tq-text-muted hover:tq-text-primary cursor-pointer"
                                             onClick={() => setEditingFolder(folder)}
+                                            title="Edit List"
                                         >
                                             <Edit2 size={16} />
                                         </button>
                                         <button
-                                            className="text-white/50 hover:text-red-400"
+                                            className="tq-text-muted hover:tq-danger cursor-pointer"
                                             onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                                            title="Delete List"
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -331,13 +335,14 @@ const TaskComponent = () => {
                 className="flex-1 p-4 custom-scrollbar"
             >
                 <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-semibold text-white">{headerTitle}</h1>
+                    <h1 className="text-2xl font-semibold tq-text-primary">{headerTitle}</h1>
                     {selectedFolder && !['archive'].includes(selectedFolder) && (
                         <motion.button
-                            whileHover={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.02, background: 'var(--tq-accent)', color: 'black' }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+                            className="px-4 py-2 tq-surface-2 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer transition-all font-semibold shadow-sm"
                             onClick={() => setShowTaskPopup(true)}
+                            title="Add New Task"
                         >
                             <Plus size={16} />
                             <span>New Task</span>
@@ -354,7 +359,8 @@ const TaskComponent = () => {
                                 const updatedFolders = calculateFolderCounts(folders, nonArchivedTasks);
                                 dispatch(setFolders(updatedFolders));
                             }}
-                            className="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 flex items-center gap-2"
+                            className="px-3 py-2 tq-danger-bg rounded-lg text-white hover:opacity-80 flex items-center gap-2 cursor-pointer"
+                            title="Permanently clear all archived tasks"
                         >
                             <Trash2 size={16} />
                             <span>Clear Archive</span>

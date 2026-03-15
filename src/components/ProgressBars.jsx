@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import Weather from './Weather';
 
 const ProgressBars = () => {
     const [progress, setProgress] = React.useState({ year: 0, day: 0 });
@@ -29,7 +28,6 @@ const ProgressBars = () => {
 
     return (
         <div className="w-full max-w-sm">
-            {/* Progress bars container */}
             <div className="w-full">
                 <motion.div
                     className="space-y-6 py-4 mt-2 ml-2"
@@ -37,15 +35,33 @@ const ProgressBars = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                 >
+                    {/* Year Progress */}
                     <div className="space-y-2">
                         <div className="flex justify-between">
-                            <span className="text-sm font-medium text-gray-200">Year in progress</span>
-                            <span className="text-sm font-medium text-gray-200">{progress.year}%</span>
+                            <span
+                                className="text-sm font-medium"
+                                style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                                Year in progress
+                            </span>
+                            <span
+                                className="text-sm font-medium"
+                                style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                                {progress.year}%
+                            </span>
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-700">
+                        <div
+                            className="h-2 w-full rounded-full"
+                            style={{ backgroundColor: 'var(--tq-surface-1)' }}
+                        >
                             <motion.div
-                                className="h-2 rounded-full bg-blue-500 transition-all duration-500"
-                                style={{ width: `${progress.year}%` }}
+                                className="h-2 rounded-full transition-all duration-500"
+                                style={{
+                                    width: `${progress.year}%`,
+                                    backgroundColor: 'var(--tq-progress-year)',
+                                    boxShadow: '0 0 12px var(--tq-accent-glow)',
+                                }}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress.year}%` }}
                                 transition={{ duration: 1 }}
@@ -53,15 +69,33 @@ const ProgressBars = () => {
                         </div>
                     </div>
 
+                    {/* Day Progress */}
                     <div className="space-y-2">
                         <div className="flex justify-between">
-                            <span className="text-sm font-medium text-gray-200">Day in progress</span>
-                            <span className="text-sm font-medium text-gray-200">{progress.day}%</span>
+                            <span
+                                className="text-sm font-medium"
+                                style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                                Day in progress
+                            </span>
+                            <span
+                                className="text-sm font-medium"
+                                style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                                {progress.day}%
+                            </span>
                         </div>
-                        <div className="h-2 w-full rounded-full bg-gray-700">
+                        <div
+                            className="h-2 w-full rounded-full"
+                            style={{ backgroundColor: 'var(--tq-surface-1)' }}
+                        >
                             <motion.div
-                                className="h-2 rounded-full bg-green-500 transition-all duration-500"
-                                style={{ width: `${progress.day}%` }}
+                                className="h-2 rounded-full transition-all duration-500"
+                                style={{
+                                    width: `${progress.day}%`,
+                                    backgroundColor: 'var(--tq-progress-day)',
+                                    boxShadow: `0 0 12px rgba(var(--tq-accent-sec-rgb), 0.25)`,
+                                }}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress.day}%` }}
                                 transition={{ duration: 1 }}
@@ -70,9 +104,7 @@ const ProgressBars = () => {
                     </div>
                 </motion.div>
             </div>
-
         </div>
-
     );
 };
 

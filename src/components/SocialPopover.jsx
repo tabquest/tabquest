@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { SocialIcons } from "../images/SocialIcons";
 import { motion } from "framer-motion";
 import { CHRISTMAS_MODE } from "../utils/constants";
 
 import { Copy, ExternalLink, User, Check, WifiOff, Wifi, Mail } from "lucide-react";
-import { FaLinkedin, FaGithub, FaTwitter, FaInstagram, FaReddit } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaInstagram, FaReddit, FaXTwitter } from "react-icons/fa6";
 
 const SocialPopover = () => {
     const SocialProfiles = useSelector((state) => state.settings.socialProfiles);
     const userName = useSelector((state) => state.settings.userName);
     const userRole = useSelector((state) => state.settings.userRole);
     const userPortfolioUrl = useSelector((state) => state.settings.userPortfolioUrl);
-
 
     const [isOpen, setIsOpen] = React.useState(false);
     const [copiedText, setCopiedText] = React.useState("");
@@ -24,7 +22,7 @@ const SocialPopover = () => {
     const SocialIcons = {
         linkedin: <FaLinkedin />,
         github: <FaGithub />,
-        twitter: <FaTwitter />,
+        twitter: <FaXTwitter />,
         instagram: <FaInstagram />,
         reddit: <FaReddit />,
     };
@@ -37,7 +35,6 @@ const SocialPopover = () => {
 
     const validateUrl = (url) => { if (!/^https?:\/\//i.test(url)) { return `https://${url}`; } return url; };
 
-    // Set GitHub profile image directly
     const githubUrl = SocialProfiles.github;
     const githubUsername = githubUrl ? githubUrl.split("github.com/")[1] : null;
     const profileImageUrl = githubUsername ? `https://github.com/${githubUsername}.png` : null;
@@ -55,10 +52,10 @@ const SocialPopover = () => {
                         delay: 0.5,
                         scale: { type: 'spring' },
                         rotate: {
-                            delay: 1, // Wait for entry animation
+                            delay: 1,
                             duration: 3,
                             repeat: Infinity,
-                            repeatDelay: 2, // Pause between shakes
+                            repeatDelay: 2,
                             ease: "easeInOut"
                         }
                     }}
@@ -70,25 +67,30 @@ const SocialPopover = () => {
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
-                className="flex items-center space-x-3 rounded-xl bg-[#1a1b26]/80 px-3 py-2.5 text-base backdrop-blur-lg transition-all hover:bg-[#1a1b26] border border-white/10"
+                className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base backdrop-blur-lg transition-all cursor-pointer"
+                title="View Profile"
+                style={{
+                    background: 'var(--tq-glass-bg)',
+                    border: '1px solid var(--tq-glass-border)',
+                }}
             >
                 {profileImageUrl && !profileImageError ? (
                     <img
                         className="h-6 w-6 rounded-md"
                         src={profileImageUrl}
                         alt={userName}
-                        onError={() => setProfileImageError(true)} // Handle error case
+                        onError={() => setProfileImageError(true)}
                     />
                 ) : (
-                    <User className="h-5 w-5 text-white/80" />
+                    <User className="h-5 w-5" style={{ color: 'var(--tq-text-secondary)' }} />
                 )}
-                <span className="text-white font-medium">
+                <span className="font-medium" style={{ color: 'var(--tq-text-primary)' }}>
                     {userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}
                 </span>
                 {!isOnline ? (
-                    <WifiOff size={20} className="text-red-400 ml-2" />
+                    <WifiOff size={20} style={{ color: 'var(--tq-danger)' }} className="ml-2" />
                 ) : (
-                    <Wifi size={20} className="text-green-400 ml-2" />
+                    <Wifi size={20} style={{ color: 'var(--tq-success)' }} className="ml-2" />
                 )}
             </button>
 
@@ -102,21 +104,48 @@ const SocialPopover = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <div className="w-72 rounded-xl border border-white/10 bg-[#1a1b26]/95 p-4 backdrop-blur-xl shadow-xl">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
+                    <div
+                        className="w-72 rounded-xl p-4 backdrop-blur-xl shadow-xl"
+                        style={{
+                            background: 'var(--tq-glass-bg)',
+                            border: '1px solid var(--tq-glass-border)',
+                        }}
+                    >
+                        <div
+                            className="flex items-center justify-between pb-3 mb-3"
+                            style={{ borderBottom: '1px solid var(--tq-border-1)' }}
+                        >
                             <div>
-                                <h3 className="text-base font-medium text-white">{userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}</h3>
-                                {userRole !== '' && <p className="text-sm text-white/70 mt-0.5 capitalize">{userRole.length > 15 ? `${userRole.slice(0, 15)}..` : userRole}</p>}
+                                <h3
+                                    className="text-base font-medium"
+                                    style={{ color: 'var(--tq-text-primary)' }}
+                                >
+                                    {userName.length > 12 ? `${userName.slice(0, 12)}...` : userName}
+                                </h3>
+                                {userRole !== '' && (
+                                    <p
+                                        className="text-sm mt-0.5 capitalize"
+                                        style={{ color: 'var(--tq-text-secondary)' }}
+                                    >
+                                        {userRole.length > 15 ? `${userRole.slice(0, 15)}..` : userRole}
+                                    </p>
+                                )}
                             </div>
                             <div className="flex gap-1.5">
-                                <a href="https://mail.google.com/" className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors">
+                                <a
+                                    href="https://mail.google.com/"
+                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
+                                    style={{ color: 'var(--tq-text-secondary)' }}
+                                    title="Open Gmail"
+                                >
                                     <Mail className="h-4 w-4" />
                                 </a>
                                 {userPortfolioUrl !== '' && (
                                     <>
                                         <button
                                             onClick={() => copyToClipboard(userPortfolioUrl)}
-                                            className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors"
+                                            className="rounded-lg p-1.5 transition-colors cursor-pointer"
+                                            style={{ color: 'var(--tq-text-secondary)' }}
                                             title="Copy portfolio URL"
                                         >
                                             <Copy className="h-4 w-4" />
@@ -125,8 +154,9 @@ const SocialPopover = () => {
                                             href={validateUrl(userPortfolioUrl)}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 transition-colors"
-                                            title="Open porfolio website"
+                                            className="rounded-lg p-1.5 transition-colors cursor-pointer"
+                                            style={{ color: 'var(--tq-text-secondary)' }}
+                                            title="Open portfolio website"
                                         >
                                             <ExternalLink className="h-4 w-4" />
                                         </a>
@@ -141,24 +171,31 @@ const SocialPopover = () => {
                                     value !== '' && (
                                         <motion.div
                                             key={key}
-                                            className="group relative flex items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-white/10"
+                                            className="group relative flex items-center justify-between rounded-lg px-3 py-2 transition-colors"
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             exit={{ opacity: 0 }}
                                             transition={{ duration: 0.3 }}
+                                            style={{ '--hover-bg': 'var(--tq-hover-bg)' }}
+                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
+                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                         >
                                             <a
                                                 href={value}
                                                 rel="noopener noreferrer"
-                                                className="flex flex-1 items-center gap-3 text-white"
+                                                className="flex flex-1 items-center gap-3 cursor-pointer"
+                                                style={{ color: 'var(--tq-text-primary)' }}
                                             >
-                                                <span className="text-lg text-white/80">{SocialIcons[key]}</span>
-                                                <p className="text-base capitalize">{key}</p>
+                                                <span className="text-lg" style={{ color: 'var(--tq-text-secondary)' }}>
+                                                    {SocialIcons[key]}
+                                                </span>
+                                                <p className="text-base capitalize">{key === 'twitter' ? 'X' : key}</p>
                                             </a>
                                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => copyToClipboard(value)}
-                                                    className="rounded-lg p-1.5 text-white/70 hover:bg-white/20 transition-colors"
+                                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
+                                                    style={{ color: 'var(--tq-text-secondary)' }}
                                                     title="Copy URL"
                                                 >
                                                     <Copy className="h-4 w-4" />
@@ -167,7 +204,8 @@ const SocialPopover = () => {
                                                     href={value}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="rounded-lg p-1.5 text-white/70 hover:bg-white/20 transition-colors"
+                                                    className="rounded-lg p-1.5 transition-colors cursor-pointer"
+                                                    style={{ color: 'var(--tq-text-secondary)' }}
                                                     title="Open link"
                                                 >
                                                     <ExternalLink className="h-4 w-4" />
@@ -187,9 +225,17 @@ const SocialPopover = () => {
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#1a1b26]/95 px-4 py-3 shadow-xl backdrop-blur-xl">
-                                <Check className="h-4 w-4 text-emerald-500" />
-                                <span className="text-sm text-white/90">Copied to clipboard</span>
+                            <div
+                                className="flex items-center gap-2 rounded-lg px-4 py-3 shadow-xl backdrop-blur-xl"
+                                style={{
+                                    background: 'var(--tq-glass-bg)',
+                                    border: '1px solid var(--tq-border-1)',
+                                }}
+                            >
+                                <Check className="h-4 w-4" style={{ color: 'var(--tq-success)' }} />
+                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>
+                                    Copied to clipboard
+                                </span>
                             </div>
                         </motion.div>
                     )}

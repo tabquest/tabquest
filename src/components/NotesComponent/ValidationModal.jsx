@@ -14,16 +14,17 @@ const ValidationModal = ({ message, onClose }) => {
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.95 }}
-                className="bg-gray-800 rounded-lg p-6 w-full max-w-md"
+                className="tq-glass shadow-2xl rounded-2xl p-6 w-full max-w-md"
             >
-                <h3 className="text-lg font-medium text-white mb-4">
+                <h3 className="text-lg font-medium tq-text-primary mb-4">
                     Validation Error
                 </h3>
-                <p className="text-white/70 mb-6">{message}</p>
+                <p className="tq-text-secondary mb-6">{message}</p>
                 <div className="flex justify-end">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                        title="OK"
                     >
                         OK
                     </button>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { APP_VERSION, VERSION_NOTES } from '../utils/version';
+import { X } from 'lucide-react';
 
 const VersionChecker = () => {
     const [showNotification, setShowNotification] = useState(false);
@@ -11,7 +12,7 @@ const VersionChecker = () => {
     useEffect(() => {
         // Check if version_info exists in localStorage
         const storedVersion = localStorage.getItem('version_info');
-        
+
         if (!storedVersion) {
             // First-time user - store current version and show simple notification
             localStorage.setItem('version_info', APP_VERSION);
@@ -25,7 +26,7 @@ const VersionChecker = () => {
                 setIsNewVersion(true);
                 setNotificationContent(VERSION_NOTES[APP_VERSION] || `Updated to version ${APP_VERSION}`);
                 setShowNotification(true);
-                
+
                 // Update stored version
                 localStorage.setItem('version_info', APP_VERSION);
             }
@@ -37,44 +38,61 @@ const VersionChecker = () => {
     };
 
     return (
-        <div className="fixed top-0 right-0 z-50 p-4">
+        <div className="fixed top-20 right-6 z-[200]">
             <AnimatePresence>
                 {showNotification && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="relative w-80"
+                        className="relative w-72"
                     >
-                        <div className="relative overflow-hidden rounded-xl bg-[#1a1b23]/80 backdrop-blur-md border border-gray-800/50 p-4 shadow-lg">
-                            <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-blue-500/5" />
-                            <div className="relative flex items-start gap-3">
-                                <Bell className="h-5 w-5 text-green-400 mt-0.5" />
-                                <div className="flex-1">
-                                    <h3 className="font-semibold text-white mb-1">
-                                        {isNewVersion ? `Updated to v${APP_VERSION}!` : `Your Version ${APP_VERSION}`}
-                                    </h3>
-                                    <p className="text-gray-300 text-sm">
-                                        {notificationContent}
-                                    </p>
-                                    <motion.button
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
+                        <div className="relative rounded-xl shadow-xl overflow-hidden"
+                            style={{
+                                background: 'var(--tq-glass-bg)',
+                                backdropFilter: 'blur(24px)',
+                                WebkitBackdropFilter: 'blur(24px)',
+                                border: '1px solid var(--tq-border-2)',
+                            }}
+                        >
+                            <div className="relative p-4 flex flex-col gap-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="p-1.5 rounded-lg" style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}>
+                                            <Bell className="h-4 w-4" style={{ color: 'var(--tq-accent)' }} />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <h3 className="font-semibold text-sm leading-tight" style={{ color: 'var(--tq-text-primary)' }}>
+                                                New Update!
+                                            </h3>
+                                            <span className="text-[10px] font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-accent)' }}>
+                                                v{APP_VERSION}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
                                         onClick={closeNotification}
-                                        className="mt-3 w-full px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg text-sm font-medium transition-colors duration-200 text-center block"
+                                        className="p-1 rounded-md hover:bg-[var(--tq-hover-bg)] transition-colors cursor-pointer"
+                                        style={{ color: 'var(--tq-text-muted)' }}
                                     >
-                                        Got it!
-                                    </motion.button>
+                                        <X size={16} />
+                                    </button>
                                 </div>
+
+                                <p className="text-sm leading-relaxed" style={{ color: 'var(--tq-text-secondary)' }}>
+                                    {notificationContent}
+                                </p>
+
                                 <motion.button
-                                    whileHover={{ scale: 1.1 }}
-                                    whileTap={{ scale: 0.9 }}
+                                    whileHover={{ opacity: 0.9, scale: 1.01 }}
+                                    whileTap={{ scale: 0.98 }}
                                     onClick={closeNotification}
-                                    className="text-gray-400 hover:text-gray-200"
+                                    className="w-full py-2 rounded-lg text-black text-sm font-bold cursor-pointer transition-all"
+                                    style={{
+                                        background: 'var(--tq-accent)',
+                                    }}
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    Got it!
                                 </motion.button>
                             </div>
                         </div>

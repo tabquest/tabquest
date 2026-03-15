@@ -70,16 +70,17 @@ const PopupModal = ({
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-[#0b1518] p-6 rounded-lg shadow-xl max-w-md w-full mx-4"
+                className="tq-glass shadow-2xl p-6 rounded-2xl  max-w-md w-full mx-4"
             >
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
-                        <FileText className="text-white/70" size={24} />
-                        <h2 className="text-xl font-semibold text-white">{title}</h2>
+                        <FileText className="tq-text-secondary" size={24} />
+                        <h2 className="text-xl font-semibold tq-text-primary">{title}</h2>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1 text-white/50 hover:text-white/90 transition-colors rounded-full hover:bg-white/10"
+                        className="p-1 tq-text-muted hover:tq-text-primary transition-colors rounded-full hover:tq-surface-3 cursor-pointer"
+                        title="Close"
                     >
                         <X size={20} />
                     </button>
@@ -90,12 +91,12 @@ const PopupModal = ({
                         const Icon = getIconForField(field.type);
                         return (
                             <div key={field.name}>
-                                <label className="block text-white/70 text-sm mb-2">
+                                <label className="block tq-text-secondary text-sm mb-2">
                                     {field.label}
-                                    {field.required && <span className="text-red-400 ml-1">*</span>}
+                                    {field.required && <span className="tq-danger ml-1">*</span>}
                                 </label>
                                 <div className="relative">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted">
                                         <Icon size={18} />
                                     </div>
                                     <input
@@ -104,12 +105,12 @@ const PopupModal = ({
                                         value={values[field.name] || ''}
                                         onChange={handleChange}
                                         placeholder={field.placeholder}
-                                        className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:border-white/20 focus:ring-1 focus:ring-white/20 focus:outline-none placeholder:text-white/30"
+                                        className="w-full pl-10 pr-3 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:tq-border-2 focus:ring-1 focus:ring-white/20 focus:outline-none placeholder:tq-text-muted"
                                     />
                                 </div>
                                 {errors[field.name] && (
-                                    <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
-                                        <span className="inline-block w-1 h-1 bg-red-400 rounded-full"></span>
+                                    <p className="tq-danger text-sm mt-1 flex items-center gap-1">
+                                        <span className="inline-block w-1 h-1 tq-danger-bg rounded-full"></span>
                                         {errors[field.name]}
                                     </p>
                                 )}
@@ -117,17 +118,19 @@ const PopupModal = ({
                         );
                     })}
 
-                    <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-white/10">
+                    <div className="flex gap-3 justify-end mt-6 pt-4 border-t tq-border-1">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-white/70 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                            className="px-4 py-2 tq-text-secondary hover:tq-text-primary transition-colors rounded-lg hover:tq-surface-2 cursor-pointer"
+                            title="Cancel"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary transition-colors cursor-pointer"
+                            title="Save changes"
                         >
                             Save
                         </button>

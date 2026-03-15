@@ -111,12 +111,12 @@ const IntegratedSearch = () => {
       return (
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Cloud className="w-6 h-6 text-white" />
-            <span className="text-sm font-semibold text-white">
+            <Cloud className="w-6 h-6 tq-text-primary" />
+            <span className="text-sm font-semibold tq-text-primary">
               {kelvinToCelsius(cachedData.main.temp)}°
             </span>
           </div>
-          <WifiOff className="w-4 h-4 text-white/70" />
+          <WifiOff className="w-4 h-4 tq-text-secondary" />
         </div>
       );
     }
@@ -126,12 +126,12 @@ const IntegratedSearch = () => {
     return (
       <div className="flex items-center justify-between w-full max-w-3xl mx-auto px-4">
         <div className="flex items-center gap-2">
-          <Cloud className="w-6 h-6 text-white" />
-          <span className="text-2xl font-semibold text-white">
+          <Cloud className="w-6 h-6 tq-text-primary" />
+          <span className="text-2xl font-semibold tq-text-primary">
             {kelvinToCelsius(weatherData.main.temp)}°C
           </span>
         </div>
-        <span className="flex justify-evenly items-center text-md text-white/70">
+        <span className="flex justify-evenly items-center text-md tq-text-secondary">
             <MapPin size={18}/>
           <span className='pl-1'>{weatherData.name}</span>, 
           <span className='pl-1'>{weatherData.sys.country}</span>
@@ -147,7 +147,10 @@ const IntegratedSearch = () => {
       )}
 
       <div className="relative w-full max-w-3xl mx-auto px-4 mt-28 z-30">
-        <div className="relative bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-purple-500/20">
+        <div className="relative tq-surface-1 backdrop-blur-xl rounded-2xl p-6 shadow-2xl border border-white/5">
+          <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: 'var(--tq-gradient-subtle)' }} />
+          <div className="absolute inset-0 rounded-2xl pointer-events-none" style={{ background: 'var(--tq-gradient-glass)', opacity: 0.5 }} />
+
           <form
             onSubmit={handleSearch}
             className="relative flex"
@@ -164,31 +167,32 @@ const IntegratedSearch = () => {
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="h-full w-full px-4 py-4 flex items-center justify-between 
-                  bg-white/10 backdrop-blur-md rounded-l-xl
-                  border-r border-purple-500/20
-                  hover:bg-white/20 transition-all duration-200"
+                  tq-surface-3 backdrop-blur-md rounded-l-xl
+                  border-r border-white/5
+                  hover:tq-hover-bg transition-all duration-200 cursor-pointer"
+                title="Change Search Engine"
               >
                 <div className="flex items-center gap-2">
                   {searchEngine === 'google' ? (
-                    <Globe size={20} className="text-white" />
+                    <Globe size={20} className="tq-text-primary" />
                   ) : (
-                    <Youtube size={20} className="text-white" />
+                    <Youtube size={20} className="tq-text-primary" />
                   )}
-                  <span className="text-white font-medium">
+                  <span className="tq-text-primary font-medium">
                     {searchEngine === 'google' ? 'Google' : 'YouTube'}
                   </span>
                 </div>
                 <ChevronDown 
                   size={16} 
-                  className={`text-white transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                  className={`tq-text-primary transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
                 />
               </button>
 
               {isDropdownOpen && (
                 <div className="absolute top-full left-0 mt-1 w-full 
-                  bg-gradient-to-br from-purple-900/80 to-blue-900/80 backdrop-blur-xl 
-                  rounded-xl border border-purple-500/20 overflow-hidden z-50
-                  shadow-lg shadow-purple-500/20">
+                  tq-surface-2 backdrop-blur-xl 
+                  rounded-xl border border-white/10 overflow-hidden z-50
+                  shadow-xl shadow-black/20">
                   <button
                     type="button"
                     onClick={() => {
@@ -196,7 +200,8 @@ const IntegratedSearch = () => {
                       setIsDropdownOpen(false);
                     }}
                     className="flex items-center gap-2 w-full px-4 py-3 
-                      text-white hover:bg-white/10 transition-all duration-200"
+                      tq-text-primary hover:tq-surface-3 transition-all duration-200 cursor-pointer"
+                    title="Search via Google"
                   >
                     <Globe size={16} />
                     Google
@@ -208,7 +213,8 @@ const IntegratedSearch = () => {
                       setIsDropdownOpen(false);
                     }}
                     className="flex items-center gap-2 w-full px-4 py-3 
-                      text-white hover:bg-white/10 transition-all duration-200"
+                      tq-text-primary hover:tq-surface-3 transition-all duration-200 cursor-pointer"
+                    title="Search via YouTube"
                   >
                     <Youtube size={16} />
                     YouTube
@@ -223,19 +229,20 @@ const IntegratedSearch = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="flex-1 px-4 py-4 bg-white/10 backdrop-blur-md
-                text-white placeholder-gray-400
-                focus:outline-none focus:ring-0 focus:ring-purple-500/50"
+              className="flex-1 px-4 py-4 tq-surface-3 backdrop-blur-md
+                tq-text-primary placeholder:tq-text-muted
+                focus:outline-none focus:ring-0"
             />
 
             {/* Search Button */}
             <button
               type="submit"
-              className="px-6 bg-white/10 backdrop-blur-md rounded-r-xl
-                border-l border-purple-500/20
-                hover:bg-white/20 transition-all duration-200"
+              className="px-6 tq-surface-3 backdrop-blur-md rounded-r-xl
+                border-l border-white/5
+              hover:tq-hover-bg transition-all duration-200 cursor-pointer"
+              title="Search"
             >
-              <Search size={20} className="text-white" />
+              <Search size={20} className="tq-text-primary" />
             </button>
           </form>
         </div>

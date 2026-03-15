@@ -15,13 +15,14 @@ const FolderSidebar = ({
     <motion.div
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className="w-64 border-r border-white/10 p-4"
+      className="w-64 border-r tq-border-1 p-4"
     >
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full mb-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+        className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
         onClick={() => setShowFolderPopup(true)}
+        title="Create New Folder"
       >
         <Plus size={16} />
         <span>New Folder</span>
@@ -32,16 +33,17 @@ const FolderSidebar = ({
           <motion.div
             key={folder.id}
             whileHover={{ x: 2 }}
-            className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
+            className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'tq-surface-3 tq-text-primary' : 'tq-text-secondary hover:tq-text-primary'
               }`}
           >
             <div
               className="flex-1 flex items-center gap-2 cursor-pointer"
               onClick={() => setSelectedFolder(folder.id)}
+              title={`Switch to ${folder.title}`}
             >
               <Folder size={16} />
               <span>{folder.title}</span>
-              <span className="text-sm text-white/50">
+              <span className="text-sm tq-text-muted">
                 ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
               </span>
             </div>
@@ -50,16 +52,18 @@ const FolderSidebar = ({
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="text-white/50 hover:text-white/90"
+                  className="tq-text-muted hover:tq-text-primary cursor-pointer"
                   onClick={() => setEditingFolder(folder)}
+                  title="Edit Folder"
                 >
                   <Edit2 size={16} />
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="text-white/50 hover:text-red-400"
+                  className="tq-text-muted hover:tq-danger cursor-pointer"
                   onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                  title="Delete Folder"
                 >
                   <Trash2 size={16} />
                 </motion.button>

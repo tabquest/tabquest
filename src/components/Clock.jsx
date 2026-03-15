@@ -19,7 +19,7 @@ const Clock = () => {
     const formatHours = (hours) => {
         if (use12Hour) {
             const period = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+            hours = hours % 12 || 12;
             return { hours, period };
         }
         return { hours, period: '' };
@@ -29,24 +29,45 @@ const Clock = () => {
 
     return (
         <motion.div
-            className=""
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
-            <h1 className="text-4xl sm:text-6xl font-semibold relative z-0">
-                <span className="text-green-400">{String(hours).padStart(2, '0')}</span>
-                <span className="animate-pulse font-normal">:</span>
-                <span>{String(time.getMinutes()).padStart(2, '0')}</span>
+            <h1 className="text-4xl sm:text-6xl font-semibold relative z-0 tracking-tight">
+                <span style={{ color: 'var(--tq-accent)' }}>
+                    {String(hours).padStart(2, '0')}
+                </span>
+                <span
+                    className="animate-pulse font-normal"
+                    style={{ color: 'var(--tq-text-muted)' }}
+                >:</span>
+                <span style={{ color: 'var(--tq-text-primary)' }}>
+                    {String(time.getMinutes()).padStart(2, '0')}
+                </span>
                 {!hideSeconds && (
                     <>
-                        <span className="animate-pulse font-normal">:</span>
-                        <span>{String(time.getSeconds()).padStart(2, '0')}</span>
+                        <span
+                            className="animate-pulse font-normal"
+                            style={{ color: 'var(--tq-text-muted)' }}
+                        >:</span>
+                        <span style={{ color: 'var(--tq-text-secondary)' }}>
+                            {String(time.getSeconds()).padStart(2, '0')}
+                        </span>
                     </>
                 )}
-                {/* {use12Hour && <span className="pl-3 text-lg sm:text-2xl">{period}</span>} */}
+                {use12Hour && (
+                    <span
+                        className="pl-2 text-lg sm:text-2xl font-light"
+                        style={{ color: 'var(--tq-text-muted)' }}
+                    >
+                        {period}
+                    </span>
+                )}
             </h1>
-            <h2 className="pt-4 pl-2 text-base sm:text-xl text-gray-400">
+            <h2
+                className="pt-4 pl-2 text-base sm:text-xl"
+                style={{ color: 'var(--tq-text-secondary)' }}
+            >
                 <span>
                     {time.toLocaleDateString('en-US', {
                         month: 'short',

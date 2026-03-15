@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { resolveThemeKey } from "../themes";
 
 // Load settings from localStorage or use default initial state
 const loadFromLocalStorage = () => {
@@ -31,7 +32,7 @@ const defaultSettings = {
     use12Hour: false,
     socialProfiles: {
         linkedin: "https://www.linkedin.com/",
-        github: "https://github.com/",
+        github: "https://github.com/tabquest",
         twitter: "",
         instagram: "https://www.instagram.com",
         reddit: "",
@@ -49,22 +50,16 @@ const defaultSettings = {
     ],
 };
 
-const themeAliases = {
-    ocean_mist: "slate_ocean",
-    forest_night: "evergreen_slate",
-    sunset_glow: "amber_slate",
-    aurora_bloom: "blue_ink",
-    graphite_steel: "graphite_navy",
-};
-
-// Initial state
+// Initial state — resolve any legacy theme alias on load
+const storedSettings = loadFromLocalStorage();
 const initialState = {
     ...defaultSettings,
-    ...(loadFromLocalStorage() || {}),
+    ...(storedSettings || {}),
 };
 
-if (initialState.theme && themeAliases[initialState.theme]) {
-    initialState.theme = themeAliases[initialState.theme];
+// Use the centralized resolver from themes.js
+if (initialState.theme) {
+    initialState.theme = resolveThemeKey(initialState.theme);
 }
 
 const settingsSlice = createSlice({
@@ -98,7 +93,8 @@ const settingsSlice = createSlice({
             saveToLocalStorage(state);
         },
         updateTheme: (state, action) => {
-            state.theme = action.payload || defaultSettings.theme;
+            // Always resolve through the central theme system
+            state.theme = resolveThemeKey(action.payload || defaultSettings.theme);
             saveToLocalStorage(state);
         },
     },

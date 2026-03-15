@@ -108,13 +108,18 @@ const BookmarkComponent = () => {
 
   const handleUpdateBookmark = (id, updates) => {
     if (updates.title.trim() && updates.url.trim()) {
-      dispatch(updateBookmark({ id, updates }));
+      const url = updates.url.trim();
+      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+      dispatch(updateBookmark({ id, updates: { ...updates, url: formattedUrl } }));
       setEditingBookmark(null);
     }
   };
 
   const handleAddBookmark = (bookmark) => {
     if (bookmark.title.trim() && bookmark.url.trim()) {
+      const url = bookmark.url.trim();
+      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+
       const tags = bookmark.tags
         .split(', ')
         .map(tag => tag.trim())
@@ -124,6 +129,7 @@ const BookmarkComponent = () => {
       const newBookmark = {
         id: Date.now().toString(),
         ...bookmark,
+        url: formattedUrl,
         tags,
         folder: selectedFolder,
         dateAdded: Date.now(),
@@ -177,7 +183,7 @@ const BookmarkComponent = () => {
     const parts = text.split(new RegExp(`(${query})`, 'gi'));
     return parts.map((part, i) =>
       part.toLowerCase() === query.toLowerCase()
-        ? <span key={i} className="bg-yellow-400/30 transition-colors duration-200">{part}</span>
+        ? <span key={i} className="tq-warning-bg transition-colors duration-200">{part}</span>
         : part
     );
   };
@@ -189,13 +195,14 @@ const BookmarkComponent = () => {
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         style={{ overflowY: 'auto', height: "72vh" }}
-        className="w-64 border-r border-white/10 p-4 custom-scrollbar"
+        className="w-64 border-r tq-border-1 p-4 custom-scrollbar"
       >
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full mb-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+          className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
           onClick={() => setShowFolderPopup(true)}
+          title="Create New Folder"
         >
           <Plus size={16} />
           <span>New Folder</span>
@@ -206,18 +213,19 @@ const BookmarkComponent = () => {
             <motion.div
               key={folder.id}
               whileHover={{ x: 2 }}
-              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white'
+              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'tq-surface-3 tq-text-primary' : 'tq-text-secondary hover:tq-text-primary'
                 }`}
             >
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer"
                 onClick={() => setSelectedFolder(folder.id)}
+                title={`Switch to ${folder.title}`}
               >
                 {folder.id === 'favorites' ? <Heart size={18} /> : <Folder size={16} />}
                 <span>
                   {folder.title.length > 11 ? `${folder.title.slice(0, 11)}..` : folder.title}
                 </span>
-                <span className="text-sm text-white/50">
+                <span className="text-sm tq-text-muted">
                   ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
                 </span>
               </div>
@@ -226,16 +234,18 @@ const BookmarkComponent = () => {
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-white/50 hover:text-white/90"
+                    className="tq-text-muted hover:tq-text-primary cursor-pointer"
                     onClick={() => setEditingFolder(folder)}
+                    title="Edit Folder"
                   >
                     <Edit2 size={16} />
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-white/50 hover:text-red-400"
+                    className="tq-text-muted hover:tq-danger cursor-pointer"
                     onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                    title="Delete Folder"
                   >
                     <Trash2 size={16} />
                   </motion.button>
@@ -259,7 +269,7 @@ const BookmarkComponent = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] p-3 bg-red-500/90 border border-red-500 rounded-lg text-white text-sm shadow-lg backdrop-blur-sm"
+              className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] p-3 tq-danger-bg border tq-border-danger rounded-lg text-white text-sm shadow-lg backdrop-blur-sm"
             >
               {error}
             </motion.div>
@@ -268,11 +278,11 @@ const BookmarkComponent = () => {
         
         <div className="relative mb-6 flex items-center gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted" size={18} />
             <input
               type="text"
               placeholder="Search bookmarks..."
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white/80 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -280,14 +290,14 @@ const BookmarkComponent = () => {
 
           <div className="flex items-center gap-2">
             {/* View Toggle */}
-            <div className="flex bg-white/5 rounded-lg p-1">
+            <div className="flex tq-surface-2 rounded-lg p-1">
               <button
                 onClick={() => {
                   setViewMode('list');
                   localStorage.setItem('bookmarkViewMode', 'list');
                 }}
                 title="List View"
-                className={`p-2 rounded transition-colors ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'}`}
+                className={`p-2 rounded transition-colors cursor-pointer ${viewMode === 'list' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
               >
                 <List size={16} />
               </button>
@@ -298,11 +308,11 @@ const BookmarkComponent = () => {
                     localStorage.setItem('bookmarkViewMode', 'grid');
                   }}
                   title="Grid View"
-                  className={`p-2 rounded transition-colors ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-white/50 hover:text-white/80'}`}
+                  className={`p-2 rounded transition-colors cursor-pointer ${viewMode === 'grid' ? 'tq-surface-3 tq-text-primary' : 'tq-text-muted hover:tq-text-primary'}`}
                 >
                   <Grid3X3 size={16} />
                 </button>
-                <span className="absolute -top-1 -right-2 bg-green-500 text-white px-1 py-0.1 rounded text-[8px] font-medium z-10">
+                <span className="absolute -top-1 -right-2 tq-success-bg tq-text-primary px-1 py-0.1 rounded text-[8px] font-medium z-10">
                   New
                 </span>
               </div>
@@ -315,8 +325,9 @@ const BookmarkComponent = () => {
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-white/80 flex items-center gap-2"
+                className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
                 onClick={() => setShowBookmarkPopup(true)}
+                title="Add New Bookmark"
               >
                 <Plus size={16} />
                 <span>Add URL</span>
@@ -326,7 +337,7 @@ const BookmarkComponent = () => {
         </div>
 
         {filteredBookmarks.length === 0 ? (
-          <div className="text-center text-white/50 py-8">
+          <div className="text-center tq-text-muted py-8">
             <p>No bookmarks found...</p>
           </div>
         ) : viewMode === 'list' ? (
@@ -340,19 +351,21 @@ const BookmarkComponent = () => {
                   exit={{ opacity: 0, y: -10 }}
 
                   whileHover={{ scale: 1.01, x: 4 }}
-                  className="group p-4 bg-gradient-to-r from-white/5 to-white/10 hover:from-white/10 hover:to-white/15 rounded-xl border border-white/10 transition-all duration-200 cursor-pointer"
+                  className="group p-4 tq-gradient-subtle hover:from-white/10 hover:to-white/15 rounded-xl border tq-border-1 transition-all duration-200 cursor-pointer"
                   onClick={() => window.open(bookmark.url, '_blank')}
+                  title="Open Bookmark"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
                       <motion.button
                         whileHover={{ scale: 1.2, rotate: 360 }}
                         whileTap={{ scale: 0.9 }}
-                        className={`transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
+                        className={`transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'} cursor-pointer`}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleStarBookmark(bookmark);
                         }}
+                        title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
                       >
                         {bookmark.starred ? (
                           <Star fill="currentColor" size={18} />
@@ -362,7 +375,7 @@ const BookmarkComponent = () => {
                       </motion.button>
 
                       <div className="flex-1">
-                        <h3 className="text-white/90 font-medium text-base mb-1">
+                        <h3 className="tq-text-primary font-medium text-base mb-1">
                           {highlightText(
                             bookmark.title.length > 40
                               ? `${bookmark.title.slice(0, 40)}...`
@@ -370,7 +383,7 @@ const BookmarkComponent = () => {
                             searchQuery
                           )}
                         </h3>
-                        <p className="text-sm text-white/60 mb-2">
+                        <p className="text-sm tq-text-muted mb-2">
                           {highlightText(
                             bookmark.url.length > 50
                               ? `${bookmark.url.slice(0, 50)}...`
@@ -383,7 +396,7 @@ const BookmarkComponent = () => {
                             {bookmark.tags.map(tag => (
                               <span
                                 key={tag}
-                                className="text-xs px-3 py-1 bg-white/10 rounded-full text-white/70 hover:bg-white/20 transition-colors"
+                                className="text-xs px-3 py-1 tq-surface-3 rounded-full tq-text-secondary hover:tq-hover-bg transition-colors"
                               >
                                 {highlightText(tag, searchQuery)}
                               </span>
@@ -398,22 +411,24 @@ const BookmarkComponent = () => {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 text-white/50 hover:text-white/90 hover:bg-white/10 rounded-lg transition-colors"
+                          className="p-2 tq-text-muted hover:tq-text-primary hover:tq-surface-3 rounded-lg transition-colors cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingBookmark(bookmark);
                           }}
+                          title="Edit Bookmark"
                         >
                           <Edit2 size={16} />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 text-white/50 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                          className="p-2 tq-text-muted hover:text-white hover:tq-danger-bg rounded-lg transition-colors cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
                           }}
+                          title="Delete Bookmark"
                         >
                           <Trash2 size={16} />
                         </motion.button>
@@ -434,17 +449,18 @@ const BookmarkComponent = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   whileHover={{ scale: 1.02, y: -2 }}
-                  className="group relative h-40 w-full bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200 cursor-pointer overflow-hidden"
+                  className="group relative h-40 w-full tq-surface-2 hover:tq-surface-3 rounded-xl border tq-border-1 transition-all duration-200 cursor-pointer overflow-hidden"
                   onClick={() => window.open(bookmark.url, '_blank')}
                 >
                   <motion.button
                     whileHover={{ scale: 1.2 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`absolute top-3 right-3 z-10 transition-colors duration-200 ${bookmark.starred ? 'text-yellow-400' : 'text-white/30 hover:text-yellow-400'}`}
+                    className={`absolute top-3 right-3 z-10 transition-colors duration-200 ${bookmark.starred ? 'tq-warning' : 'tq-text-muted hover:tq-warning'} cursor-pointer`}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleStarBookmark(bookmark);
                     }}
+                    title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
                   >
                     {bookmark.starred ? (
                       <Star fill="currentColor" size={18} />
@@ -457,22 +473,24 @@ const BookmarkComponent = () => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-1.5 bg-black/60 rounded text-white/70 hover:text-white/90"
+                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-text-primary cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         setEditingBookmark(bookmark);
                       }}
+                      title="Edit Bookmark"
                     >
                       <Edit2 size={14} />
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-1.5 bg-black/60 rounded text-white/70 hover:text-red-400"
+                      className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-danger cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
                       }}
+                      title="Delete Bookmark"
                     >
                       <Trash2 size={14} />
                     </motion.button>
@@ -480,7 +498,7 @@ const BookmarkComponent = () => {
 
                   <div className="p-4 h-full flex flex-col justify-between">
                     <div className="flex-1 flex flex-col justify-center text-center">
-                      <h3 className="text-white/90 font-medium text-sm mb-2 line-clamp-2">
+                      <h3 className="tq-text-primary font-medium text-sm mb-2 line-clamp-2">
                         {highlightText(
                           bookmark.title.length > 25
                             ? `${bookmark.title.slice(0, 25)}...`
@@ -488,7 +506,7 @@ const BookmarkComponent = () => {
                           searchQuery
                         )}
                       </h3>
-                      <p className="text-xs text-white/50 line-clamp-1">
+                      <p className="text-xs tq-text-muted line-clamp-1">
                         {highlightText(
                           bookmark.url.replace(/^https?:\/\//, '').split('/')[0],
                           searchQuery
@@ -501,13 +519,13 @@ const BookmarkComponent = () => {
                         {bookmark.tags.slice(0, 2).map(tag => (
                           <span
                             key={tag}
-                            className="text-xs px-2 py-0.5 bg-white/10 rounded-full text-white/70"
+                            className="text-xs px-2 py-0.5 tq-surface-3 rounded-full tq-text-secondary"
                           >
                             {tag.length > 8 ? `${tag.slice(0, 8)}..` : tag}
                           </span>
                         ))}
                         {bookmark.tags.length > 2 && (
-                          <span className="text-xs px-2 py-0.5 bg-white/10 rounded-full text-white/50">
+                          <span className="text-xs px-2 py-0.5 tq-surface-3 rounded-full tq-text-muted">
                             +{bookmark.tags.length - 2}
                           </span>
                         )}
@@ -572,7 +590,19 @@ const BookmarkComponent = () => {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
-                placeholder: 'https://example.com'
+                placeholder: 'https://example.com',
+                validate: value => {
+                  if (!value || !value.trim()) return 'URL is required';
+                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  try {
+                    new URL(formatted);
+                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                      return 'Please enter a valid URL';
+                    }
+                  } catch (e) {
+                    return 'Please enter a valid URL';
+                  }
+                }
               },
               {
                 name: 'tags',
@@ -622,7 +652,19 @@ const BookmarkComponent = () => {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
-                placeholder: 'https://example.com'
+                placeholder: 'https://example.com',
+                validate: value => {
+                  if (!value || !value.trim()) return 'URL is required';
+                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  try {
+                    new URL(formatted);
+                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                      return 'Please enter a valid URL';
+                    }
+                  } catch (e) {
+                    return 'Please enter a valid URL';
+                  }
+                }
               },
               {
                 name: 'tags',

@@ -1,8 +1,6 @@
 export const FAVICON_URL = "https://www.google.com/s2/favicons?sz=64&domain=";
 
-export const OPENWEATHER_API_URL = "https://halithsmh-weatherapi.web.val.run/?city=";
-
-export const UPDATE_CHECK_API = "https://halithsmh-updatechecker.web.val.run";
+export const OPENWEATHER_API_URL = "https://tabquest.val.run/weather?city=";
 
 export const FEEDBACK_FORM_API = "https://script.google.com/macros/s/AKfycbxMdCc6s4Ggnx4i1iNq_kVI_4XznCVAlahBC5nS-bSjB99XRoxfElx17aPdFyLAHbsl/exec";
 
@@ -23,7 +21,7 @@ export const initialState = {
     use12Hour: false,
     socialProfiles: {
         linkedin: "https://www.linkedin.com/",
-        github: "https://github.com/",
+        github: "https://github.com/tabquest",
         twitter: "",
         instagram: "https://www.instagram.com",
         reddit: "",
@@ -37,7 +35,3 @@ export const initialState = {
         { url: "https://www.primevideo.com/region/eu/storefront", name: "Prime" },
     ],
 };
-
-// Google Analytics
-export const G_MEASUREMENT_ID = "G-50YH00KDF9";
-export const G_TAG_API_KEY = "szqjQ9USR4ClwzAvorcI0g";

@@ -4,9 +4,10 @@ import {
     Settings, X, Plus, Save, RotateCcw, Send, Trash2,
     User, Briefcase, Globe, MapPin, Search, AlertCircle,
     Github, Twitter, Linkedin, Instagram,
-    Link
+    Link, Layout, Palette, Clock3, Share2, Star, Tag, MousePointer2
 } from 'lucide-react';
 import { RiRedditLine } from "react-icons/ri";
+import { FaXTwitter } from "react-icons/fa6";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -21,42 +22,9 @@ import useExtensionVersion from '../utils/hooks/useExtensionVersion';
 import { APP_VERSION } from '../utils/version';
 import { FeedbackForm } from '../features';
 import TabQuestLogo from '../images/TabQuest.png';
+import { THEME_LIST } from '../utils/themes';
 
 const SettingsPanel = () => {
-    const themeOptions = [
-        {
-            key: 'midnight_default',
-            label: 'Midnight',
-            isDefault: true,
-            preview: 'from-gray-800 via-gray-900 to-gray-950'
-        },
-        {
-            key: 'slate_ocean',
-            label: 'Slate Ocean',
-            preview: 'from-slate-800 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'evergreen_slate',
-            label: 'Evergreen',
-            preview: 'from-emerald-900 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'graphite_navy',
-            label: 'Graphite Navy',
-            preview: 'from-zinc-800 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'blue_ink',
-            label: 'Blue Ink',
-            preview: 'from-blue-900 via-slate-900 to-gray-950'
-        },
-        {
-            key: 'amber_slate',
-            label: 'Amber Slate',
-            preview: 'from-amber-900 via-stone-900 to-gray-950'
-        }
-    ];
-
     const [isOpen, setIsOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dispatch = useDispatch();
@@ -88,13 +56,12 @@ const SettingsPanel = () => {
         } else {
             setShowFeedbackPrompt(false);
         }
-    }, [isOpen]); // Re-check when panel closes
+    }, [isOpen]);
 
     const handlePromptClick = () => {
         setIsOpen(true);
         setIsHighlightingFeedback(true);
 
-        // Wait for panel to open and render
         setTimeout(() => {
             const btn = document.getElementById('feedback-btn');
             if (btn) {
@@ -102,7 +69,6 @@ const SettingsPanel = () => {
             }
         }, 500);
 
-        // Turn off highlight after animation
         setTimeout(() => {
             setIsHighlightingFeedback(false);
         }, 3000);
@@ -204,13 +170,11 @@ const SettingsPanel = () => {
         const currentValue = formState[settingName];
         const newValue = !currentValue;
 
-        // Update the local form state
         setFormState({
             ...formState,
             [settingName]: newValue
         });
 
-        // Dispatch the update immediately to Redux
         dispatch(updateSearchPreferences({
             ...formState,
             [settingName]: newValue
@@ -223,7 +187,12 @@ const SettingsPanel = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 right-4 bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-lg p-4 flex items-center gap-2 text-sm text-white/90 z-50"
+            className="fixed top-4 right-4 backdrop-blur-md rounded-lg p-4 flex items-center gap-2 text-sm z-50"
+            style={{
+                background: 'rgba(239,68,68,.10)',
+                border: '1px solid rgba(239,68,68,.20)',
+                color: 'var(--tq-text-primary)',
+            }}
         >
             <AlertCircle className="w-4 h-4" />
             {message}
@@ -231,7 +200,6 @@ const SettingsPanel = () => {
     );
 
     const handleAutoSave = () => {
-        // Validate required fields before auto-saving
         if (!formState.userName.trim() || !formState.userRole.trim() || !formState.weatherLocation.trim()) {
             setError('Please fill in all required fields');
             return;
@@ -331,6 +299,16 @@ const SettingsPanel = () => {
 
     const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
 
+    /* ── Shared input styles (theme-aware) ─── */
+    const inputStyle = {
+        background: 'var(--tq-surface-3)',
+        border: '1px solid var(--tq-border-1)',
+        color: 'var(--tq-text-primary)',
+    };
+
+    const inputClass =
+        'w-full pl-11 pr-4 py-3 rounded-xl focus:outline-none transition-colors';
+
     return (
         <>
             <AnimatePresence>
@@ -360,10 +338,18 @@ const SettingsPanel = () => {
                         transition={{
                             y: { duration: 3, repeat: Infinity, repeatType: "loop", ease: "easeInOut" }
                         }}
-                        className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-full shadow-lg shadow-purple-600/30 border border-white/20 transition-all font-medium"
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all font-medium cursor-pointer"
+                        title="Submit Feedback"
+                        style={{
+                            background: 'var(--tq-glass-bg)',
+                            backdropFilter: 'blur(12px)',
+                            WebkitBackdropFilter: 'blur(12px)',
+                            border: '1px solid var(--tq-glass-border)',
+                            color: 'var(--tq-text-primary)',
+                        }}
                     >
                         <span className="text-lg">👋</span>
-                        <span className="text-sm">Feedback</span>
+                        <span className="text-sm font-medium" style={{ color: 'var(--tq-accent)' }}>Feedback</span>
                     </motion.button>
                 </motion.div>
             )}
@@ -377,10 +363,21 @@ const SettingsPanel = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl bg-black/20 backdrop-blur-md border border-white/10 flex items-center justify-center group shadow-lg z-40"
+                        className="fixed bottom-6 right-6 w-12 h-12 rounded-xl backdrop-blur-md flex items-center justify-center group shadow-lg z-40 cursor-pointer"
+                        title="Open Settings"
+                        style={{
+                            background: 'var(--tq-glass-bg)',
+                            border: '1px solid var(--tq-glass-border)',
+                        }}
                     >
-                        <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <Settings className="w-5 h-5 text-white/70 group-hover:text-white/90 transition-colors" />
+                        <div
+                            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            style={{ background: 'var(--tq-gradient-glass)' }}
+                        />
+                        <Settings
+                            className="w-5 h-5 transition-colors"
+                            style={{ color: 'var(--tq-text-secondary)' }}
+                        />
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -393,153 +390,203 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-base inset-y-0 right-0 w-[400px] bg-black/40 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-30"
+                        className="fixed text-base inset-y-0 right-0 w-[400px] backdrop-blur-2xl shadow-2xl z-[100]"
+                        style={{
+                            background: 'var(--tq-surface-1)',
+                            borderLeft: '1px solid var(--tq-border-1)',
+                        }}
                     >
                         {/* Main scrollable container */}
-                        <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600">
-                            {/* Background and gradient container - fixed position */}
-                            <div className="absolute inset-0 bg-black/40">
-                                <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-                                <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
+                        <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full"
+                            style={{
+                                '--scrollbar-thumb': 'var(--tq-scrollbar-thumb)',
+                            }}
+                        >
+                            {/* Background gradients */}
+                            <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-surface-1)' }}>
+                                <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-subtle)' }} />
+                                <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-glass)' }} />
                             </div>
 
                             {/* Content container */}
                             <div className="relative z-100 px-6 py-8">
-                                <div className="flex justify-between items-center mb-8">
-                                    <motion.h2
-                                        initial={{ x: -20, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        className="text-xl font-semibold text-white/90"
-                                    >
-                                        Settings
-                                    </motion.h2>
+                                <div className="flex justify-between items-center mb-8 pb-4" style={{ borderBottom: '1px solid var(--tq-border-1)' }}>
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 rounded-xl" style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}>
+                                            <Settings className="w-6 h-6" style={{ color: 'var(--tq-accent)' }} />
+                                        </div>
+                                        <motion.h2
+                                            initial={{ x: -20, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            className="text-xl font-bold tracking-tight"
+                                            style={{ color: 'var(--tq-text-primary)' }}
+                                        >
+                                            Settings
+                                        </motion.h2>
+                                    </div>
                                     <motion.button
                                         aria-label="Close Settings"
-                                        whileHover={{ scale: 1.1 }}
+                                        whileHover={{ scale: 1.1, rotate: 90 }}
                                         whileTap={{ scale: 0.9 }}
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                                        className="p-2 rounded-lg transition-all cursor-pointer"
+                                        title="Close Settings"
+                                        style={{ color: 'var(--tq-text-secondary)' }}
                                     >
-                                        <X className="w-5 h-5 text-white/70" />
+                                        <X className="w-5 h-5" />
                                     </motion.button>
                                 </div>
 
                                 <div className="space-y-8">
                                     {/* User Details */}
-                                    <div className="space-y-3">
-                                        <div className="relative">
-                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
-                                            <input
-                                                type="text"
-                                                value={formState.userName}
-                                                onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
-                                                placeholder="Username"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
-                                            />
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <User className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
                                         </div>
-                                        <div className="relative">
-                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
-                                            <input
-                                                type="text"
-                                                value={formState.userRole}
-                                                onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
-                                                placeholder="Role"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
-                                            />
-                                        </div>
-                                        <div className="relative">
-                                            <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
-                                            <input
-                                                type="text"
-                                                value={formState.userPortfolioUrl}
-                                                onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
-                                                placeholder="Portfolio URL"
-                                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
-                                            />
+                                        <div className="space-y-3">
+                                            <div className="relative group">
+                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userName}
+                                                    onChange={(e) => setFormState({ ...formState, userName: e.target.value })}
+                                                    placeholder="Username"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
+                                            <div className="relative group">
+                                                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userRole}
+                                                    onChange={(e) => setFormState({ ...formState, userRole: e.target.value })}
+                                                    placeholder="Role"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
+                                            <div className="relative group">
+                                                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]" style={{ color: 'var(--tq-text-muted)' }} />
+                                                <input
+                                                    type="text"
+                                                    value={formState.userPortfolioUrl}
+                                                    onChange={(e) => setFormState({ ...formState, userPortfolioUrl: e.target.value })}
+                                                    placeholder="Portfolio URL"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Weather Preferences */}
+                                    {/* Weather / Search Preferences */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.1 }}
                                         className="space-y-4"
                                     >
-
-                                        <h3 className="text-sm font-medium text-white/70">{isChrome ? 'Weather' : ""}</h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Layout className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                                {!isChrome ? 'Weather & Search' : "Weather"}
+                                            </h3>
+                                        </div>
                                         <div className="space-y-3">
-
-                                            {!isChrome && <div className="relative w-full">
-                                                {/* Selected Value */}
-                                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
-                                                <button
-                                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-transparent border border-white/10 text-white/90 text-left focus:outline-none focus:border-white/20"
-                                                >
-                                                    {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
-                                                    <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                                                        {/* Dropdown Arrow Icon */}
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            width="16"
-                                                            height="16"
-                                                            viewBox="0 0 24 24"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        >
-                                                            <path d="m6 9 6 6 6-6" />
-                                                        </svg>
-                                                    </span>
-                                                </button>
-
-                                                {/* Dropdown Options */}
-                                                {isDropdownOpen && (
-                                                    <ul className="absolute w-full mt-2 bg-[#2d2d2dd5] border border-white/10 rounded-xl shadow-lg z-20">
-                                                        {["Google", "Bing", "DuckDuckGo"].map((engine) => (
-                                                            <li
-                                                                key={engine}
-                                                                onClick={() => {
-                                                                    setFormState({ ...formState, searchEngine: engine });
-                                                                    setIsDropdownOpen(false);
-                                                                }}
-                                                                className="px-4 py-3 cursor-pointer text-inherit hover:bg-white/20"
+                                            {!isChrome && (
+                                                <div className="relative w-full">
+                                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
+                                                    <button
+                                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                        className="w-full pl-11 pr-4 py-3 rounded-xl text-left focus:outline-none cursor-pointer"
+                                                        title="Select Search Engine"
+                                                        style={{
+                                                            background: 'transparent',
+                                                            border: '1px solid var(--tq-border-1)',
+                                                            color: 'var(--tq-text-primary)',
+                                                        }}
+                                                    >
+                                                        {formState.searchEngine ? formState.searchEngine : "Select Search Engine"}
+                                                        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="16"
+                                                                height="16"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="2"
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
                                                             >
-                                                                {engine}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                            </div>}
+                                                                <path d="m6 9 6 6 6-6" />
+                                                            </svg>
+                                                        </span>
+                                                    </button>
 
-
+                                                    {isDropdownOpen && (
+                                                        <ul
+                                                            className="absolute w-full mt-2 rounded-xl shadow-lg z-20"
+                                                            style={{
+                                                                background: 'var(--tq-glass-bg)',
+                                                                border: '1px solid var(--tq-border-1)',
+                                                                backdropFilter: 'blur(24px)',
+                                                            }}
+                                                        >
+                                                            {["Google", "Bing", "DuckDuckGo"].map((engine) => (
+                                                                <li
+                                                                    key={engine}
+                                                                    onClick={() => {
+                                                                        setFormState({ ...formState, searchEngine: engine });
+                                                                        setIsDropdownOpen(false);
+                                                                    }}
+                                                                    className="px-4 py-3 cursor-pointer transition-colors"
+                                                                    title={`Select ${engine}`}
+                                                                    style={{ color: 'var(--tq-text-primary)' }}
+                                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
+                                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                                                >
+                                                                    {engine}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            )}
 
                                             <div className="relative">
-                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                 <input
                                                     type="text"
                                                     value={formState.weatherLocation}
                                                     onChange={(e) => setFormState({ ...formState, weatherLocation: e.target.value })}
                                                     placeholder="Weather Location"
-                                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                    className={inputClass}
+                                                    style={inputStyle}
+                                                    data-no-theme-transition="true"
                                                 />
                                             </div>
                                         </div>
                                     </motion.div>
 
-                                    {/* Theme Preferences */}
+                                    {/* ── Theme Selector ── */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.12 }}
-                                        className="space-y-3"
+                                        className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/70">Theme</h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Palette className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
+                                        </div>
                                         <div className="grid grid-cols-3 gap-2">
-                                            {themeOptions.map((theme) => {
+                                            {THEME_LIST.map((theme) => {
                                                 const isSelected = (formState.theme || initialState.theme) === theme.key;
                                                 return (
                                                     <button
@@ -549,13 +596,41 @@ const SettingsPanel = () => {
                                                             setFormState({ ...formState, theme: theme.key });
                                                             dispatch(updateTheme(theme.key));
                                                         }}
-                                                        className={`rounded-xl border p-2 transition-all ${isSelected ? 'border-emerald-400/60 bg-white/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                                                        className="rounded-xl p-2 transition-all cursor-pointer"
+                                                        title={`Switch to ${theme.name} theme`}
+                                                        style={{
+                                                            border: isSelected
+                                                                ? `2px solid var(--tq-accent)`
+                                                                : '1px solid var(--tq-border-1)',
+                                                            background: isSelected
+                                                                ? 'var(--tq-surface-elevated)'
+                                                                : 'var(--tq-surface-3)',
+                                                            boxShadow: isSelected
+                                                                ? '0 0 12px var(--tq-accent-glow)'
+                                                                : 'none',
+                                                        }}
                                                     >
-                                                        <div className={`h-9 w-full rounded-md bg-gradient-to-r ${theme.preview}`} />
-                                                        <p className="mt-1 text-xs text-white/80 flex items-center justify-center gap-1.5">
+                                                        {/* Preview swatch */}
+                                                        <div
+                                                            className="h-9 w-full rounded-md"
+                                                            style={{
+                                                                background: `linear-gradient(to right, ${theme.preview[0]}, ${theme.preview[1]}, ${theme.preview[2]})`,
+                                                            }}
+                                                        />
+                                                        <p
+                                                            className="mt-1 text-xs flex items-center justify-center gap-1.5"
+                                                            style={{ color: 'var(--tq-text-secondary)' }}
+                                                        >
                                                             {theme.label}
                                                             {theme.isDefault && (
-                                                                <span className="px-0.5 rounded bg-green-500/20 text-green-300 border border-green-400/30 text-[9px]">
+                                                                <span
+                                                                    className="px-1 rounded text-[9px]"
+                                                                    style={{
+                                                                        background: 'rgba(var(--tq-accent-rgb),.15)',
+                                                                        color: 'var(--tq-accent)',
+                                                                        border: '1px solid rgba(var(--tq-accent-rgb),.30)',
+                                                                    }}
+                                                                >
                                                                     Default
                                                                 </span>
                                                             )}
@@ -567,35 +642,64 @@ const SettingsPanel = () => {
                                     </motion.div>
 
                                     {/* Clock */}
-                                    <div className="space-y-3">
-                                        <h3 className="text-sm font-medium text-white/70">Clock</h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Clock3 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
+                                        </div>
                                         <div className="flex flex-row gap-3">
                                             {/* 12-hour format */}
-                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-sm text-white/90">12-hour</span>
+                                            <div
+                                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                                                style={{
+                                                    background: 'var(--tq-surface-3)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                }}
+                                            >
+                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>12-hour</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('use12Hour')}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.use12Hour ? 'bg-emerald-500/50' : 'bg-white/10'
-                                                        }`}
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
+                                                    title="Toggle 12/24 hour format"
+                                                    style={{
+                                                        backgroundColor: formState.use12Hour
+                                                            ? 'rgba(var(--tq-accent-rgb),.50)'
+                                                            : 'var(--tq-surface-elevated)',
+                                                    }}
                                                 >
                                                     <span
-                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.use12Hour ? 'translate-x-6' : 'translate-x-1'
-                                                            }`}
+                                                        className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
+                                                        style={{
+                                                            transform: formState.use12Hour ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                                                        }}
                                                     />
                                                 </button>
                                             </div>
 
                                             {/* Hide seconds */}
-                                            <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
-                                                <span className="text-sm text-white/90">Hide seconds</span>
+                                            <div
+                                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
+                                                style={{
+                                                    background: 'var(--tq-surface-3)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                }}
+                                            >
+                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>Hide seconds</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('hideSeconds')}
-                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formState.hideSeconds ? 'bg-emerald-500/50' : 'bg-white/10'
-                                                        }`}
+                                                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
+                                                    title="Toggle seconds visibility"
+                                                    style={{
+                                                        backgroundColor: formState.hideSeconds
+                                                            ? 'rgba(var(--tq-accent-rgb),.50)'
+                                                            : 'var(--tq-surface-elevated)',
+                                                    }}
                                                 >
                                                     <span
-                                                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${formState.hideSeconds ? 'translate-x-6' : 'translate-x-1'
-                                                            }`}
+                                                        className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
+                                                        style={{
+                                                            transform: formState.hideSeconds ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                                                        }}
                                                     />
                                                 </button>
                                             </div>
@@ -609,20 +713,25 @@ const SettingsPanel = () => {
                                         transition={{ delay: 0.2 }}
                                         className="space-y-4"
                                     >
-                                        <h3 className="text-sm font-medium text-white/70">Social Profiles</h3>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Share2 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
+                                        </div>
 
                                         {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                             const IconComponent = {
                                                 github: Github,
-                                                twitter: Twitter,
+                                                twitter: FaXTwitter,
                                                 linkedin: Linkedin,
                                                 instagram: Instagram,
                                                 reddit: RiRedditLine
                                             }[platform] || Link;
 
+                                            const displayName = platform === 'twitter' ? 'X' : platform.charAt(0).toUpperCase() + platform.slice(1);
+
                                             return (
                                                 <div key={platform} className="relative">
-                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                     <input
                                                         type="url"
                                                         value={value}
@@ -633,68 +742,95 @@ const SettingsPanel = () => {
                                                                 [platform]: e.target.value
                                                             }
                                                         })}
-                                                        placeholder={`${platform.charAt(0).toUpperCase() + platform.slice(1)} URL`}
-                                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
+                                                        placeholder={`${displayName} URL`}
+                                                        className={inputClass}
+                                                        style={inputStyle}
+                                                        data-no-theme-transition="true"
                                                     />
                                                 </div>
                                             );
                                         })}
                                     </motion.div>
 
-                                    {/* Bookmarks - Favourites  */}
+                                    {/* Bookmarks - Favourites */}
                                     <motion.div
                                         initial={{ y: 20, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.3 }}
                                         className="space-y-4"
                                     >
-                                        <div className="flex justify-between items-center">
-                                            <h3 className="text-sm font-medium text-white/70">Favourites (upto 8)</h3>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <Star className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                                <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                                    Favourites (upto 8)
+                                                </h3>
+                                            </div>
                                             <motion.button
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
                                                 onClick={addBookmark}
                                                 disabled={formState.bookmarks.length >= 8}
-                                                className="p-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+                                                className="p-2 rounded-lg transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                                title="Add to Favourites"
+                                                style={{ color: 'var(--tq-text-secondary)' }}
                                             >
-                                                <Plus className="w-4 h-4 text-white/70" />
+                                                <Plus className="w-4 h-4" />
                                             </motion.button>
                                         </div>
                                         <div className="space-y-3">
                                             {formState.bookmarks.map((bookmark, index) => (
-                                                <div key={index} className="flex gap-2">
+                                                <div key={index} className="flex gap-2 group">
                                                     <div className="flex-1 flex gap-2">
-                                                        <input
-                                                            type="text"
-                                                            value={bookmark.name}
-                                                            onChange={(e) => {
-                                                                const newBookmarks = [...formState.bookmarks];
-                                                                newBookmarks[index] = { ...bookmark, name: e.target.value };
-                                                                setFormState({ ...formState, bookmarks: newBookmarks });
-                                                            }}
-                                                            placeholder="Name"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
-                                                        />
-                                                        <input
-                                                            type="url"
-                                                            value={bookmark.url}
-                                                            onChange={(e) => {
-                                                                const newBookmarks = [...formState.bookmarks];
-                                                                newBookmarks[index] = { ...bookmark, url: e.target.value };
-                                                                setFormState({ ...formState, bookmarks: newBookmarks });
-                                                            }}
-                                                            placeholder="Website URL"
-                                                            className="w-1/2 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white/90 placeholder-white/30 focus:outline-none focus:border-white/20 focus:bg-white/10"
-                                                        />
+                                                        <div className="relative flex-1">
+                                                            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
+                                                            <input
+                                                                type="text"
+                                                                value={bookmark.name}
+                                                                onChange={(e) => {
+                                                                    const newBookmarks = [...formState.bookmarks];
+                                                                    newBookmarks[index] = { ...bookmark, name: e.target.value };
+                                                                    setFormState({ ...formState, bookmarks: newBookmarks });
+                                                                }}
+                                                                placeholder="Name"
+                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
+                                                                style={{
+                                                                    ...inputStyle,
+                                                                    background: 'var(--tq-surface-2)'
+                                                                }}
+                                                                data-no-theme-transition="true"
+                                                            />
+                                                        </div>
+                                                        <div className="relative flex-1">
+                                                            <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
+                                                            <input
+                                                                type="url"
+                                                                value={bookmark.url}
+                                                                onChange={(e) => {
+                                                                    const newBookmarks = [...formState.bookmarks];
+                                                                    newBookmarks[index] = { ...bookmark, url: e.target.value };
+                                                                    setFormState({ ...formState, bookmarks: newBookmarks });
+                                                                }}
+                                                                placeholder="URL"
+                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
+                                                                style={{
+                                                                    ...inputStyle,
+                                                                    background: 'var(--tq-surface-2)'
+                                                                }}
+                                                                data-no-theme-transition="true"
+                                                            />
+                                                        </div>
                                                     </div>
 
                                                     <motion.button
-                                                        whileHover={{ scale: 1.1 }}
+                                                        whileHover={{ scale: 1.1, color: 'var(--tq-danger)' }}
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => removeBookmark(index)}
-                                                        className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                                                        className="p-3 rounded-xl transition-all cursor-pointer opacity-40 group-hover:opacity-100"
+                                                        title="Remove"
+                                                        style={{ color: 'var(--tq-text-secondary)' }}
                                                     >
-                                                        <Trash2 className="w-4 h-4 text-white/70" />
+                                                        <Trash2 className="w-4 h-4" />
                                                     </motion.button>
                                                 </div>
                                             ))}
@@ -703,7 +839,6 @@ const SettingsPanel = () => {
 
                                     {/* Action Buttons */}
                                     <div className="space-y-3">
-                                        {/* Save and Reset in a Row */}
                                         <div className="flex gap-3">
                                             <motion.button
                                                 initial={{ y: 20, opacity: 0 }}
@@ -712,9 +847,15 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleSave}
-                                                className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                title="Save all changes"
+                                                style={{
+                                                    background: 'var(--tq-gradient-subtle)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                    color: 'var(--tq-text-primary)',
+                                                }}
                                             >
-                                                <Save className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                <Save className="w-4 h-4" style={{ color: 'var(--tq-text-secondary)' }} />
                                                 Save Changes
                                             </motion.button>
 
@@ -725,9 +866,15 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleReset}
-                                                className="flex-1 px-4 py-3 rounded-xl bg-red-500/10 backdrop-blur-sm text-white/90 hover:text-white border border-white/10 hover:border-white/20 flex items-center justify-center gap-2 group"
+                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                title="Reset settings to default"
+                                                style={{
+                                                    background: 'rgba(var(--tq-accent-rgb),.06)',
+                                                    border: '1px solid var(--tq-border-1)',
+                                                    color: 'var(--tq-text-primary)',
+                                                }}
                                             >
-                                                <RotateCcw className="w-4 h-4 text-white/70 group-hover:text-white/90" />
+                                                <RotateCcw className="w-4 h-4" style={{ color: 'var(--tq-text-secondary)' }} />
                                                 Reset Settings
                                             </motion.button>
                                         </div>
@@ -742,64 +889,68 @@ const SettingsPanel = () => {
                                                 y: 0,
                                                 opacity: 1,
                                                 scale: isHighlightingFeedback ? [1, 1.05, 1, 1.05, 1] : 1,
-                                                borderColor: isHighlightingFeedback ? ['rgba(147, 51, 234, 0.3)', 'rgba(255, 255, 255, 0.8)', 'rgba(147, 51, 234, 0.3)'] : 'rgba(147, 51, 234, 0.3)'
                                             }}
                                             transition={{
                                                 delay: 0.5,
                                                 scale: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 },
-                                                borderColor: { duration: 0.5, repeat: isHighlightingFeedback ? 2 : 0 }
                                             }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className={`w-full px-4 py-3 rounded-xl bg-purple-800/20 text-white/90 hover:text-white border ${isHighlightingFeedback ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'border-purple-800/30'} hover:border-white/20 flex items-center justify-center gap-2 group cursor-pointer transition-all duration-300`}
+                                            className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-3 group cursor-pointer transition-all duration-300"
+                                            title="Submit Feedback"
+                                            style={{
+                                                background: 'rgba(var(--tq-accent-sec-rgb),.10)',
+                                                border: isHighlightingFeedback
+                                                    ? '2px solid var(--tq-accent-secondary)'
+                                                    : '1px solid rgba(var(--tq-accent-sec-rgb),.25)',
+                                                color: 'var(--tq-text-primary)',
+                                                boxShadow: isHighlightingFeedback
+                                                    ? '0 0 20px rgba(var(--tq-accent-sec-rgb),.50)'
+                                                    : 'none',
+                                            }}
                                         >
-                                            <Send className="w-5 h-5 text-white/70 group-hover:text-white" />
-                                            Submit Feedback
+                                            <MousePointer2 className="w-5 h-5" style={{ color: 'var(--tq-accent-secondary)' }} />
+                                            <span className="font-semibold">Submit Feedback</span>
                                         </motion.a>
-
-
-
 
                                         <motion.div
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            // transition={{ duration: 0.3 }}
-                                            className="w-full flex items-center justify-center mt-4 text-gray-400"
+                                            className="w-full flex flex-col items-center gap-4 mt-6 pt-6 border-t tq-border-1"
                                         >
-                                            <img
-                                                src={TabQuestLogo}
-                                                alt="TabQuest Logo"
-                                                className="w-5 h-4.5 mr-2 object-contain"
-                                            />
-                                            <span className="text-sm font-bold tracking-wide mr-2 text-white/90">
-                                                TabQuest
-                                            </span>
-                                            <span className="text-xs bg-gray-800/50 px-2 py-1 rounded-full">
-                                                {APP_VERSION}
-                                            </span>
+                                            <motion.a
+                                                href="https://github.com/tabquest/tabquest"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                whileHover={{ y: -1, background: 'rgba(251, 191, 36, 0.1)' }}
+                                                whileTap={{ scale: 0.98 }}
+                                                className="flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all group relative overflow-hidden"
+                                                style={{
+                                                    background: 'rgba(251, 191, 36, 0.05)',
+                                                    border: '1px solid rgba(251, 191, 36, 0.15)',
+                                                }}
+                                            >
+                                                <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 group-hover:scale-110 transition-transform" />
+                                                <span className="text-[9.5px] font-black uppercase tracking-widest text-amber-200/70 group-hover:text-amber-400 transition-colors">
+                                                    Star us on GitHub
+                                                </span>
+                                                <Github className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
+                                            </motion.a>
+
+                                            <div className="flex items-center justify-center">
+                                                <img
+                                                    src={TabQuestLogo}
+                                                    alt="TabQuest Logo"
+                                                    className="w-4 h-4 mr-2 object-contain"
+                                                />
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--tq-text-muted)' }}>
+                                                    TabQuest <span className="opacity-40 ml-1">v{APP_VERSION}</span>
+                                                </span>
+                                            </div>
                                         </motion.div>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-
-
-
-                        <div
-                            className="relative h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-thumb]:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-neutral-800 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-600 rounded-[4px]">
-                            {/* 
-                            // Fixed background wrapper that extends full height 
-                            <div className="absolute inset-0 bg-black/40">
-                                <div className="relative h-full">
-
-                                    <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-blue-500/5 pointer-events-none" />
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-white/5 pointer-events-none" />
-
-                                   
-
-                                </div>
-                            </div> */}
                         </div>
                     </motion.div>
                 )}

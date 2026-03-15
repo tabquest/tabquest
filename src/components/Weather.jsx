@@ -20,7 +20,7 @@ const Weather = () => {
   const cleanupOldCache = () => {
     const today = new Date().toISOString().split('T')[0];
     const keysToDelete = [];
-    
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key.startsWith('weather_cache_')) {
@@ -30,7 +30,7 @@ const Weather = () => {
         }
       }
     }
-    
+
     keysToDelete.forEach(key => localStorage.removeItem(key));
   };
 
@@ -59,7 +59,7 @@ const Weather = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const cachedData = getCache();
       if (cachedData) {
         setWeatherData(cachedData);
@@ -69,7 +69,7 @@ const Weather = () => {
 
       const result = await fetch(API_URL);
       if (!result.ok) throw new Error(`City not found`);
-      
+
       const data = await result.json();
       setWeatherData(data);
       setCache(data);
@@ -107,12 +107,18 @@ const Weather = () => {
     if (!isOnline) {
       const cachedTemp = getCache()?.main?.temp;
       const temp = kelvinToCelsius(cachedTemp);
-      
+
       if (!temp) {
         return (
           <div className="flex items-center gap-2">
-            <WifiOff className="w-4 h-4 text-white/70" data-testid="wifi-off-icon" />
-            <span className="text-sm text-white/70">Weather info unavailable</span>
+            <WifiOff
+              className="w-4 h-4"
+              style={{ color: 'var(--tq-text-secondary)' }}
+              data-testid="wifi-off-icon"
+            />
+            <span className="text-sm" style={{ color: 'var(--tq-text-secondary)' }}>
+              Weather info unavailable
+            </span>
           </div>
         );
       }
@@ -120,17 +126,29 @@ const Weather = () => {
       return (
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Cloud className="w-6 h-6 text-white" />
-            <span className="text-sm font-semibold text-white">{temp}°</span>
+            <Cloud className="w-6 h-6" style={{ color: 'var(--tq-text-primary)' }} />
+            <span className="text-sm font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
+              {temp}°
+            </span>
           </div>
-          <WifiOff className="w-4 h-4 text-white/70" data-testid="wifi-off-icon" />
+          <WifiOff
+            className="w-4 h-4"
+            style={{ color: 'var(--tq-text-secondary)' }}
+            data-testid="wifi-off-icon"
+          />
         </div>
       );
     }
 
     if (error) {
       return (
-        <div className="flex w-[160px] m-auto justify-center items-center gap-2 bg-red-600 text-white text-sm p-2 rounded-md">
+        <div
+          className="flex w-[160px] m-auto justify-center items-center gap-2 text-sm p-2 rounded-md"
+          style={{
+            background: 'var(--tq-danger)',
+            color: '#ffffff',
+          }}
+        >
           <AlertCircle size={16} />
           {error}
         </div>
@@ -138,7 +156,11 @@ const Weather = () => {
     }
 
     if (isLoading) {
-      return <div className="text-white text-center">Loading weather...</div>;
+      return (
+        <div className="text-center" style={{ color: 'var(--tq-text-secondary)' }}>
+          Loading weather...
+        </div>
+      );
     }
 
     if (!weatherData) {
@@ -148,14 +170,14 @@ const Weather = () => {
     return (
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Cloud className="w-6 h-6 text-white" />
-          <span className="text-lg font-semibold text-white">
+          <Cloud className="w-6 h-6" style={{ color: 'var(--tq-text-primary)' }} />
+          <span className="text-lg font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
             {kelvinToCelsius(weatherData?.main?.temp)}°
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-white" />
-          <span className="text-sm font-semibold text-white">
+          <MapPin className="w-5 h-5" style={{ color: 'var(--tq-text-primary)' }} />
+          <span className="text-sm font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
             {weatherData?.name}, {weatherData?.sys?.country}
           </span>
         </div>
