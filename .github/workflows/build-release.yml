@@ -82,3 +82,36 @@ jobs:
             TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
             TabQuest_v${{ steps.version.outputs.value }}_source.zip
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Firefox Add-ons
+        continue-on-error: true
+        env:
+          FIREFOX_ISSUER: ${{ secrets.FIREFOX_ISSUER }}
+          FIREFOX_SECRET: ${{ secrets.FIREFOX_SECRET }}
+        run: |
+          npx web-ext sign \
+            --channel listed \
+            --source-dir ./release-assets/firefox \
+            --upload-source-code TabQuest_v${{ steps.version.outputs.value }}_source.zip \
+            --artifacts-dir ./release-assets/firefox-signed \
+            --api-key $FIREFOX_ISSUER \
+            --api-secret $FIREFOX_SECRET
+
+      - name: Publish to Chrome Web Store
+        continue-on-error: true
+        uses: wdzeng/chrome-extension@v1
+        with:
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          zip-path: TabQuest_v${{ steps.version.outputs.value }}_chrome_build.zip
+          extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+
+      - name: Publish to Edge Add-ons
+        continue-on-error: true
+        uses: wdzeng/edge-addon@v2
+        with:
+          product-id: ${{ secrets.EDGE_PRODUCT_ID }}
+          zip-path: TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
+          client-id: ${{ secrets.EDGE_CLIENT_ID }}
+          api-key: ${{ secrets.EDGE_CLIENT_SECRET }}

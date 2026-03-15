@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "node chooseMode.js dev",
+    "dev:chrome": "node chooseMode.js dev chrome",
+    "dev:edge": "node chooseMode.js dev edge",
+    "dev:firefox": "node chooseMode.js dev firefox",
     "build": "node chooseMode.js build",
     "build:chrome": "node chooseMode.js build chrome",
     "build:edge": "node chooseMode.js build edge",
