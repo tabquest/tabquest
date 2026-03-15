@@ -84,6 +84,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to Firefox Add-ons
+        id: publish-firefox
         continue-on-error: true
         env:
           FIREFOX_ISSUER: ${{ secrets.FIREFOX_ISSUER }}
@@ -98,6 +99,7 @@ jobs:
             --api-secret $FIREFOX_SECRET
 
       - name: Publish to Chrome Web Store
+        id: publish-chrome
         continue-on-error: true
         uses: wdzeng/chrome-extension@v1
         with:
@@ -108,6 +110,7 @@ jobs:
           extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
 
       - name: Publish to Edge Add-ons
+        id: publish-edge
         continue-on-error: true
         uses: wdzeng/edge-addon@v2
         with:
@@ -115,3 +118,18 @@ jobs:
           zip-path: TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           api-key: ${{ secrets.EDGE_CLIENT_SECRET }}
+
+      - name: Publish Summary
+        if: always()
+        run: |
+          echo "## 🚀 Publishing Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Store | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Firefox | ${{ steps.publish-firefox.outcome == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Chrome | ${{ steps.publish-chrome.outcome == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Edge | ${{ steps.publish-edge.outcome == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ steps.publish-firefox.outcome }}" == "failure" || "${{ steps.publish-chrome.outcome }}" == "failure" || "${{ steps.publish-edge.outcome }}" == "failure" ]]; then
+            echo "::error::One or more publishing steps failed. Check the logs above for details."
+            exit 1
+          fi
