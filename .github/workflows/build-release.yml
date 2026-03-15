@@ -101,7 +101,10 @@ jobs:
       - name: Publish to Chrome Web Store
         id: publish-chrome
         continue-on-error: true
-        uses: wdzeng/chrome-extension@v1
+      - name: Publish to Chrome Web Store
+        id: publish-chrome
+        continue-on-error: true
+        uses: wdzeng/chrome-extension@df7fcb73378f72fc4a6ec29b2cb2ef74a1f23faf # v1
         with:
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
@@ -112,7 +115,7 @@ jobs:
       - name: Publish to Edge Add-ons
         id: publish-edge
         continue-on-error: true
-        uses: wdzeng/edge-addon@v2
+        uses: wdzeng/edge-addon@b34b7f1a15d0cee2d5d17cee1f5e2d1f2e5a2f4f # v2
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           zip-path: TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
