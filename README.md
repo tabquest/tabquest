@@ -2,7 +2,10 @@
 
 TabQuest is a productivity-focused **Open Source Browser Extension** designed to help you manage bookmarks, tasks, and notes with a clean and customizable interface.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Chrome](https://img.shields.io/badge/Chrome-Web_Store-blue?logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/tabquest-new-tab-for-prod/ccghcponodnglklmafecngphpilfijpd)
+[![Firefox](https://img.shields.io/badge/Firefox-Add--ons-orange?logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/tabquest-productivity-tool/)
+[![Edge](https://img.shields.io/badge/Edge-Add--ons-0078D7?logo=microsoft-edge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/tabquest-new-tab-for-pr/hjholpkdddnhaimhjmcfllmfmcihnhdb)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <div align="center">
   <img src=".github/assets/preview.png" alt="TabQuest Preview" width="100%" />
