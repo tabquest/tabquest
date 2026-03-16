@@ -1,6 +1,7 @@
-export const APP_VERSION = "1.0.9";
+export const APP_VERSION = "1.2.0";
 
 export const VERSION_NOTES = {
+  "1.2.0": "TabQuest is open source now! Check out the new UI and check the repo in settings.",
   "1.0.9": "Fresh themes and improved visual consistency. Open Settings and try it now.",
   "1.0.8": "Optimized performance",
   "1.0.7": "Christmas Edition 🎄",

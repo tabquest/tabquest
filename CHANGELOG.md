@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.2.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.1.0...tabquest-v1.2.0) (2026-03-16)
+
+
+### Features
+
+* add Outfit font, implement URL validation for settings ([c07233c](https://github.com/tabquest/tabquest/commit/c07233ca24e46ab6e4a47a51dc53f092ef9fb40d))
+* add Outfit font, implement URL validation for settings ([15ec04e](https://github.com/tabquest/tabquest/commit/15ec04e718e07da76550aa536f52c2353eab8143))
+* update URL validation to require a protocol and correctly apply the regex pattern ([b4654e0](https://github.com/tabquest/tabquest/commit/b4654e0fdd96dce94b75746f26080bbfe68b1446))
+
+
+### Bug Fixes
+
+* **ci:** update release-please to use PAT and fix build triggers ([47f84f7](https://github.com/tabquest/tabquest/commit/47f84f7855febc5028085455a692164e545ae85b))
+* **ci:** update release-please to use PAT and fix build triggers ([f3be431](https://github.com/tabquest/tabquest/commit/f3be431e0ec6a6bbafcc954daea037beaed7b30b))
+* Update src/components/SettingsPanel.jsx ([65dbab5](https://github.com/tabquest/tabquest/commit/65dbab5485968334a65d2d62f044e8a3f0833e93))
+* Update src/index.css ([305ece1](https://github.com/tabquest/tabquest/commit/305ece1eae2bb0cc2d2f91eb29e3565fe13217ea))
+
 ## [1.1.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.0.9...tabquest-v1.1.0) (2026-03-16)
 
 

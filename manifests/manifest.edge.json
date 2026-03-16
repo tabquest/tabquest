@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabQuest - New Tab for Productivity",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "TabQuest turns your new tab into a productivity hub for managing bookmarks, tasks, and notes in a customizable interface.",
   "short_description": "Your new tab, reimagined! Manage tasks, bookmarks, and notes in one sleek hub.",
   "icons": {
