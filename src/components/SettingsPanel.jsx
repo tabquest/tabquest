@@ -207,7 +207,7 @@ const SettingsPanel = () => {
         try {
             // Simplified URL regex that allows both protocol and non-protocol strings
             // but ensures they look like a real address
-            const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            const pattern = new RegExp('^(https?:\\/\\/)' + // protocol (required)
                 '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
                 '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
                 '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
