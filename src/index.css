@@ -14,9 +14,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  font-family: 'Outfit', sans-serif;
-}
 
 body::-webkit-scrollbar {
   display: none;
