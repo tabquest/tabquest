@@ -129,7 +129,7 @@ jobs:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           zip-path: TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
-          api-key: ${{ secrets.EDGE_CLIENT_SECRET }}
+          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
         continue-on-error: true
 
       # Publishing Summary
