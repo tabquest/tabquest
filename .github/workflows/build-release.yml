@@ -124,12 +124,12 @@ jobs:
       - name: Publish to Edge Add-ons
         id: publish-edge
         if: github.event_name == 'push' || github.event.inputs.confirm == 'release'
-        uses: wdzeng/edge-addon@v1
+        uses: wdzeng/edge-addon@v2
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           zip-path: TabQuest_v${{ steps.version.outputs.value }}_edge_build.zip
+          api-key: ${{ secrets.EDGE_CLIENT_SECRET }}
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
-          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
         continue-on-error: true
 
       # Publishing Summary
