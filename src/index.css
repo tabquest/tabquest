@@ -9,7 +9,11 @@
 /* ── Base ─────────────────────────────────────────────────── */
 html {
   user-select: none;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 
 body::-webkit-scrollbar {
   display: none;
