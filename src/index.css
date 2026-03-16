@@ -9,6 +9,13 @@
 /* ── Base ─────────────────────────────────────────────────── */
 html {
   user-select: none;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
 }
 
 body::-webkit-scrollbar {

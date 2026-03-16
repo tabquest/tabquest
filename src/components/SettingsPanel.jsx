@@ -187,22 +187,62 @@ const SettingsPanel = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 100, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 right-4 backdrop-blur-md rounded-lg p-4 flex items-center gap-2 text-sm z-50"
+            className="fixed top-6 right-6 backdrop-blur-xl rounded-2xl p-4 flex items-center gap-3 text-sm z-[1000] shadow-2xl shadow-red-500/10"
             style={{
-                background: 'rgba(239,68,68,.10)',
-                border: '1px solid rgba(239,68,68,.20)',
+                background: 'rgba(239,68,68, 0.15)',
+                border: '1px solid rgba(239,68,68, 0.4)',
                 color: 'var(--tq-text-primary)',
+                minWidth: '280px'
             }}
         >
-            <AlertCircle className="w-4 h-4" />
-            {message}
+            <div className="p-1.5 rounded-lg bg-red-500/20">
+                <AlertCircle className="w-4 h-4 text-red-500" />
+            </div>
+            <span className="font-medium">{message}</span>
         </motion.div>
     );
+
+    const isValidUrl = (url) => {
+        if (!url) return false;
+        try {
+            // Simplified URL regex that allows both protocol and non-protocol strings
+            // but ensures they look like a real address
+            const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+                '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+                '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+            return !!pattern.test(url);
+        } catch (e) {
+            return false;
+        }
+    };
 
     const handleAutoSave = () => {
         if (!formState.userName.trim() || !formState.userRole.trim() || !formState.weatherLocation.trim()) {
             setError('Please fill in all required fields');
             return;
+        }
+
+        // Validate Bookmarks
+        for (const bookmark of formState.bookmarks) {
+            if (!bookmark.name.trim() || !bookmark.url.trim()) {
+                setError('All favourites must have a name and URL');
+                return;
+            }
+            if (!isValidUrl(bookmark.url)) {
+                setError(`Invalid URL format for "${bookmark.name}"`);
+                return;
+            }
+        }
+
+        // Validate Social Profiles (only if not empty)
+        for (const [platform, url] of Object.entries(formState.socialProfiles)) {
+            if (url.trim() && !isValidUrl(url)) {
+                setError(`Invalid URL format for ${platform}`);
+                return;
+            }
         }
 
         dispatch(updateUserInfo({
@@ -242,6 +282,26 @@ const SettingsPanel = () => {
         if (!formState.weatherLocation.trim()) {
             setError('Weather location is required');
             return;
+        }
+
+        // Validate Bookmarks
+        for (const bookmark of formState.bookmarks) {
+            if (!bookmark.name.trim() || !bookmark.url.trim()) {
+                setError('All favourites must have a name and URL');
+                return;
+            }
+            if (!isValidUrl(bookmark.url)) {
+                setError(`Invalid URL format for "${bookmark.name}"`);
+                return;
+            }
+        }
+
+        // Validate Social Profiles (only if not empty)
+        for (const [platform, url] of Object.entries(formState.socialProfiles)) {
+            if (url.trim() && !isValidUrl(url)) {
+                setError(`Invalid URL format for ${platform}`);
+                return;
+            }
         }
 
         dispatch(updateUserInfo({
@@ -307,7 +367,7 @@ const SettingsPanel = () => {
     };
 
     const inputClass =
-        'w-full pl-11 pr-4 py-3 rounded-xl focus:outline-none transition-colors';
+        'w-full pl-11 pr-4 py-2.5 rounded-xl focus:outline-none focus:border-[var(--tq-accent)]/50 transition-all text-sm font-medium';
 
     return (
         <>
@@ -418,8 +478,7 @@ const SettingsPanel = () => {
                                         <motion.h2
                                             initial={{ x: -20, opacity: 0 }}
                                             animate={{ x: 0, opacity: 1 }}
-                                            className="text-xl font-bold tracking-tight"
-                                            style={{ color: 'var(--tq-text-primary)' }}
+                                            className="text-lg font-medium tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-[var(--tq-text-primary)] to-[var(--tq-text-secondary)]"
                                         >
                                             Settings
                                         </motion.h2>
@@ -441,8 +500,8 @@ const SettingsPanel = () => {
                                     {/* User Details */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <User className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
+                                            <User className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
                                         </div>
                                         <div className="space-y-3">
                                             <div className="relative group">
@@ -492,8 +551,8 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Layout className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                            <Layout className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
                                                 {!isChrome ? 'Weather & Search' : "Weather"}
                                             </h3>
                                         </div>
@@ -503,7 +562,7 @@ const SettingsPanel = () => {
                                                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
                                                     <button
                                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                        className="w-full pl-11 pr-4 py-3 rounded-xl text-left focus:outline-none cursor-pointer"
+                                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl text-left focus:outline-none cursor-pointer text-sm font-medium"
                                                         title="Select Search Engine"
                                                         style={{
                                                             background: 'transparent',
@@ -545,7 +604,7 @@ const SettingsPanel = () => {
                                                                         setFormState({ ...formState, searchEngine: engine });
                                                                         setIsDropdownOpen(false);
                                                                     }}
-                                                                    className="px-4 py-3 cursor-pointer transition-colors"
+                                                                    className="px-4 py-3 cursor-pointer transition-colors text-sm font-medium"
                                                                     title={`Select ${engine}`}
                                                                     style={{ color: 'var(--tq-text-primary)' }}
                                                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
@@ -582,8 +641,8 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Palette className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
+                                            <Palette className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
                                         </div>
                                         <div className="grid grid-cols-3 gap-2">
                                             {THEME_LIST.map((theme) => {
@@ -618,13 +677,13 @@ const SettingsPanel = () => {
                                                             }}
                                                         />
                                                         <p
-                                                            className="mt-1 text-xs flex items-center justify-center gap-1.5"
+                                                            className="mt-1 text-[11px] font-medium flex items-center justify-center gap-1.5"
                                                             style={{ color: 'var(--tq-text-secondary)' }}
                                                         >
                                                             {theme.label}
                                                             {theme.isDefault && (
                                                                 <span
-                                                                    className="px-1 rounded text-[9px]"
+                                                                    className="px-1.5 py-0.5 rounded-md text-[7.5px] font-bold uppercase tracking-wider"
                                                                     style={{
                                                                         background: 'rgba(var(--tq-accent-rgb),.15)',
                                                                         color: 'var(--tq-accent)',
@@ -644,8 +703,8 @@ const SettingsPanel = () => {
                                     {/* Clock */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Clock3 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
+                                            <Clock3 className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
                                         </div>
                                         <div className="flex flex-row gap-3">
                                             {/* 12-hour format */}
@@ -656,7 +715,7 @@ const SettingsPanel = () => {
                                                     border: '1px solid var(--tq-border-1)',
                                                 }}
                                             >
-                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>12-hour</span>
+                                                <span className="text-sm font-medium" style={{ color: 'var(--tq-text-primary)' }}>12-hour</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('use12Hour')}
                                                     className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
@@ -684,7 +743,7 @@ const SettingsPanel = () => {
                                                     border: '1px solid var(--tq-border-1)',
                                                 }}
                                             >
-                                                <span className="text-sm" style={{ color: 'var(--tq-text-primary)' }}>Hide seconds</span>
+                                                <span className="text-sm font-medium" style={{ color: 'var(--tq-text-primary)' }}>Hide seconds</span>
                                                 <button
                                                     onClick={() => handleClockSettingToggle('hideSeconds')}
                                                     className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
@@ -714,42 +773,64 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Share2 className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
+                                            <Share2 className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
                                         </div>
 
-                                        {Object.entries(formState.socialProfiles).map(([platform, value]) => {
-                                            const IconComponent = {
-                                                github: Github,
-                                                twitter: FaXTwitter,
-                                                linkedin: Linkedin,
-                                                instagram: Instagram,
-                                                reddit: RiRedditLine
-                                            }[platform] || Link;
+                                        <div className="flex flex-col gap-2">
+                                            {Object.entries(formState.socialProfiles).map(([platform, value]) => {
+                                                const IconComponent = {
+                                                    github: Github,
+                                                    twitter: FaXTwitter,
+                                                    linkedin: Linkedin,
+                                                    instagram: Instagram,
+                                                    reddit: RiRedditLine
+                                                }[platform] || Link;
 
-                                            const displayName = platform === 'twitter' ? 'X' : platform.charAt(0).toUpperCase() + platform.slice(1);
+                                                const displayName = platform === 'twitter' ? 'X' : platform.charAt(0).toUpperCase() + platform.slice(1);
 
-                                            return (
-                                                <div key={platform} className="relative">
-                                                    <IconComponent className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--tq-text-muted)' }} />
-                                                    <input
-                                                        type="url"
-                                                        value={value}
-                                                        onChange={(e) => setFormState({
-                                                            ...formState,
-                                                            socialProfiles: {
-                                                                ...formState.socialProfiles,
-                                                                [platform]: e.target.value
-                                                            }
-                                                        })}
-                                                        placeholder={`${displayName} URL`}
-                                                        className={inputClass}
-                                                        style={inputStyle}
-                                                        data-no-theme-transition="true"
-                                                    />
-                                                </div>
-                                            );
-                                        })}
+                                                return (
+                                                    <motion.div 
+                                                        key={platform}
+                                                        initial={{ opacity: 0, y: 5 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="group relative p-3 rounded-xl transition-all border"
+                                                        style={{
+                                                            background: 'var(--tq-surface-3)',
+                                                            borderColor: 'var(--tq-border-1)'
+                                                        }}
+                                                        whileHover={{
+                                                            borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
+                                                            background: 'var(--tq-surface-elevated)'
+                                                        }}
+                                                    >
+                                                        <div className="flex flex-col gap-2">
+                                                            <div className="flex items-center gap-2">
+                                                                <IconComponent className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                                                <span className="text-sm font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
+                                                                    {displayName}
+                                                                </span>
+                                                            </div>
+                                                            <input
+                                                                type="url"
+                                                                value={value}
+                                                                onChange={(e) => setFormState({
+                                                                    ...formState,
+                                                                    socialProfiles: {
+                                                                        ...formState.socialProfiles,
+                                                                        [platform]: e.target.value
+                                                                    }
+                                                                })}
+                                                                placeholder="Paste link..."
+                                                                className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-1 text-xs focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
+                                                                style={{ color: 'var(--tq-text-secondary)' }}
+                                                                data-no-theme-transition="true"
+                                                            />
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
                                     </motion.div>
 
                                     {/* Bookmarks - Favourites */}
@@ -761,48 +842,76 @@ const SettingsPanel = () => {
                                     >
                                         <div className="flex justify-between items-center mb-2">
                                             <div className="flex items-center gap-2">
-                                                <Star className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
-                                                <h3 className="text-xs font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
-                                                    Favourites (upto 8)
+                                                <div className="p-1.5 rounded-lg" style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}>
+                                                    <Star className="w-3.5 h-3.5" style={{ color: 'var(--tq-accent)' }} />
+                                                </div>
+                                                <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
+                                                    Favourites <span className="text-[10px] ml-1 opacity-50">({formState.bookmarks.length}/8)</span>
                                                 </h3>
                                             </div>
                                             <motion.button
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
+                                                whileHover={{ scale: 1.05, background: 'rgba(var(--tq-accent-rgb), 0.1)' }}
+                                                whileTap={{ scale: 0.95 }}
                                                 onClick={addBookmark}
                                                 disabled={formState.bookmarks.length >= 8}
-                                                className="p-2 rounded-lg transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-                                                title="Add to Favourites"
-                                                style={{ color: 'var(--tq-text-secondary)' }}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed border"
+                                                style={{ 
+                                                    color: 'var(--tq-text-primary)', 
+                                                    borderColor: 'var(--tq-border-1)'
+                                                }}
                                             >
-                                                <Plus className="w-4 h-4" />
+                                                <Plus className="w-3.5 h-3.5" />
+                                                <span className="text-[10px] font-bold uppercase tracking-wider">Add</span>
                                             </motion.button>
                                         </div>
-                                        <div className="space-y-3">
+
+                                        <div className="flex flex-col gap-2">
                                             {formState.bookmarks.map((bookmark, index) => (
-                                                <div key={index} className="flex gap-2 group">
-                                                    <div className="flex-1 flex gap-2">
-                                                        <div className="relative flex-1">
-                                                            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
-                                                            <input
-                                                                type="text"
-                                                                value={bookmark.name}
-                                                                onChange={(e) => {
-                                                                    const newBookmarks = [...formState.bookmarks];
-                                                                    newBookmarks[index] = { ...bookmark, name: e.target.value };
-                                                                    setFormState({ ...formState, bookmarks: newBookmarks });
-                                                                }}
-                                                                placeholder="Name"
-                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
-                                                                style={{
-                                                                    ...inputStyle,
-                                                                    background: 'var(--tq-surface-2)'
-                                                                }}
-                                                                data-no-theme-transition="true"
-                                                            />
+                                                <motion.div
+                                                    key={index}
+                                                    layout
+                                                    initial={{ opacity: 0, y: 5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="group relative p-3 rounded-xl transition-all border"
+                                                    style={{
+                                                        background: 'var(--tq-surface-3)',
+                                                        borderColor: 'var(--tq-border-1)'
+                                                    }}
+                                                    whileHover={{
+                                                        borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
+                                                        background: 'var(--tq-surface-elevated)'
+                                                    }}
+                                                >
+                                                    <div className="flex flex-col gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex-1 flex items-center gap-2">
+                                                                <Tag className="w-4 h-4" style={{ color: 'var(--tq-accent)' }} />
+                                                                <input
+                                                                    type="text"
+                                                                    value={bookmark.name}
+                                                                    onChange={(e) => {
+                                                                        const newBookmarks = [...formState.bookmarks];
+                                                                        newBookmarks[index] = { ...bookmark, name: e.target.value };
+                                                                        setFormState({ ...formState, bookmarks: newBookmarks });
+                                                                    }}
+                                                                    placeholder="Site Name"
+                                                                    className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-sm font-semibold focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
+                                                                    style={{ color: 'var(--tq-text-primary)' }}
+                                                                    data-no-theme-transition="true"
+                                                                />
+                                                            </div>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1, color: 'var(--tq-danger)', background: 'rgba(239, 68, 68, 0.1)' }}
+                                                                whileTap={{ scale: 0.9 }}
+                                                                onClick={() => removeBookmark(index)}
+                                                                className="p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                                                                style={{ color: 'var(--tq-text-secondary)' }}
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </motion.button>
                                                         </div>
-                                                        <div className="relative flex-1">
-                                                            <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 opacity-40" style={{ color: 'var(--tq-text-primary)' }} />
+                                                        <div className="flex items-center gap-2">
+                                                            <Link className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-text-secondary)' }} />
                                                             <input
                                                                 type="url"
                                                                 value={bookmark.url}
@@ -812,28 +921,23 @@ const SettingsPanel = () => {
                                                                     setFormState({ ...formState, bookmarks: newBookmarks });
                                                                 }}
                                                                 placeholder="URL"
-                                                                className="w-full pl-9 pr-4 py-3 rounded-xl focus:outline-none transition-all placeholder:opacity-50"
-                                                                style={{
-                                                                    ...inputStyle,
-                                                                    background: 'var(--tq-surface-2)'
-                                                                }}
+                                                                className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-xs focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
+                                                                style={{ color: 'var(--tq-text-secondary)' }}
                                                                 data-no-theme-transition="true"
                                                             />
                                                         </div>
                                                     </div>
-
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.1, color: 'var(--tq-danger)' }}
-                                                        whileTap={{ scale: 0.9 }}
-                                                        onClick={() => removeBookmark(index)}
-                                                        className="p-3 rounded-xl transition-all cursor-pointer opacity-40 group-hover:opacity-100"
-                                                        title="Remove"
-                                                        style={{ color: 'var(--tq-text-secondary)' }}
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </motion.button>
-                                                </div>
+                                                </motion.div>
                                             ))}
+                                            {formState.bookmarks.length === 0 && (
+                                                <div
+                                                    className="w-full py-8 rounded-2xl border border-dashed flex flex-col items-center justify-center opacity-40"
+                                                    style={{ borderColor: 'var(--tq-border-1)' }}
+                                                >
+                                                    <Star className="w-8 h-8 mb-2 opacity-20" />
+                                                    <p className="text-[11px] font-medium uppercase tracking-widest opacity-30">No favourites added yet</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </motion.div>
 
@@ -847,7 +951,7 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleSave}
-                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                className="flex-1 px-4 py-2.5 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer text-sm font-semibold"
                                                 title="Save all changes"
                                                 style={{
                                                     background: 'var(--tq-gradient-subtle)',
@@ -866,7 +970,7 @@ const SettingsPanel = () => {
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handleReset}
-                                                className="flex-1 px-4 py-3 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer"
+                                                className="flex-1 px-4 py-2.5 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer text-sm font-semibold"
                                                 title="Reset settings to default"
                                                 style={{
                                                     background: 'rgba(var(--tq-accent-rgb),.06)',
@@ -896,7 +1000,7 @@ const SettingsPanel = () => {
                                             }}
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            className="w-full px-4 py-3 rounded-xl flex items-center justify-center gap-3 group cursor-pointer transition-all duration-300"
+                                            className="w-full px-4 py-2.5 rounded-xl flex items-center justify-center gap-3 group cursor-pointer transition-all duration-300 text-sm font-semibold"
                                             title="Submit Feedback"
                                             style={{
                                                 background: 'rgba(var(--tq-accent-sec-rgb),.10)',
@@ -910,7 +1014,7 @@ const SettingsPanel = () => {
                                             }}
                                         >
                                             <MousePointer2 className="w-5 h-5" style={{ color: 'var(--tq-accent-secondary)' }} />
-                                            <span className="font-semibold">Submit Feedback</span>
+                                            <span className="text-sm font-semibold">Submit Feedback</span>
                                         </motion.a>
 
                                         <motion.div
@@ -931,7 +1035,7 @@ const SettingsPanel = () => {
                                                 }}
                                             >
                                                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 group-hover:scale-110 transition-transform" />
-                                                <span className="text-[9.5px] font-black uppercase tracking-widest text-amber-200/70 group-hover:text-amber-400 transition-colors">
+                                                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-200/80 group-hover:text-amber-400 transition-colors">
                                                     Star us on GitHub
                                                 </span>
                                                 <Github className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
@@ -943,8 +1047,8 @@ const SettingsPanel = () => {
                                                     alt="TabQuest Logo"
                                                     className="w-4 h-4 mr-2 object-contain"
                                                 />
-                                                <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--tq-text-muted)' }}>
-                                                    TabQuest <span className="opacity-40 ml-1">v{APP_VERSION}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--tq-text-muted)' }}>
+                                                    TabQuest <span className="opacity-40 ml-1 font-medium">v{APP_VERSION}</span>
                                                 </span>
                                             </div>
                                         </motion.div>
