@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - علامة تبويب جديدة للإنتاجية",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "يحوّل TabQuest علامة التبويب الجديدة إلى مركز إنتاجية لإدارة الإشارات المرجعية والمهام والملاحظات.",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "علامة التبويب الجديدة، إعادة التفكير! إدارة المهام والإشارات والملاحظات في مركز أنيق.",
+        "description": "Short description"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - New Tab for Productivity",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "TabQuest turns your new tab into a productivity hub for managing bookmarks, tasks, and notes.",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "Your new tab, reimagined! Manage tasks, bookmarks, and notes in one sleek hub.",
+        "description": "Short description"
+    }
+}

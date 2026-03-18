@@ -1,8 +1,9 @@
 {
     "manifest_version": 3,
-    "name": "TabQuest - New Tab for Productivity",
+    "default_locale": "en",
+    "name": "__MSG_extName__",
     "version": "1.2.0",
-    "description": "TabQuest turns your new tab into a productivity hub for managing bookmarks, tasks, and notes.",
+    "description": "__MSG_extDescription__",
     "icons": {
         "16": "images/icons/icon16.png",
         "32": "images/icons/icon32.png",

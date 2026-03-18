@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - उत्पादकता के लिए नया टैब",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "TabQuest आपके नए टैब को बुकमार्क, कार्य और नोट्स प्रबंधित करने के लिए एक उत्पादकता केंद्र में बदल देता है।",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "आपका नया टैब, पुनर्परिभाषित! एक स्टाइलिश हब में कार्य, बुकमार्क और नोट्स प्रबंधित करें।",
+        "description": "Short description"
+    }
+}
