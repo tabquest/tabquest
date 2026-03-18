@@ -57,6 +57,7 @@ jobs:
         run: |
           mkdir -p release-assets/firefox
           cp -r dist/* release-assets/firefox/
+          rm -rf release-assets/firefox/_locales
           # Custom removal logic for Firefox if needed
           cd release-assets/firefox
           zip -r "../../TabQuest_v${{ steps.version.outputs.value }}_firefox_build.zip" .

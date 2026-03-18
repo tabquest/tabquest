@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - Nueva pestaña para productividad",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "TabQuest convierte tu nueva pestaña en un centro de productividad para gestionar marcadores, tareas y notas.",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "Tu nueva pestaña, reinventada. Gestiona tareas, marcadores y notas en un elegante centro.",
+        "description": "Short description"
+    }
+}

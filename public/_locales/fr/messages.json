@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - Nouvel onglet pour la productivité",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "TabQuest transforme votre nouvel onglet en un centre de productivité pour gérer les favoris, les tâches et les notes.",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "Votre nouvel onglet, réinventé ! Gérez les tâches, favoris et notes dans un hub élégant.",
+        "description": "Short description"
+    }
+}

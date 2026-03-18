@@ -1,0 +1,14 @@
+{
+    "extName": {
+        "message": "TabQuest - Новая вкладка для продуктивности",
+        "description": "Extension name"
+    },
+    "extDescription": {
+        "message": "TabQuest превращает новую вкладку в центр продуктивности для управления закладками, задачами и заметками.",
+        "description": "Extension description"
+    },
+    "extShortDescription": {
+        "message": "Ваша новая вкладка, переосмысленная! Управляйте задачами, закладками и заметками в одном стильном хабе.",
+        "description": "Short description"
+    }
+}
