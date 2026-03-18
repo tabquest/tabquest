@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { FEEDBACK_FORM_API } from '../utils/constants';
@@ -8,17 +8,6 @@ const FeedbackForm = ({ isOpen, onClose }) => {
     const [rating, setRating] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [alert, setAlert] = useState(null);
-    const formRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (formRef.current && !formRef.current.contains(event.target)) {
-                onClose();
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [onClose]);
 
     const submitFeedback = async (e) => {
         e.preventDefault();
@@ -54,7 +43,6 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md"
                 >
                     <motion.div
-                        ref={formRef}
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
@@ -139,7 +127,7 @@ const FeedbackForm = ({ isOpen, onClose }) => {
                                         name="feedback"
                                         required
                                         rows={3}
-                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
+                                        className="w-full custom-scrollbar tq-surface-1 tq-text-primary rounded-lg p-3 border tq-border-1 focus:border-[var(--tq-accent)] focus:ring-1 focus:ring-[var(--tq-accent)]/50 focus:outline-none transition-all placeholder-gray-500 text-sm"
                                         placeholder="Tell us what you think..."
                                     />
                                 </div>
