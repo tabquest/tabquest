@@ -59,19 +59,7 @@ const SettingsPanel = () => {
     }, [isOpen]);
 
     const handlePromptClick = () => {
-        setIsOpen(true);
-        setIsHighlightingFeedback(true);
-
-        setTimeout(() => {
-            const btn = document.getElementById('feedback-btn');
-            if (btn) {
-                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 500);
-
-        setTimeout(() => {
-            setIsHighlightingFeedback(false);
-        }, 3000);
+        setIsFeedbackPopup(true);
     };
 
     // Reset form state when settings change
