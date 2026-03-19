@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.3.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.2.0...tabquest-v1.3.0) (2026-03-19)
+
+
+### Features
+
+* added i18n to chrome and edge manifests ([397dd85](https://github.com/tabquest/tabquest/commit/397dd85723b063b26b0e0659078ef6f5f2732d75))
+* added i18n to chrome and edge manifests ([b2a4551](https://github.com/tabquest/tabquest/commit/b2a4551fe15ce74db92ec0e9bfc5b133b4b54227))
+* implement duration-based weather caching with cache key version and cleanup for old entries ([eafb589](https://github.com/tabquest/tabquest/commit/eafb589ce7c628dd1617adf0e28ca16bb12e370e))
+* implement duration-based weather caching with cache key version… ([c20a6d4](https://github.com/tabquest/tabquest/commit/c20a6d43172ffb5f9361261e5b0f7859132192a8))
+* improve weather cache cleanup to remove expired v2 entries and corrupt data ([6a949a2](https://github.com/tabquest/tabquest/commit/6a949a26bcfeb3859cde5fde86b4b2b6434a1f5c))
+
+
+### Bug Fixes
+
+* Update edge-addon action version to v2 ([535ccbc](https://github.com/tabquest/tabquest/commit/535ccbcbc2ca42ca21fe837241943bf9008b7eaf))
+
 ## [1.2.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.1.0...tabquest-v1.2.0) (2026-03-16)
 
 
