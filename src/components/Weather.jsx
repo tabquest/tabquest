@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, WifiOff, MapPin, AlertCircle } from 'lucide-react';
-import { OPENWEATHER_API_URL } from '../utils/constants';
+import { OPENWEATHER_API_URL, WEATHER_CACHE_DURATION } from '../utils/constants';
 import { useSelector } from 'react-redux';
 
 const Weather = () => {
@@ -13,21 +13,17 @@ const Weather = () => {
   const API_URL = `${OPENWEATHER_API_URL}${city}`;
 
   const getCacheKey = () => {
-    const today = new Date().toISOString().split('T')[0];
-    return `weather_cache_${today}_${city}`;
+    return `weather_cache_v2_${city}`;
   };
 
   const cleanupOldCache = () => {
-    const today = new Date().toISOString().split('T')[0];
     const keysToDelete = [];
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key.startsWith('weather_cache_')) {
-        const [, date] = key.match(/weather_cache_(\d{4}-\d{2}-\d{2})/) || [];
-        if (date && date !== today) {
-          keysToDelete.push(key);
-        }
+      // Cleanup old date-based cache keys (e.g., weather_cache_2024-03-21_Chennai)
+      if (key && key.startsWith('weather_cache_') && !key.startsWith('weather_cache_v2_')) {
+        keysToDelete.push(key);
       }
     }
 
@@ -39,8 +35,8 @@ const Weather = () => {
     if (!cacheData) return null;
     try {
       const { data, timestamp } = JSON.parse(cacheData);
-      const isToday = new Date(timestamp).toDateString() === new Date().toDateString();
-      return isToday ? data : null;
+      const isFresh = new Date().getTime() - new Date(timestamp).getTime() < WEATHER_CACHE_DURATION;
+      return isFresh ? data : null;
     } catch {
       return null;
     }
