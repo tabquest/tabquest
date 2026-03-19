@@ -18,12 +18,26 @@ const Weather = () => {
 
   const cleanupOldCache = () => {
     const keysToDelete = [];
+    const now = new Date().getTime();
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      // Cleanup old date-based cache keys (e.g., weather_cache_2024-03-21_Chennai)
-      if (key && key.startsWith('weather_cache_') && !key.startsWith('weather_cache_v2_')) {
+      if (!key || !key.startsWith('weather_cache_')) continue;
+
+      // Cleanup old date-based cache keys (v1)
+      if (!key.startsWith('weather_cache_v2_')) {
         keysToDelete.push(key);
+      } else {
+        // Cleanup expired or corrupt v2 entries for all cities
+        try {
+          const { timestamp } = JSON.parse(localStorage.getItem(key)) || {};
+          const age = now - new Date(timestamp).getTime();
+          if (!timestamp || age >= WEATHER_CACHE_DURATION) {
+            keysToDelete.push(key);
+          }
+        } catch {
+          keysToDelete.push(key);
+        }
       }
     }
 
@@ -48,7 +62,6 @@ const Weather = () => {
       timestamp: new Date().toISOString(),
     };
     localStorage.setItem(getCacheKey(), JSON.stringify(cacheData));
-    cleanupOldCache();
   };
 
   const fetchWeatherInfo = async () => {
