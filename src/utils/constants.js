@@ -10,6 +10,9 @@ export const CHRISTMAS_MODE = false;
 // Show roughly twice a week (every 2.5 days = 216000000ms)
 export const FEEDBACK_PROMPT_INTERVAL = 2.5 * 24 * 60 * 60 * 1000;
 
+// Cache weather for 3 hours (3 * 60 * 60 * 1000ms)
+export const WEATHER_CACHE_DURATION = 3 * 60 * 60 * 1000;
+
 export const initialState = {
     userName: "user_name",
     userRole: "developer",
