@@ -104,10 +104,15 @@ const SimpleTaskModal = ({
                             Cancel
                         </button>
                         <motion.button
-                            whileHover={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
                             whileTap={{ scale: 0.98 }}
                             type="submit"
-                            className="px-6 py-2 tq-accent-bg rounded-lg text-black font-bold cursor-pointer shadow-lg shadow-[var(--tq-accent)]/10"
+                            className="px-6 py-2 rounded-lg text-white font-bold cursor-pointer transition-all border backdrop-blur-xl"
+                            style={{ 
+                                background: 'rgba(var(--tq-accent-rgb), 0.15)',
+                                borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
+                                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                            }}
                             title={isEditing ? 'Save Changes' : 'Add Task'}
                         >
                             {isEditing ? 'Save Changes' : 'Add Task'}

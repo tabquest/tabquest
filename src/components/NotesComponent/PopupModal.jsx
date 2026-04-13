@@ -186,10 +186,15 @@ const PopupModal = ({
                         <div className="p-3 border-t tq-border-1">
                             <div className="flex justify-end">
                                 <motion.button
-                                    whileHover={{ scale: 1.02 }}
+                                    whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={handleSubmit}
-                                    className="px-6 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                                    className="px-8 py-2.5 rounded-xl text-white font-bold cursor-pointer transition-all border backdrop-blur-xl"
+                                    style={{ 
+                                        background: 'rgba(var(--tq-accent-rgb), 0.15)',
+                                        borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
+                                        boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                                    }}
                                     title={isEditing ? 'Save Changes' : 'Add Note'}
                                 >
                                     {isEditing ? 'Save Changes' : 'Add Note'}
