@@ -115,7 +115,12 @@ const PopupModal = ({
                         </button>
                         <button
                             type="submit"
-                            className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg tq-text-primary cursor-pointer"
+                            className="px-6 py-2 rounded-lg text-white font-bold cursor-pointer transition-all border backdrop-blur-xl"
+                            style={{ 
+                                background: 'rgba(var(--tq-accent-rgb), 0.15)',
+                                borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
+                                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                            }}
                             title="Save changes"
                         >
                             Save

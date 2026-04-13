@@ -14,51 +14,50 @@ export const THEMES = {
     key: 'midnight_default',
     label: 'Midnight',
     isDefault: true,
-    // Tailwind gradient classes for the <body> bg
-    bgGradient: 'from-gray-800 via-gray-900 to-gray-950',
-    // Hex preview colours for the settings swatch
-    preview: ['#1f2937', '#111827', '#030712'],
-    // CSS custom-property map injected by ThemeProvider
+    bgGradient: 'from-gray-900 via-slate-900 to-black',
+    preview: ['#0f172a', '#020617', '#000000'],
     tokens: {
-      '--tq-accent':            '#34d399',          // emerald-400
-      '--tq-accent-rgb':        '52,211,153',
-      '--tq-accent-glow':       'rgba(52,211,153,.25)',
-      '--tq-accent-secondary':  '#60a5fa',          // blue-400
-      '--tq-accent-sec-rgb':    '96,165,250',
+      '--tq-accent': '#10b981',          // emerald-500
+      '--tq-accent-rgb': '16,185,129',
+      '--tq-accent-glow': 'rgba(16,185,129,.35)',
+      '--tq-accent-secondary': '#3b82f6',          // blue-500
+      '--tq-accent-sec-rgb': '59,130,246',
 
-      '--tq-surface-1':         'rgba(0,0,0,.40)',
-      '--tq-surface-2':         'rgba(0,0,0,.20)',
-      '--tq-surface-3':         'rgba(255,255,255,.05)',
-      '--tq-surface-elevated':  'rgba(255,255,255,.08)',
+      '--tq-surface-1': 'rgba(15,23,42,.15)',
+      '--tq-surface-2': 'rgba(15,23,42,.10)',
+      '--tq-surface-3': 'rgba(255,255,255,.03)',
+      '--tq-surface-elevated': 'rgba(255,255,255,.05)',
+      '--tq-surface-overlay': 'rgba(15,23,42,0.95)',
 
-      '--tq-border-1':          'rgba(255,255,255,.10)',
-      '--tq-border-2':          'rgba(255,255,255,.20)',
+      '--tq-border-1': 'rgba(255,255,255,.08)',
+      '--tq-border-2': 'rgba(255,255,255,.15)',
 
-      '--tq-text-primary':      'rgba(255,255,255,.95)',
-      '--tq-text-secondary':    'rgba(255,255,255,.70)',
-      '--tq-text-muted':        'rgba(255,255,255,.45)',
+      '--tq-text-primary': '#ffffff',
+      '--tq-text-secondary': 'rgba(255,255,255,.85)',
+      '--tq-text-muted': 'rgba(255,255,255,.50)',
 
-      '--tq-glass-bg':          'rgba(0,0,0,.35)',
-      '--tq-glass-border':      'rgba(255,255,255,.10)',
+      '--tq-glass-bg': 'rgba(255,255,255,.06)',
+      '--tq-glass-border': 'rgba(255,255,255,.12)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(255,255,255,.15)',
 
-      '--tq-progress-year':     '#3b82f6',       // blue-500
-      '--tq-progress-day':      '#22c55e',        // green-500
+      '--tq-progress-year': '#3b82f6',
+      '--tq-progress-day': '#10b981',
 
-      '--tq-search-bg':         'rgba(88,28,135,.30)',  // purple-900/30
-      '--tq-search-border':     'rgba(168,85,247,.20)', // purple-500/20
-      '--tq-search-accent':     '#a855f7',
+      '--tq-search-bg': 'rgba(255,255,255,.04)',
+      '--tq-search-border': 'rgba(255,255,255,.10)',
+      '--tq-search-accent': '#ffffff',
 
-      '--tq-hover-bg':          'rgba(255,255,255,.10)',
+      '--tq-hover-bg': 'rgba(255,255,255,.08)',
 
-      '--tq-success':           '#22c55e',
-      '--tq-danger':            '#ef4444',
-      '--tq-warning':           '#f59e0b',
+      '--tq-success': '#10b981',
+      '--tq-danger': '#ef4444',
+      '--tq-warning': '#f59e0b',
 
-      '--tq-scrollbar-track':   'rgba(0,0,0,.20)',
-      '--tq-scrollbar-thumb':   'rgba(255,255,255,.10)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(255,255,255,.15)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(52,211,153,.05), rgba(96,165,250,.05))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(255,255,255,.05), transparent, rgba(255,255,255,.05))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(16,185,129,.05), rgba(59,130,246,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.05) 100%)',
     },
   },
 
@@ -66,48 +65,50 @@ export const THEMES = {
   aurora_borealis: {
     key: 'aurora_borealis',
     label: 'Aurora Borealis',
-    bgGradient: 'from-[#0a1628] via-[#0d2137] to-[#060e1a]',
-    preview: ['#0a1628', '#0d2137', '#060e1a'],
+    bgGradient: 'from-[#020617] via-[#0f172a] to-[#020617]',
+    preview: ['#020617', '#0f172a', '#020617'],
     tokens: {
-      '--tq-accent':            '#67e8f9',          // cyan-300
-      '--tq-accent-rgb':        '103,232,249',
-      '--tq-accent-glow':       'rgba(103,232,249,.25)',
-      '--tq-accent-secondary':  '#a78bfa',          // violet-400
-      '--tq-accent-sec-rgb':    '167,139,250',
+      '--tq-accent': '#22d3ee',          // cyan-400
+      '--tq-accent-rgb': '34,211,238',
+      '--tq-accent-glow': 'rgba(34,211,238,.35)',
+      '--tq-accent-secondary': '#818cf8',          // indigo-400
+      '--tq-accent-sec-rgb': '129,140,248',
 
-      '--tq-surface-1':         'rgba(10,22,40,.55)',
-      '--tq-surface-2':         'rgba(13,33,55,.45)',
-      '--tq-surface-3':         'rgba(103,232,249,.06)',
-      '--tq-surface-elevated':  'rgba(103,232,249,.08)',
+      '--tq-surface-1': 'rgba(15,23,42,.12)',
+      '--tq-surface-2': 'rgba(34,211,238,.03)',
+      '--tq-surface-3': 'rgba(34,211,238,.05)',
+      '--tq-surface-elevated': 'rgba(34,211,238,.08)',
+      '--tq-surface-overlay': 'rgba(2,6,23,0.92)',
 
-      '--tq-border-1':          'rgba(103,232,249,.15)',
-      '--tq-border-2':          'rgba(103,232,249,.25)',
+      '--tq-border-1': 'rgba(34,211,238,.12)',
+      '--tq-border-2': 'rgba(34,211,238,.25)',
 
-      '--tq-text-primary':      'rgba(236,254,255,.96)',
-      '--tq-text-secondary':    'rgba(186,230,253,.78)',
-      '--tq-text-muted':        'rgba(147,197,253,.45)',
+      '--tq-text-primary': '#f0f9ff',
+      '--tq-text-secondary': 'rgba(239,246,255,.85)',
+      '--tq-text-muted': 'rgba(186,230,253,.50)',
 
-      '--tq-glass-bg':          'rgba(10,22,40,.50)',
-      '--tq-glass-border':      'rgba(103,232,249,.12)',
+      '--tq-glass-bg': 'rgba(15,23,42,.08)',
+      '--tq-glass-border': 'rgba(34,211,238,.15)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(34,211,238,.20)',
 
-      '--tq-progress-year':     '#67e8f9',
-      '--tq-progress-day':      '#a78bfa',
+      '--tq-progress-year': '#22d3ee',
+      '--tq-progress-day': '#818cf8',
 
-      '--tq-search-bg':         'rgba(103,232,249,.08)',
-      '--tq-search-border':     'rgba(103,232,249,.18)',
-      '--tq-search-accent':     '#67e8f9',
+      '--tq-search-bg': 'rgba(34,211,238,.04)',
+      '--tq-search-border': 'rgba(34,211,238,.12)',
+      '--tq-search-accent': '#22d3ee',
 
-      '--tq-hover-bg':          'rgba(103,232,249,.10)',
+      '--tq-hover-bg': 'rgba(34,211,238,.10)',
 
-      '--tq-success':           '#34d399',
-      '--tq-danger':            '#fb7185',
-      '--tq-warning':           '#fbbf24',
+      '--tq-success': '#34d399',
+      '--tq-danger': '#fb7185',
+      '--tq-warning': '#fbbf24',
 
-      '--tq-scrollbar-track':   'rgba(10,22,40,.30)',
-      '--tq-scrollbar-thumb':   'rgba(103,232,249,.15)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(34,211,238,.15)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(103,232,249,.06), rgba(167,139,250,.06))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(103,232,249,.05), transparent, rgba(167,139,250,.05))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(34,211,238,.05), rgba(129,140,248,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(34,211,238,0.1) 0%, transparent 50%, rgba(34,211,238,0.08) 100%)',
     },
   },
 
@@ -115,48 +116,50 @@ export const THEMES = {
   cyber_neon: {
     key: 'cyber_neon',
     label: 'Cyber Neon',
-    bgGradient: 'from-[#0c0118] via-[#120228] to-[#080012]',
-    preview: ['#0c0118', '#120228', '#080012'],
+    bgGradient: 'from-[#02010a] via-[#0a021a] to-[#02010a]',
+    preview: ['#02010a', '#0a021a', '#02010a'],
     tokens: {
-      '--tq-accent':            '#e879f9',          // fuchsia-400
-      '--tq-accent-rgb':        '232,121,249',
-      '--tq-accent-glow':       'rgba(232,121,249,.30)',
-      '--tq-accent-secondary':  '#22d3ee',          // cyan-400
-      '--tq-accent-sec-rgb':    '34,211,238',
+      '--tq-accent': '#d946ef',          // fuchsia-500
+      '--tq-accent-rgb': '217,70,239',
+      '--tq-accent-glow': 'rgba(217,70,239,.40)',
+      '--tq-accent-secondary': '#06b6d4',          // cyan-500
+      '--tq-accent-sec-rgb': '6,182,212',
 
-      '--tq-surface-1':         'rgba(12,1,24,.60)',
-      '--tq-surface-2':         'rgba(18,2,40,.45)',
-      '--tq-surface-3':         'rgba(232,121,249,.06)',
-      '--tq-surface-elevated':  'rgba(232,121,249,.10)',
+      '--tq-surface-1': 'rgba(217,70,239,.03)',
+      '--tq-surface-2': 'rgba(217,70,239,.05)',
+      '--tq-surface-3': 'rgba(217,70,239,.08)',
+      '--tq-surface-elevated': 'rgba(217,70,239,.12)',
+      '--tq-surface-overlay': 'rgba(10,2,26,0.95)',
 
-      '--tq-border-1':          'rgba(232,121,249,.18)',
-      '--tq-border-2':          'rgba(232,121,249,.30)',
+      '--tq-border-1': 'rgba(217,70,239,.15)',
+      '--tq-border-2': 'rgba(217,70,239,.30)',
 
-      '--tq-text-primary':      'rgba(253,244,255,.96)',
-      '--tq-text-secondary':    'rgba(245,208,254,.78)',
-      '--tq-text-muted':        'rgba(217,170,237,.45)',
+      '--tq-text-primary': '#fdf4ff',
+      '--tq-text-secondary': 'rgba(245,208,254,.85)',
+      '--tq-text-muted': 'rgba(217,170,237,.50)',
 
-      '--tq-glass-bg':          'rgba(12,1,24,.55)',
-      '--tq-glass-border':      'rgba(232,121,249,.14)',
+      '--tq-glass-bg': 'rgba(10,2,26,.10)',
+      '--tq-glass-border': 'rgba(217,70,239,.18)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(217,70,239,.25)',
 
-      '--tq-progress-year':     '#e879f9',
-      '--tq-progress-day':      '#22d3ee',
+      '--tq-progress-year': '#d946ef',
+      '--tq-progress-day': '#06b6d4',
 
-      '--tq-search-bg':         'rgba(232,121,249,.08)',
-      '--tq-search-border':     'rgba(232,121,249,.20)',
-      '--tq-search-accent':     '#e879f9',
+      '--tq-search-bg': 'rgba(217,70,239,.04)',
+      '--tq-search-border': 'rgba(217,70,239,.15)',
+      '--tq-search-accent': '#d946ef',
 
-      '--tq-hover-bg':          'rgba(232,121,249,.12)',
+      '--tq-hover-bg': 'rgba(217,70,239,.12)',
 
-      '--tq-success':           '#4ade80',
-      '--tq-danger':            '#f87171',
-      '--tq-warning':           '#fbbf24',
+      '--tq-success': '#4ade80',
+      '--tq-danger': '#f87171',
+      '--tq-warning': '#fbbf24',
 
-      '--tq-scrollbar-track':   'rgba(12,1,24,.30)',
-      '--tq-scrollbar-thumb':   'rgba(232,121,249,.15)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(217,70,239,.20)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(232,121,249,.06), rgba(34,211,238,.06))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(232,121,249,.06), transparent, rgba(34,211,238,.06))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(217,70,239,.05), rgba(6,182,212,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(217,70,239,0.12) 0%, transparent 50%, rgba(217,70,239,0.1) 100%)',
     },
   },
 
@@ -164,97 +167,101 @@ export const THEMES = {
   velvet_rose: {
     key: 'velvet_rose',
     label: 'Velvet Rose',
-    bgGradient: 'from-[#1a0a14] via-[#22101a] to-[#0e0610]',
-    preview: ['#1a0a14', '#22101a', '#0e0610'],
+    bgGradient: 'from-[#0a0508] via-[#1a0a14] to-[#0a0508]',
+    preview: ['#0a0508', '#1a0a14', '#0a0508'],
     tokens: {
-      '--tq-accent':            '#fb7185',          // rose-400
-      '--tq-accent-rgb':        '251,113,133',
-      '--tq-accent-glow':       'rgba(251,113,133,.25)',
-      '--tq-accent-secondary':  '#fbbf24',          // amber-400
-      '--tq-accent-sec-rgb':    '251,191,36',
+      '--tq-accent': '#f43f5e',          // rose-500
+      '--tq-accent-rgb': '244,63,94',
+      '--tq-accent-glow': 'rgba(244,63,94,.35)',
+      '--tq-accent-secondary': '#f59e0b',          // amber-500
+      '--tq-accent-sec-rgb': '245,158,11',
 
-      '--tq-surface-1':         'rgba(26,10,20,.55)',
-      '--tq-surface-2':         'rgba(34,16,26,.45)',
-      '--tq-surface-3':         'rgba(251,113,133,.06)',
-      '--tq-surface-elevated':  'rgba(251,113,133,.08)',
+      '--tq-surface-1': 'rgba(244,63,94,.03)',
+      '--tq-surface-2': 'rgba(244,63,94,.05)',
+      '--tq-surface-3': 'rgba(244,63,94,.08)',
+      '--tq-surface-elevated': 'rgba(244,63,94,.12)',
+      '--tq-surface-overlay': 'rgba(26,10,20,0.95)',
 
-      '--tq-border-1':          'rgba(251,113,133,.15)',
-      '--tq-border-2':          'rgba(251,113,133,.25)',
+      '--tq-border-1': 'rgba(244,63,94,.15)',
+      '--tq-border-2': 'rgba(244,63,94,.28)',
 
-      '--tq-text-primary':      'rgba(255,241,242,.96)',
-      '--tq-text-secondary':    'rgba(254,205,211,.78)',
-      '--tq-text-muted':        'rgba(252,165,165,.45)',
+      '--tq-text-primary': '#fff1f2',
+      '--tq-text-secondary': 'rgba(255,241,242,.85)',
+      '--tq-text-muted': 'rgba(251,113,133,.50)',
 
-      '--tq-glass-bg':          'rgba(26,10,20,.50)',
-      '--tq-glass-border':      'rgba(251,113,133,.12)',
+      '--tq-glass-bg': 'rgba(26,10,20,.10)',
+      '--tq-glass-border': 'rgba(244,63,94,.18)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(244,63,94,.25)',
 
-      '--tq-progress-year':     '#fb7185',
-      '--tq-progress-day':      '#fbbf24',
+      '--tq-progress-year': '#f43f5e',
+      '--tq-progress-day': '#f59e0b',
 
-      '--tq-search-bg':         'rgba(251,113,133,.08)',
-      '--tq-search-border':     'rgba(251,113,133,.18)',
-      '--tq-search-accent':     '#fb7185',
+      '--tq-search-bg': 'rgba(244,63,94,.04)',
+      '--tq-search-border': 'rgba(244,63,94,.15)',
+      '--tq-search-accent': '#f43f5e',
 
-      '--tq-hover-bg':          'rgba(251,113,133,.10)',
+      '--tq-hover-bg': 'rgba(244,63,94,.12)',
 
-      '--tq-success':           '#4ade80',
-      '--tq-danger':            '#f87171',
-      '--tq-warning':           '#fbbf24',
+      '--tq-success': '#10b981',
+      '--tq-danger': '#ef4444',
+      '--tq-warning': '#f59e0b',
 
-      '--tq-scrollbar-track':   'rgba(26,10,20,.30)',
-      '--tq-scrollbar-thumb':   'rgba(251,113,133,.15)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(244,63,94,.20)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(251,113,133,.06), rgba(251,191,36,.06))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(251,113,133,.05), transparent, rgba(251,191,36,.05))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(244,63,94,.05), rgba(245,158,11,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(244,63,94,0.12) 0%, transparent 50%, rgba(244,63,94,0.1) 100%)',
     },
   },
 
   /* ── 5. Arctic Frost ────────────────────────────────────────── */
   arctic_frost: {
     key: 'arctic_frost',
-    label: 'Arctic Frost',
-    bgGradient: 'from-[#0c1929] via-[#0f2035] to-[#071018]',
-    preview: ['#0c1929', '#0f2035', '#071018'],
+    label: 'arctic_frost',
+    bgGradient: 'from-[#0f172a] via-[#1e293b] to-[#0f172a]',
+    preview: ['#0f172a', '#1e293b', '#0f172a'],
     tokens: {
-      '--tq-accent':            '#93c5fd',          // blue-300
-      '--tq-accent-rgb':        '147,197,253',
-      '--tq-accent-glow':       'rgba(147,197,253,.25)',
-      '--tq-accent-secondary':  '#c4b5fd',          // violet-300
-      '--tq-accent-sec-rgb':    '196,181,253',
+      '--tq-accent': '#22d3ee',          // cyan-400
+      '--tq-accent-rgb': '34,211,238',
+      '--tq-accent-glow': 'rgba(34,211,238,.35)',
+      '--tq-accent-secondary': '#38bdf8',          // sky-400
+      '--tq-accent-sec-rgb': '56,189,248',
 
-      '--tq-surface-1':         'rgba(12,25,41,.55)',
-      '--tq-surface-2':         'rgba(15,32,53,.45)',
-      '--tq-surface-3':         'rgba(147,197,253,.06)',
-      '--tq-surface-elevated':  'rgba(147,197,253,.08)',
+      '--tq-surface-1': 'rgba(30,41,59,.25)',
+      '--tq-surface-2': 'rgba(30,41,59,.15)',
+      '--tq-surface-3': 'rgba(30,41,59,.10)',
+      '--tq-surface-elevated': 'rgba(30,41,59,0.35)',
+      '--tq-surface-overlay': 'rgba(15,23,42,0.94)',
 
-      '--tq-border-1':          'rgba(147,197,253,.15)',
-      '--tq-border-2':          'rgba(147,197,253,.25)',
+      '--tq-border-1': 'rgba(255,255,255,.08)',
+      '--tq-border-2': 'rgba(255,255,255,.15)',
 
-      '--tq-text-primary':      'rgba(239,246,255,.96)',
-      '--tq-text-secondary':    'rgba(191,219,254,.80)',
-      '--tq-text-muted':        'rgba(147,197,253,.45)',
+      '--tq-text-primary': '#ffffff',
+      '--tq-text-secondary': 'rgba(255,255,255,.85)',
+      '--tq-text-muted': 'rgba(255,255,255,.50)',
 
-      '--tq-glass-bg':          'rgba(12,25,41,.50)',
-      '--tq-glass-border':      'rgba(147,197,253,.12)',
+      '--tq-glass-bg': 'rgba(15,23,42,.15)',
+      '--tq-glass-border': 'rgba(255,255,255,.10)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(255,255,255,.10)',
 
-      '--tq-progress-year':     '#93c5fd',
-      '--tq-progress-day':      '#c4b5fd',
+      '--tq-progress-year': '#22d3ee',
+      '--tq-progress-day': '#38bdf8',
 
-      '--tq-search-bg':         'rgba(147,197,253,.08)',
-      '--tq-search-border':     'rgba(147,197,253,.18)',
-      '--tq-search-accent':     '#93c5fd',
+      '--tq-search-bg': 'rgba(255,255,255,.03)',
+      '--tq-search-border': 'rgba(255,255,255,.08)',
+      '--tq-search-accent': '#22d3ee',
 
-      '--tq-hover-bg':          'rgba(147,197,253,.10)',
+      '--tq-hover-bg': 'rgba(255,255,255,.05)',
 
-      '--tq-success':           '#6ee7b7',
-      '--tq-danger':            '#fca5a5',
-      '--tq-warning':           '#fcd34d',
+      '--tq-success': '#10b981',
+      '--tq-danger': '#ef4444',
+      '--tq-warning': '#f59e0b',
 
-      '--tq-scrollbar-track':   'rgba(12,25,41,.30)',
-      '--tq-scrollbar-thumb':   'rgba(147,197,253,.15)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(255,255,255,.10)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(147,197,253,.06), rgba(196,181,253,.06))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(147,197,253,.05), transparent, rgba(196,181,253,.05))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(34,211,238,.05), rgba(56,189,248,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.04) 100%)',
     },
   },
 
@@ -262,48 +269,50 @@ export const THEMES = {
   ember_glow: {
     key: 'ember_glow',
     label: 'Ember Glow',
-    bgGradient: 'from-[#1c0e04] via-[#261308] to-[#100802]',
-    preview: ['#1c0e04', '#261308', '#100802'],
+    bgGradient: 'from-[#0a0502] via-[#1c0e04] to-[#0a0502]',
+    preview: ['#0a0502', '#1c0e04', '#0a0502'],
     tokens: {
-      '--tq-accent':            '#fb923c',          // orange-400
-      '--tq-accent-rgb':        '251,146,60',
-      '--tq-accent-glow':       'rgba(251,146,60,.25)',
-      '--tq-accent-secondary':  '#facc15',          // yellow-400
-      '--tq-accent-sec-rgb':    '250,204,21',
+      '--tq-accent': '#f97316',          // orange-500
+      '--tq-accent-rgb': '249,115,22',
+      '--tq-accent-glow': 'rgba(249,115,22,.35)',
+      '--tq-accent-secondary': '#eab308',          // yellow-500
+      '--tq-accent-sec-rgb': '234,179,8',
 
-      '--tq-surface-1':         'rgba(28,14,4,.55)',
-      '--tq-surface-2':         'rgba(38,19,8,.45)',
-      '--tq-surface-3':         'rgba(251,146,60,.06)',
-      '--tq-surface-elevated':  'rgba(251,146,60,.08)',
+      '--tq-surface-1': 'rgba(249,115,22,.03)',
+      '--tq-surface-2': 'rgba(249,115,22,.05)',
+      '--tq-surface-3': 'rgba(249,115,22,.08)',
+      '--tq-surface-elevated': 'rgba(249,115,22,.12)',
+      '--tq-surface-overlay': 'rgba(28,14,4,0.95)',
 
-      '--tq-border-1':          'rgba(251,146,60,.15)',
-      '--tq-border-2':          'rgba(251,146,60,.25)',
+      '--tq-border-1': 'rgba(249,115,22,.15)',
+      '--tq-border-2': 'rgba(249,115,22,.28)',
 
-      '--tq-text-primary':      'rgba(255,247,237,.96)',
-      '--tq-text-secondary':    'rgba(254,215,170,.78)',
-      '--tq-text-muted':        'rgba(253,186,116,.45)',
+      '--tq-text-primary': '#fff7ed',
+      '--tq-text-secondary': 'rgba(255,247,237,.85)',
+      '--tq-text-muted': 'rgba(253,186,116,.50)',
 
-      '--tq-glass-bg':          'rgba(28,14,4,.50)',
-      '--tq-glass-border':      'rgba(251,146,60,.12)',
+      '--tq-glass-bg': 'rgba(28,14,4,.10)',
+      '--tq-glass-border': 'rgba(249,115,22,.18)',
+      '--tq-glass-sheen': 'inset 0 1px 1px rgba(249,115,22,.25)',
 
-      '--tq-progress-year':     '#fb923c',
-      '--tq-progress-day':      '#facc15',
+      '--tq-progress-year': '#f97316',
+      '--tq-progress-day': '#eab308',
 
-      '--tq-search-bg':         'rgba(251,146,60,.08)',
-      '--tq-search-border':     'rgba(251,146,60,.18)',
-      '--tq-search-accent':     '#fb923c',
+      '--tq-search-bg': 'rgba(249,115,22,.04)',
+      '--tq-search-border': 'rgba(249,115,22,.15)',
+      '--tq-search-accent': '#f97316',
 
-      '--tq-hover-bg':          'rgba(251,146,60,.10)',
+      '--tq-hover-bg': 'rgba(249,115,22,.12)',
 
-      '--tq-success':           '#4ade80',
-      '--tq-danger':            '#f87171',
-      '--tq-warning':           '#fbbf24',
+      '--tq-success': '#10b981',
+      '--tq-danger': '#ef4444',
+      '--tq-warning': '#f59e0b',
 
-      '--tq-scrollbar-track':   'rgba(28,14,4,.30)',
-      '--tq-scrollbar-thumb':   'rgba(251,146,60,.15)',
+      '--tq-scrollbar-track': 'transparent',
+      '--tq-scrollbar-thumb': 'rgba(249,115,22,.20)',
 
-      '--tq-gradient-subtle':   'linear-gradient(135deg, rgba(251,146,60,.06), rgba(250,204,21,.06))',
-      '--tq-gradient-glass':    'linear-gradient(135deg, rgba(251,146,60,.05), transparent, rgba(250,204,21,.05))',
+      '--tq-gradient-subtle': 'linear-gradient(135deg, rgba(249,115,22,.05), rgba(234,179,8,.05))',
+      '--tq-gradient-glass': 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, transparent 50%, rgba(249,115,22,0.1) 100%)',
     },
   },
 };
@@ -315,16 +324,16 @@ export const THEME_LIST = Object.values(THEMES);
 
 /** Resolve legacy theme keys to their new equivalents */
 const LEGACY_ALIASES = {
-  ocean_mist:       'midnight_default',
-  forest_night:     'midnight_default',
-  sunset_glow:      'midnight_default',
-  aurora_bloom:     'midnight_default',
-  graphite_steel:   'midnight_default',
-  slate_ocean:      'midnight_default',
-  evergreen_slate:  'midnight_default',
-  graphite_navy:    'midnight_default',
-  blue_ink:         'midnight_default',
-  amber_slate:      'midnight_default',
+  ocean_mist: 'midnight_default',
+  forest_night: 'midnight_default',
+  sunset_glow: 'midnight_default',
+  aurora_bloom: 'midnight_default',
+  graphite_steel: 'midnight_default',
+  slate_ocean: 'midnight_default',
+  evergreen_slate: 'midnight_default',
+  graphite_navy: 'midnight_default',
+  blue_ink: 'midnight_default',
+  amber_slate: 'midnight_default',
 };
 
 export const resolveThemeKey = (key) => {

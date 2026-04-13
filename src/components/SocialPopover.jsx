@@ -67,11 +67,10 @@ const SocialPopover = () => {
             <button
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
-                className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base backdrop-blur-lg transition-all cursor-pointer"
+                className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base transition-all cursor-pointer tq-glass"
                 title="View Profile"
                 style={{
                     background: 'var(--tq-glass-bg)',
-                    border: '1px solid var(--tq-glass-border)',
                 }}
             >
                 {profileImageUrl && !profileImageError ? (
@@ -105,10 +104,9 @@ const SocialPopover = () => {
                     transition={{ duration: 0.3 }}
                 >
                     <div
-                        className="w-72 rounded-xl p-4 backdrop-blur-xl shadow-xl"
+                        className="w-72 rounded-xl p-4 shadow-xl tq-glass"
                         style={{
                             background: 'var(--tq-glass-bg)',
-                            border: '1px solid var(--tq-glass-border)',
                         }}
                     >
                         <div
@@ -226,10 +224,9 @@ const SocialPopover = () => {
                             transition={{ duration: 0.3 }}
                         >
                             <div
-                                className="flex items-center gap-2 rounded-lg px-4 py-3 shadow-xl backdrop-blur-xl"
+                                className="flex items-center gap-2 rounded-lg px-4 py-3 shadow-xl tq-glass"
                                 style={{
                                     background: 'var(--tq-glass-bg)',
-                                    border: '1px solid var(--tq-border-1)',
                                 }}
                             >
                                 <Check className="h-4 w-4" style={{ color: 'var(--tq-success)' }} />
