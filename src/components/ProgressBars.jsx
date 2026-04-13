@@ -52,11 +52,14 @@ const ProgressBars = () => {
                             </span>
                         </div>
                         <div
-                            className="h-2 w-full rounded-full"
-                            style={{ backgroundColor: 'var(--tq-surface-1)' }}
+                            className="h-2.5 w-full rounded-full border border-white/5 overflow-hidden shadow-inner"
+                            style={{
+                                backgroundColor: 'rgba(0,0,0,0.25)',
+                                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)'
+                            }}
                         >
                             <motion.div
-                                className="h-2 rounded-full transition-all duration-500"
+                                className="h-2.5 rounded-full transition-all duration-500"
                                 style={{
                                     width: `${progress.year}%`,
                                     backgroundColor: 'var(--tq-progress-year)',
@@ -86,11 +89,14 @@ const ProgressBars = () => {
                             </span>
                         </div>
                         <div
-                            className="h-2 w-full rounded-full"
-                            style={{ backgroundColor: 'var(--tq-surface-1)' }}
+                            className="h-3 w-full rounded-full border border-white/5 overflow-hidden shadow-inner"
+                            style={{
+                                backgroundColor: 'rgba(0,0,0,0.25)',
+                                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)'
+                            }}
                         >
                             <motion.div
-                                className="h-2 rounded-full transition-all duration-500"
+                                className="h-3 rounded-full transition-all duration-500"
                                 style={{
                                     width: `${progress.day}%`,
                                     backgroundColor: 'var(--tq-progress-day)',

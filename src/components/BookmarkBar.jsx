@@ -59,10 +59,9 @@ const BookmarkBar = () => {
       }}
     >
       <motion.div
-        className="relative backdrop-blur-xl rounded-2xl py-5 px-8 shadow-lg"
+        className="relative rounded-2xl py-5 px-8 shadow-lg tq-glass overflow-hidden"
         style={{
           background: 'var(--tq-glass-bg)',
-          border: '1px solid var(--tq-glass-border)',
         }}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
@@ -99,8 +98,9 @@ const BookmarkBar = () => {
                 <div
                   className="absolute inset-0 rounded-xl transition-all duration-300"
                   style={{
-                    background: 'var(--tq-surface-1)',
+                    background: 'var(--tq-surface-2)',
                     border: '1px solid var(--tq-border-1)',
+                    boxShadow: 'var(--tq-glass-sheen)',
                   }}
                 />
 

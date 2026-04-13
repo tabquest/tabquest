@@ -9,9 +9,10 @@
 /* ── Base ─────────────────────────────────────────────────── */
 html {
   user-select: none;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
 }
 
 
@@ -53,8 +54,9 @@ body::-webkit-scrollbar {
 @utility tq-glass {
   background: var(--tq-glass-bg);
   border: 1px solid var(--tq-glass-border);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  box-shadow: var(--tq-glass-sheen, none);
 }
 
 /* Surface levels */
@@ -62,6 +64,7 @@ body::-webkit-scrollbar {
 @utility tq-surface-2 { background-color: var(--tq-surface-2); }
 @utility tq-surface-3 { background-color: var(--tq-surface-3); }
 @utility tq-surface-elevated { background-color: var(--tq-surface-elevated); }
+@utility tq-surface-overlay { background-color: var(--tq-surface-overlay); }
 
 /* Borders */
 @utility tq-border-1 { border-color: var(--tq-border-1); }
@@ -96,9 +99,9 @@ body::-webkit-scrollbar {
 /* ── Smooth theme transition ─────────────────────────────── */
 .tabquest-app,
 .tabquest-app * {
-  transition-property: background-color, border-color, color, box-shadow;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
+  transition-property: background-color, border-color, color, box-shadow, backdrop-filter;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Exclude elements where transition causes jank */
