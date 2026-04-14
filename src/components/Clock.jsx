@@ -33,7 +33,7 @@ const Clock = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
-            <h1 className="text-4xl sm:text-6xl font-semibold relative z-0 tracking-tight">
+            <h1 className="text-4xl sm:text-6xl font-semibold relative z-0 tracking-tight flex items-baseline tabular-nums">
                 <span style={{ color: 'var(--tq-accent)' }}>
                     {String(hours).padStart(2, '0')}
                 </span>
@@ -56,8 +56,8 @@ const Clock = () => {
                     </>
                 )}
                 {use12Hour && (
-                    <span
-                        className="pl-2 text-lg sm:text-2xl font-light"
+                    <span 
+                        className="pl-3 text-lg sm:text-2xl font-light w-[3ch] inline-block"
                         style={{ color: 'var(--tq-text-muted)' }}
                     >
                         {period}
