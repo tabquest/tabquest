@@ -4,14 +4,6 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [1.4.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.3.0...tabquest-v1.4.0) (2026-04-14)
-
-
-### Features
-
-* modernize UI with glassmorphism and refined typography, apple l… ([ed11bd7](https://github.com/tabquest/tabquest/commit/ed11bd7eec45785462ea9de421a3f72458232d85))
-* modernize UI with glassmorphism and refined typography, apple liquid glass ui/ux ([da688fd](https://github.com/tabquest/tabquest/commit/da688fd35bd610ba4e5b4c868024c8b4769c9ced))
-
 ## [1.3.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.2.0...tabquest-v1.3.0) (2026-03-19)
 
 

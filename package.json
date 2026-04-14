@@ -1,6 +1,6 @@
 {
   "name": "tabquest",
-  "version": "1.4.0",
+  "version": "1.3.0",
   "description": "TabQuest: A productivity-focused Open Source Browser extension for managing bookmarks, tasks, and notes with a clean, customizable interface",
   "type": "module",
   "scripts": {
