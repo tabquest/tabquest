@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Youtube, ChevronDown, Camera } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaGoogle, FaSearch } from 'react-icons/fa';
 import Weather from './Weather';

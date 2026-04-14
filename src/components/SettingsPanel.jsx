@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     Settings, X, Plus, Save, RotateCcw, Send, Trash2,
     User, Briefcase, Globe, MapPin, Search, AlertCircle,
-    Github, Twitter, Linkedin, Instagram,
     Link, Layout, Palette, Clock3, Share2, Star, Tag, MousePointer2
 } from 'lucide-react';
 import { RiRedditLine } from "react-icons/ri";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaXTwitter, FaGithub, FaLinkedin, FaInstagram } from "react-icons/fa6";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     updateUserInfo,
@@ -775,10 +774,10 @@ const SettingsPanel = () => {
                                         <div className="flex flex-col gap-2">
                                             {Object.entries(formState.socialProfiles).map(([platform, value]) => {
                                                 const IconComponent = {
-                                                    github: Github,
+                                                    github: FaGithub,
                                                     twitter: FaXTwitter,
-                                                    linkedin: Linkedin,
-                                                    instagram: Instagram,
+                                                    linkedin: FaLinkedin,
+                                                    instagram: FaInstagram,
                                                     reddit: RiRedditLine
                                                 }[platform] || Link;
 
@@ -1033,7 +1032,7 @@ const SettingsPanel = () => {
                                                 <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-200/80 group-hover:text-amber-400 transition-colors">
                                                     Star us on GitHub
                                                 </span>
-                                                <Github className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
+                                                <FaGithub className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
                                             </motion.a>
 
                                             <div className="flex items-center justify-center">

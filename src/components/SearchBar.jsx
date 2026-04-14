@@ -3,8 +3,8 @@ import Weather from './Weather';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Search, Youtube, ChevronDown } from 'lucide-react';
-import { FaGoogle } from 'react-icons/fa';
+import { Search, ChevronDown } from 'lucide-react';
+import { FaGoogle, FaYoutube } from 'react-icons/fa';
 import { BiLogoBing } from "react-icons/bi";
 import { SiDuckduckgo } from "react-icons/si";
 
@@ -58,7 +58,7 @@ const SearchBar = ({ onFocusChange }) => {
           : <BiLogoBing size={16} />;
 
     return searchEngine === 'webSearch'
-      ? { icon: <Youtube size={16} />, text: 'YouTube', value: 'youtube' }
+      ? { icon: <FaYoutube size={16} />, text: 'YouTube', value: 'youtube' }
       : { icon: alternateIcon, text: SearchEngineName, value: 'webSearch' };
   };
 
@@ -132,7 +132,7 @@ const SearchBar = ({ onFocusChange }) => {
                       <BiLogoBing size={20} />
                     )
                   ) : (
-                    <Youtube size={18} />
+                    <FaYoutube size={18} />
                   )}
                   <span className="text-[16px] font-medium">
                     {searchEngine === 'webSearch' ? SearchEngineName : 'YouTube'}
