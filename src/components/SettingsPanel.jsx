@@ -354,7 +354,7 @@ const SettingsPanel = () => {
     };
 
     const inputClass =
-        'w-full pl-11 pr-4 py-3 rounded-2xl focus:outline-none focus:border-[var(--tq-accent)]/50 transition-all text-[15px] font-medium';
+        'w-full pl-11 pr-4 py-2.5 rounded-xl focus:outline-none focus:border-[var(--tq-accent)]/50 transition-all text-sm font-medium';
 
     return (
         <>
@@ -437,9 +437,9 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-base inset-y-0 right-0 w-[420px] shadow-2xl z-[100] tq-glass"
+                        className="fixed text-base inset-y-0 right-0 w-[400px] backdrop-blur-2xl shadow-2xl z-[100]"
                         style={{
-                            background: 'var(--tq-glass-bg)',
+                            background: 'var(--tq-surface-1)',
                             borderLeft: '1px solid var(--tq-border-1)',
                         }}
                     >
@@ -450,8 +450,9 @@ const SettingsPanel = () => {
                             }}
                         >
                             {/* Background gradients */}
-                            <div className="absolute inset-0 pointer-events-none">
+                            <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-surface-1)' }}>
                                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-subtle)' }} />
+                                <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--tq-gradient-glass)' }} />
                             </div>
 
                             {/* Content container */}
@@ -464,8 +465,7 @@ const SettingsPanel = () => {
                                         <motion.h2
                                             initial={{ x: -20, opacity: 0 }}
                                             animate={{ x: 0, opacity: 1 }}
-                                            className="text-xl font-semibold tracking-tight"
-                                            style={{ color: 'var(--tq-text-primary)' }}
+                                            className="text-lg font-medium tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-[var(--tq-text-primary)] to-[var(--tq-text-secondary)]"
                                         >
                                             Settings
                                         </motion.h2>
@@ -483,12 +483,12 @@ const SettingsPanel = () => {
                                     </motion.button>
                                 </div>
 
-                                <div className="space-y-14">
+                                <div className="space-y-8">
                                     {/* User Details */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <User className="w-3.5 h-3.5 opacity-60" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
+                                            <User className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Profile</h3>
                                         </div>
                                         <div className="space-y-3">
                                             <div className="relative group">
@@ -538,8 +538,8 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Layout className="w-3.5 h-3.5 opacity-60" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>
+                                            <Layout className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
                                                 {!isChrome ? 'Weather & Search' : "Weather"}
                                             </h3>
                                         </div>
@@ -577,11 +577,11 @@ const SettingsPanel = () => {
 
                                                     {isDropdownOpen && (
                                                         <ul
-                                                            className="absolute w-full mt-2 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100] overflow-hidden tq-surface-overlay"
+                                                            className="absolute w-full mt-2 rounded-xl shadow-lg z-20"
                                                             style={{
+                                                                background: 'var(--tq-glass-bg)',
                                                                 border: '1px solid var(--tq-border-1)',
-                                                                backdropFilter: 'blur(40px)',
-                                                                WebkitBackdropFilter: 'blur(40px)',
+                                                                backdropFilter: 'blur(24px)',
                                                             }}
                                                         >
                                                             {["Google", "Bing", "DuckDuckGo"].map((engine) => (
@@ -591,19 +591,11 @@ const SettingsPanel = () => {
                                                                         setFormState({ ...formState, searchEngine: engine });
                                                                         setIsDropdownOpen(false);
                                                                     }}
-                                                                    className="px-4 py-3.5 cursor-pointer transition-all text-[14px] font-semibold border-b border-white/5 last:border-b-0 hover:pl-6"
+                                                                    className="px-4 py-3 cursor-pointer transition-colors text-sm font-medium"
                                                                     title={`Select ${engine}`}
-                                                                    style={{ 
-                                                                        color: 'var(--tq-text-primary)',
-                                                                    }}
-                                                                    onMouseEnter={(e) => {
-                                                                        e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)';
-                                                                        e.currentTarget.style.color = 'var(--tq-accent)';
-                                                                    }}
-                                                                    onMouseLeave={(e) => {
-                                                                        e.currentTarget.style.backgroundColor = 'transparent';
-                                                                        e.currentTarget.style.color = 'var(--tq-text-primary)';
-                                                                    }}
+                                                                    style={{ color: 'var(--tq-text-primary)' }}
+                                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--tq-hover-bg)'}
+                                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                                                                 >
                                                                     {engine}
                                                                 </li>
@@ -636,8 +628,8 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Palette className="w-3.5 h-3.5 opacity-60" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
+                                            <Palette className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Theme Appearance</h3>
                                         </div>
                                         <div className="grid grid-cols-3 gap-2">
                                             {THEME_LIST.map((theme) => {
@@ -698,8 +690,8 @@ const SettingsPanel = () => {
                                     {/* Clock */}
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Clock3 className="w-3.5 h-3.5 opacity-60" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
+                                            <Clock3 className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Clock Preferences</h3>
                                         </div>
                                         <div className="flex flex-row gap-3">
                                             {/* 12-hour format */}
@@ -768,8 +760,8 @@ const SettingsPanel = () => {
                                         className="space-y-4"
                                     >
                                         <div className="flex items-center gap-2 mb-2">
-                                            <Share2 className="w-3.5 h-3.5 opacity-60" style={{ color: 'var(--tq-accent)' }} />
-                                            <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
+                                            <Share2 className="w-3.5 h-3.5 opacity-50" style={{ color: 'var(--tq-accent)' }} />
+                                            <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>Social Profiles</h3>
                                         </div>
 
                                         <div className="flex flex-col gap-2">
@@ -840,7 +832,7 @@ const SettingsPanel = () => {
                                                 <div className="p-1.5 rounded-lg" style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}>
                                                     <Star className="w-3.5 h-3.5" style={{ color: 'var(--tq-accent)' }} />
                                                 </div>
-                                                <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70" style={{ color: 'var(--tq-text-primary)' }}>
+                                                <h3 className="text-[10px] font-medium uppercase tracking-[0.15em] opacity-60" style={{ color: 'var(--tq-text-primary)' }}>
                                                     Favourites <span className="text-[10px] ml-1 opacity-50">({formState.bookmarks.length}/8)</span>
                                                 </h3>
                                             </div>
@@ -890,7 +882,7 @@ const SettingsPanel = () => {
                                                                         setFormState({ ...formState, bookmarks: newBookmarks });
                                                                     }}
                                                                     placeholder="Site Name"
-                                                                    className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-sm font-semibold focus:outline-none focus:border-[var(--tq-accent)]/80 transition-all placeholder:opacity-20"
+                                                                    className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-sm font-semibold focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
                                                                     style={{ color: 'var(--tq-text-primary)' }}
                                                                     data-no-theme-transition="true"
                                                                 />
@@ -916,7 +908,7 @@ const SettingsPanel = () => {
                                                                     setFormState({ ...formState, bookmarks: newBookmarks });
                                                                 }}
                                                                 placeholder="URL"
-                                                                className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-xs focus:outline-none focus:border-[var(--tq-accent)]/80 transition-all placeholder:opacity-20"
+                                                                className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-xs focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
                                                                 style={{ color: 'var(--tq-text-secondary)' }}
                                                                 data-no-theme-transition="true"
                                                             />
@@ -1043,7 +1035,7 @@ const SettingsPanel = () => {
                                                     className="w-4 h-4 mr-2 object-contain"
                                                 />
                                                 <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--tq-text-muted)' }}>
-                                                    TabQuest <span className="opacity-80 ml-1 font-medium">v{APP_VERSION}</span>
+                                                    TabQuest <span className="opacity-40 ml-1 font-medium">v{APP_VERSION}</span>
                                                 </span>
                                             </div>
                                         </motion.div>

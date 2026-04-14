@@ -75,21 +75,22 @@ const SearchBar = ({ onFocusChange }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[65]"
+            className="fixed inset-0 z-50"
             style={{
-              backgroundColor: 'var(--tq-glass-bg)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backgroundColor: 'rgba(0,0,0,.20)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
             }}
           />
         )}
       </AnimatePresence>
 
-      <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-[70] space-y-4">
+      <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-50 space-y-4">
         <motion.div
-          className="relative rounded-2xl p-4 sm:p-6 shadow-2xl tq-glass"
+          className="relative backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-2xl"
           style={{
             background: 'var(--tq-search-bg)',
+            border: '1px solid var(--tq-search-border)',
           }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -109,14 +110,14 @@ const SearchBar = ({ onFocusChange }) => {
               setTimeout(() => setIsTyping(false), 200);
             }}
           >
-            <div className="relative w-full sm:min-w-[185px] sm:w-auto" ref={dropdownRef}>
+            <div className="relative w-full sm:min-w-[140px] sm:w-auto" ref={dropdownRef}>
               <motion.button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="h-full w-full px-4 py-3 sm:py-4 flex items-center justify-between rounded-xl sm:rounded-l-xl sm:rounded-r-none transition-all duration-200 border-r border-transparent"
+                className="h-full w-full px-4 py-3 sm:py-4 flex items-center justify-between rounded-xl sm:rounded-l-xl sm:rounded-r-none transition-all duration-200"
                 style={{
-                  background: 'var(--tq-surface-3)',
-                  borderRightColor: 'var(--tq-border-1)',
+                  background: 'var(--tq-surface-elevated)',
+                  borderRight: '1px solid var(--tq-border-1)',
                   color: 'var(--tq-text-primary)',
                 }}
                 whileHover={{ scale: 1.02 }}
@@ -152,10 +153,12 @@ const SearchBar = ({ onFocusChange }) => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 mt-3 w-full rounded-xl overflow-hidden shadow-2xl z-50 tq-glass tq-surface-overlay"
+                    className="absolute top-full left-0 mt-1 w-full rounded-xl overflow-hidden shadow-lg z-30"
                     style={{
-                      border: '1px solid var(--tq-border-2)',
-                      backdropFilter: 'blur(32px)',
+                      background: 'var(--tq-glass-bg)',
+                      border: '1px solid var(--tq-border-1)',
+                      backdropFilter: 'blur(24px)',
+                      WebkitBackdropFilter: 'blur(24px)',
                     }}
                   >
                     <motion.button
@@ -165,13 +168,11 @@ const SearchBar = ({ onFocusChange }) => {
                         setSearchEngine(getAlternateOption().value);
                         setIsDropdownOpen(false);
                       }}
-                      className="flex text-[15px] items-center gap-3 w-full px-4 py-3.5 transition-all duration-200 cursor-pointer"
+                      className="flex text-lg items-center gap-2 w-full px-4 py-3 transition-all duration-200"
                       style={{ color: 'var(--tq-text-primary)' }}
                     >
-                      <div className="p-1.5 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
-                        {getAlternateOption().icon}
-                      </div>
-                      <span className="font-medium">{getAlternateOption().text}</span>
+                      {getAlternateOption().icon}
+                      {getAlternateOption().text}
                     </motion.button>
                   </motion.div>
                 )}
@@ -183,22 +184,20 @@ const SearchBar = ({ onFocusChange }) => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="flex-1 text-[17px] px-4 py-3 sm:py-4 backdrop-blur-md rounded-xl sm:rounded-none focus:outline-none focus:ring-0 border-x border-transparent"
+              className="flex-1 text-lg px-4 py-3 sm:py-4 backdrop-blur-md rounded-xl sm:rounded-none focus:outline-none focus:ring-0"
               style={{
-                background: 'var(--tq-surface-3)',
+                background: 'var(--tq-surface-elevated)',
                 color: 'var(--tq-text-primary)',
-                borderLeftColor: 'var(--tq-border-1)',
-                borderRightColor: 'var(--tq-border-1)',
               }}
               data-no-theme-transition="true"
             />
 
             <motion.button
               type="submit"
-              className="px-6 py-3 sm:py-0 backdrop-blur-md rounded-xl sm:rounded-l-none sm:rounded-r-xl transition-all duration-200 border-l border-transparent"
+              className="px-6 py-3 sm:py-0 backdrop-blur-md rounded-xl sm:rounded-l-none sm:rounded-r-xl transition-all duration-200"
               style={{
-                background: 'var(--tq-surface-3)',
-                borderLeftColor: 'var(--tq-border-1)',
+                background: 'var(--tq-surface-elevated)',
+                borderLeft: '1px solid var(--tq-border-1)',
                 color: 'var(--tq-text-primary)',
               }}
               whileHover={{ scale: 1.05 }}
