@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.4.0...tabquest-v1.5.0) (2026-04-14)
+
+
+### Features
+
+* bump version to 1.4.0 and update UI labels in VersionChecker ([fbacab1](https://github.com/tabquest/tabquest/commit/fbacab1db9219757db7c86ae5e89d53770ee4495))
+
 ## [1.4.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.3.0...tabquest-v1.4.0) (2026-04-14)
 
 
