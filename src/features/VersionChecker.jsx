@@ -63,7 +63,7 @@ const VersionChecker = () => {
                                         </div>
                                         <div className="flex flex-col">
                                             <h3 className="font-semibold text-sm leading-tight" style={{ color: 'var(--tq-text-primary)' }}>
-                                                New Update!
+                                                What's New
                                             </h3>
                                             <span className="text-[10px] font-bold uppercase tracking-widest opacity-60" style={{ color: 'var(--tq-accent)' }}>
                                                 v{APP_VERSION}
@@ -92,7 +92,7 @@ const VersionChecker = () => {
                                         background: 'var(--tq-accent)',
                                     }}
                                 >
-                                    Got it!
+                                    Explore Now
                                 </motion.button>
                             </div>
                         </div>

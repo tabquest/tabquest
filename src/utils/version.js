@@ -1,6 +1,7 @@
-export const APP_VERSION = "1.3.0";
+export const APP_VERSION = "1.4.0";
 
 export const VERSION_NOTES = {
+  "1.4.0": "New Apple Liquid Glass UI",
   "1.3.0": "TabQuest is open source now! Optimized weather disaply and fixed bugs.",
   "1.2.0": "TabQuest is open source now! Check out the new UI and check the repo in settings.",
   "1.1.0": "New Dynamic themes and improved visual consistency.",
