@@ -269,19 +269,14 @@ const TaskComponent = () => {
                 className="w-64 border-r tq-border-1 p-4 custom-scrollbar"
             >
                 <motion.button
-                    whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+                    whileHover={{ scale: 1.02, background: 'var(--tq-surface-3)' }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full mb-4 px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-                    style={{ 
-                        background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                        borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                        boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-                    }}
+                    className="w-full mb-4 px-4 py-2 tq-surface-2 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer transition-colors shadow-sm"
                     onClick={() => setShowFolderPopup(true)}
                     title="Create New List"
                 >
-                    <Plus size={16} />
-                    <span>New List</span>
+                    <Plus size={16} style={{ color: 'var(--tq-accent)' }} />
+                    <span className="font-medium">New List</span>
                 </motion.button>
 
                 <div className="space-y-1">
@@ -343,14 +338,9 @@ const TaskComponent = () => {
                     <h1 className="text-2xl font-semibold tq-text-primary">{headerTitle}</h1>
                     {selectedFolder && !['archive'].includes(selectedFolder) && (
                         <motion.button
-                            whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+                            whileHover={{ scale: 1.02, background: 'var(--tq-accent)', color: 'black' }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-                            style={{ 
-                                background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                                borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-                            }}
+                            className="px-4 py-2 tq-surface-2 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer transition-all font-semibold shadow-sm"
                             onClick={() => setShowTaskPopup(true)}
                             title="Add New Task"
                         >

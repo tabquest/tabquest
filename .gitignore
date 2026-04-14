@@ -6,4 +6,3 @@
 .DS_Store
 *.log
 /public/manifest.json
-.agent

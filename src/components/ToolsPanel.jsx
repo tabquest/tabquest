@@ -78,9 +78,9 @@ const ToolsPanel = () => {
             <motion.div
               className="absolute inset-0 cursor-pointer"
               style={{
-                backgroundColor: 'var(--tq-surface-1)',
-                backdropFilter: 'blur(10px)',
-                WebkitBackdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(0,0,0,.40)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
               }}
               onClick={() => setIsOpen(false)}
               title="Close Panel"
@@ -88,9 +88,10 @@ const ToolsPanel = () => {
 
             {/* Panel Container */}
             <motion.div
-              className="relative w-[1200px] h-[800px] rounded-2xl shadow-2xl overflow-hidden tq-glass"
+              className="relative w-[1200px] h-[800px] backdrop-blur-2xl rounded-2xl shadow-2xl overflow-hidden"
               style={{
                 background: 'var(--tq-surface-1)',
+                border: '1px solid var(--tq-border-1)',
               }}
             >
               {/* Gradient Overlays */}
@@ -192,12 +193,10 @@ const TabButton = ({ icon, isActive, onClick, label }) => (
     whileHover={{ scale: 1.05, background: isActive ? 'var(--tq-surface-elevated)' : 'var(--tq-surface-2)' }}
     whileTap={{ scale: 0.95 }}
     onClick={onClick}
-    className="flex items-center space-x-2 px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm border border-transparent"
+    className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm"
     style={{
       color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
-      background: isActive ? 'var(--tq-surface-elevated)' : 'var(--tq-surface-1)',
-      borderColor: isActive ? 'rgba(255,255,255,0.08)' : 'var(--tq-border-1)',
-      boxShadow: isActive ? 'inset 0 4px 12px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1)' : 'none',
+      background: isActive ? 'var(--tq-surface-elevated)' : 'transparent',
     }}
     title={`Switch to ${label}`}
   >

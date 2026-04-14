@@ -198,14 +198,9 @@ const BookmarkComponent = () => {
         className="w-64 border-r tq-border-1 p-4 custom-scrollbar"
       >
         <motion.button
-          whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full mb-4 px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-          style={{ 
-            background: 'rgba(var(--tq-accent-rgb), 0.15)',
-            borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-          }}
+          className="w-full mb-4 px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
           onClick={() => setShowFolderPopup(true)}
           title="Create New Folder"
         >
@@ -328,14 +323,9 @@ const BookmarkComponent = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                whileHover={{ scale: 1.05, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-                style={{ 
-                    background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                    borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-                }}
+                className="px-4 py-2 tq-surface-2 hover:tq-surface-3 rounded-lg tq-text-primary flex items-center gap-2 cursor-pointer"
                 onClick={() => setShowBookmarkPopup(true)}
                 title="Add New Bookmark"
               >

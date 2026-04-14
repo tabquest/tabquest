@@ -253,14 +253,9 @@ const NotesComponent = () => {
 
                 <div className="flex items-center gap-4">
                     <motion.button
-                        whileHover={{ scale: 1.05, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-white cursor-pointer font-bold border backdrop-blur-xl transition-all"
-                        style={{ 
-                            background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                            borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                            boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-                        }}
+                        className="px-4 py-2 tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary cursor-pointer"
                         onClick={() => setShowAddModal(true)}
                         title="Add Note"
                     >
