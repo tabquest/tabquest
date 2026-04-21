@@ -58,7 +58,7 @@ const AppContent = () => {
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
 
       {/* Header Section */}
-      <div className={`flex mt-2 justify-between shrink-0 relative ${isSearchActive ? 'z-10' : 'z-40'}`}>
+      <div className={`flex mt-2 justify-between shrink-0 relative ${isSearchActive ? 'z-10' : 'z-30'}`}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

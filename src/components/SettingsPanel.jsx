@@ -436,7 +436,7 @@ const SettingsPanel = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                        className="fixed text-base inset-y-0 right-0 w-[420px] shadow-2xl z-[100] tq-glass"
+                        className="fixed text-base inset-y-0 right-0 w-[420px] shadow-2xl z-[999] tq-glass"
                         style={{
                             background: 'var(--tq-glass-bg)',
                             borderLeft: '1px solid var(--tq-border-1)',
