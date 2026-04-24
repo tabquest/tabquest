@@ -1,4 +1,5 @@
 export const FAVICON_URL = "https://www.google.com/s2/favicons?sz=64&domain=";
+export const RELEASES_URL = "https://tabquest.web.app/releases";
 
 export const OPENWEATHER_API_URL = "https://tabquest.val.run/weather?city=";
 
