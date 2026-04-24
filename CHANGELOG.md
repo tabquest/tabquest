@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.5.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.4.0...tabquest-v1.5.0) (2026-04-24)
+
+
+### Features
+
+* bump version to 1.4.0 and update UI labels in VersionChecker ([fbacab1](https://github.com/tabquest/tabquest/commit/fbacab1db9219757db7c86ae5e89d53770ee4495))
+* update version notification button to link directly to release … ([43c36b0](https://github.com/tabquest/tabquest/commit/43c36b082108592a4008287d684661db3ca2f14e))
+* update version notification button to link directly to release notes via RELEASES_URL constant ([ed5ca68](https://github.com/tabquest/tabquest/commit/ed5ca681159e9919d19db248d8f66fb93b5902f7))
+
+
+### Bug Fixes
+
+* adjust component z-index layering ([e7d7ae0](https://github.com/tabquest/tabquest/commit/e7d7ae0f8e13855fe88fde7af85f037433180c5a))
+* adjust component z-index layering ([2f8935b](https://github.com/tabquest/tabquest/commit/2f8935be61836e56ba9a44b9d7c79848799dcc85))
+
 ## [1.4.0](https://github.com/tabquest/tabquest/compare/tabquest-v1.3.0...tabquest-v1.4.0) (2026-04-14)
 
 
