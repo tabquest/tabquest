@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { APP_VERSION, VERSION_NOTES } from '../utils/version';
-import { X } from 'lucide-react';
+import { RELEASES_URL } from '../utils/constants';
 
 const VersionChecker = () => {
     const [showNotification, setShowNotification] = useState(false);
@@ -83,17 +83,22 @@ const VersionChecker = () => {
                                     {notificationContent}
                                 </p>
 
-                                <motion.button
+                                <motion.a
+                                    href={RELEASES_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     whileHover={{ opacity: 0.9, scale: 1.01 }}
                                     whileTap={{ scale: 0.98 }}
                                     onClick={closeNotification}
-                                    className="w-full py-2 rounded-lg text-black text-sm font-bold cursor-pointer transition-all"
+                                    className="w-full py-2 rounded-lg text-black text-sm font-bold cursor-pointer transition-all flex items-center justify-center gap-2"
                                     style={{
                                         background: 'var(--tq-accent)',
+                                        textDecoration: 'none'
                                     }}
                                 >
-                                    Explore Now
-                                </motion.button>
+                                    View changes
+                                    <ExternalLink size={14} />
+                                </motion.a>
                             </div>
                         </div>
                     </motion.div>
