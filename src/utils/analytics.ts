@@ -23,7 +23,7 @@ class ExtensionAnalytics {
         throw new Error('Invalid measurement ID format. Should start with G-');
       }
 
-      console.debug('Analytics initialized with clientId:', this.clientId);
+      console.warn('Analytics initialized with clientId:', this.clientId);
       return true;
     } catch (error) {
       console.error(
@@ -72,7 +72,7 @@ class ExtensionAnalytics {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        console.debug('Analytics event sent successfully', payload);
+        console.warn('Analytics event sent successfully', payload);
         return true;
       } catch (error) {
         console.error(`Analytics attempt ${attempt + 1} failed:`, error);

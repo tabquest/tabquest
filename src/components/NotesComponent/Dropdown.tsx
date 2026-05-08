@@ -9,7 +9,7 @@ interface DropdownOption {
 
 interface DropdownProps {
   value: string;
-  onChange: (e: { target: { value: string } }) => void;
+  onChange: (_e: { target: { value: string } }) => void;
   options: DropdownOption[];
 }
 

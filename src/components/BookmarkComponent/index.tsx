@@ -692,7 +692,7 @@ const BookmarkComponent = () => {
                     ) {
                       return 'Please enter a valid URL';
                     }
-                  } catch (e) {
+                  } catch {
                     return 'Please enter a valid URL';
                   }
                 },
@@ -764,7 +764,7 @@ const BookmarkComponent = () => {
                     ) {
                       return 'Please enter a valid URL';
                     }
-                  } catch (e) {
+                  } catch {
                     return 'Please enter a valid URL';
                   }
                 },

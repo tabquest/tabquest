@@ -10,7 +10,7 @@ interface SimpleTaskValues {
 
 interface SimpleTaskModalProps {
   onClose: () => void;
-  onSubmit: (values: SimpleTaskValues) => void;
+  onSubmit: (_values: SimpleTaskValues) => void;
   initialValues?: Partial<SimpleTaskValues>;
   isEditing?: boolean;
   selectedFolder?: string;

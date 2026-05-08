@@ -7,7 +7,7 @@ const ANIMATION_DURATION = 0.7;
 
 interface TaskItemProps {
   task: Task;
-  onComplete: (task: Task) => void;
+  onComplete: (_task: Task) => void;
   onEdit: () => void;
   onDelete: () => void;
 }
@@ -151,5 +151,7 @@ const TaskItem = forwardRef<HTMLDivElement, TaskItemProps>(
     );
   },
 );
+
+TaskItem.displayName = 'TaskItem';
 
 export default TaskItem;

@@ -7,13 +7,13 @@ interface Field {
   label: string;
   type: string;
   placeholder: string;
-  validate?: (value: string) => string | undefined;
+  validate?: (_value: string) => string | undefined;
 }
 
 interface PopupModalProps {
   title: string;
   onClose: () => void;
-  onSubmit: (values: Record<string, string>) => void;
+  onSubmit: (_values: Record<string, string>) => void;
   fields: Field[];
   initialValues?: Record<string, string>;
 }

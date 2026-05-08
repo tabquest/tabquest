@@ -19,7 +19,7 @@ interface ViewNotesModalProps {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  formatDate: (timestamp: string) => string;
+  formatDate: (_timestamp: string) => string;
 }
 
 const ViewNotesModal = ({

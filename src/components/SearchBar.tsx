@@ -10,7 +10,7 @@ import { SiDuckduckgo } from 'react-icons/si';
 import type { RootState } from '../utils/redux/store';
 
 interface SearchBarProps {
-  onFocusChange: (focused: boolean) => void;
+  onFocusChange: (_focused: boolean) => void;
 }
 
 const SearchBar = ({ onFocusChange }: SearchBarProps) => {

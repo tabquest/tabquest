@@ -142,6 +142,7 @@ const SettingsPanel = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState, settings]);
 
   useEffect(() => {
@@ -173,6 +174,7 @@ const SettingsPanel = () => {
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, formState, settings]);
 
   const handleClockSettingToggle = (settingName: string) => {
@@ -226,7 +228,7 @@ const SettingsPanel = () => {
         'i',
       );
       return !!pattern.test(url);
-    } catch (e) {
+    } catch {
       return false;
     }
   };

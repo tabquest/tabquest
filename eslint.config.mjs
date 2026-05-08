@@ -4,7 +4,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import typescriptParser from '@typescript-eslint/parser';
 
 export default [
-  { ignores: ['dist/', 'node_modules/', 'public/manifest.json'] },
+  { ignores: ['dist/', 'node_modules/', 'public/manifest.json', 'src/**/*.d.ts'] },
 
   {
     files: ['src/**/*.{js,jsx,mjs}'],

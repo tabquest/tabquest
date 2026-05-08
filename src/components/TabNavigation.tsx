@@ -1,6 +1,6 @@
 interface TabNavigationProps {
   activeTab: string;
-  setActiveTab: (tab: string) => void;
+  setActiveTab: (_tab: string) => void;
 }
 
 const TabNavigation = ({ activeTab, setActiveTab }: TabNavigationProps) => {

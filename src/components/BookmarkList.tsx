@@ -4,10 +4,10 @@ import type { Bookmark } from '../types/domain';
 
 interface BookmarkListProps {
   filteredBookmarks: Bookmark[];
-  handleStarBookmark: (bookmark: Bookmark) => void;
-  setEditingBookmark: (bookmark: Bookmark) => void;
-  setShowDeleteConfirm: (confirm: { type: string; id: string }) => void;
-  highlightText: (text: string, query: string) => React.ReactNode;
+  handleStarBookmark: (_bookmark: Bookmark) => void;
+  setEditingBookmark: (_bookmark: Bookmark) => void;
+  setShowDeleteConfirm: (_confirm: { type: string; id: string }) => void;
+  highlightText: (_text: string, _query: string) => React.ReactNode;
   searchQuery: string;
 }
 

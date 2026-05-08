@@ -33,7 +33,7 @@ interface PopupModalProps {
   isOpen: boolean;
   title: string;
   onClose: () => void;
-  onSubmit: (formData: {
+  onSubmit: (_formData: {
     heading: string;
     content: string;
     tags: string;

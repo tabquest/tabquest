@@ -5,7 +5,7 @@ import { SiGooglelens } from 'react-icons/si';
 import Weather from './Weather';
 
 interface ChromeSearchBarProps {
-  onFocusChange: (focused: boolean) => void;
+  onFocusChange: (_focused: boolean) => void;
 }
 
 const ChromeSearchBar = ({ onFocusChange }: ChromeSearchBarProps) => {

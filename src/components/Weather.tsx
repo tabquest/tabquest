@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Cloud, WifiOff, MapPin, AlertCircle } from 'lucide-react';
 import {
   OPENWEATHER_API_URL,
@@ -77,7 +77,7 @@ const Weather = () => {
     localStorage.setItem(getCacheKey(), JSON.stringify(cacheData));
   };
 
-  const fetchWeatherInfo = async () => {
+  const fetchWeatherInfo = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -101,7 +101,8 @@ const Weather = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [API_URL]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -117,6 +118,7 @@ const Weather = () => {
 
   useEffect(() => {
     if (isOnline) fetchWeatherInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, isOnline]);
 
   const kelvinToCelsius = (

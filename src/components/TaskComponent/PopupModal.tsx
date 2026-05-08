@@ -8,13 +8,13 @@ interface Field {
   type: string;
   required?: boolean;
   placeholder?: string;
-  validate?: (value: string) => string | null;
+  validate?: (_value: string) => string | null;
 }
 
 interface PopupModalProps {
   title: string;
   onClose: () => void;
-  onSubmit: (values: Record<string, string>) => void;
+  onSubmit: (_values: Record<string, string>) => void;
   fields: Field[];
   initialValues?: Record<string, string>;
 }

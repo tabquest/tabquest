@@ -5,10 +5,10 @@ import type { Bookmark, Folder as FolderType } from '../types/domain';
 interface FolderSidebarProps {
   folders: FolderType[];
   selectedFolder: string;
-  setSelectedFolder: (id: string) => void;
-  setShowFolderPopup: (show: boolean) => void;
-  setEditingFolder: (folder: FolderType) => void;
-  setShowDeleteConfirm: (confirm: { type: string; id: string }) => void;
+  setSelectedFolder: (_id: string) => void;
+  setShowFolderPopup: (_show: boolean) => void;
+  setEditingFolder: (_folder: FolderType) => void;
+  setShowDeleteConfirm: (_confirm: { type: string; id: string }) => void;
   bookmarks: Bookmark[];
 }
 
