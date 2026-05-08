@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Snowflake = ({ id }: { id: number }) => {
+const Snowflake = () => {
   return (
     <motion.div
       initial={{ y: -20, opacity: 0 }}
@@ -38,7 +38,7 @@ const ChristmasSnowfall = () => {
   return (
     <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
       {snowflakes.map((id) => (
-        <Snowflake key={id} id={id} />
+        <Snowflake key={id} />
       ))}
     </div>
   );

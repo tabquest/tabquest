@@ -1,0 +1,225 @@
+import { Bookmark, ListTodo, Code, X, SquareChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import BookmarkComponent from './BookmarkComponent';
+import TaskComponent from './TaskComponent';
+import NotesComponent from './NotesComponent';
+import ErrorBoundary from './ErrorBoundary';
+
+type TabKey = 'bookmarks' | 'todos' | 'notes';
+
+interface TabDetail {
+  title: string;
+  icon: React.ReactElement;
+}
+
+const tabDetails: Record<TabKey, TabDetail> = {
+  bookmarks: { title: 'Bookmarks', icon: <Bookmark size={20} /> },
+  todos: { title: 'Task Manager', icon: <ListTodo size={20} /> },
+  notes: { title: 'Notes', icon: <Code size={20} /> },
+};
+
+interface TabButtonProps {
+  icon: React.ReactElement;
+  isActive: boolean;
+  onClick: () => void;
+  label: string;
+}
+
+const TabButton = ({ icon, isActive, onClick, label }: TabButtonProps) => (
+  <motion.button
+    whileHover={{
+      scale: 1.05,
+      background: isActive
+        ? 'var(--tq-surface-elevated)'
+        : 'var(--tq-surface-2)',
+    }}
+    whileTap={{ scale: 0.95 }}
+    onClick={onClick}
+    className="flex items-center space-x-2 px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm border border-transparent"
+    style={{
+      color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
+      background: isActive
+        ? 'var(--tq-surface-elevated)'
+        : 'var(--tq-surface-1)',
+      borderColor: isActive ? 'rgba(255,255,255,0.08)' : 'var(--tq-border-1)',
+      boxShadow: isActive
+        ? 'inset 0 4px 12px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1)'
+        : 'none',
+    }}
+    title={`Switch to ${label}`}
+  >
+    {icon}
+    <span className="text-base font-medium">{label}</span>
+  </motion.button>
+);
+
+const ToolsPanel = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabKey>('bookmarks');
+
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isOpen]);
+
+  return (
+    <div>
+      <div className="fixed left-6 bottom-6">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsOpen(true)}
+          className="px-4 h-12 rounded-xl backdrop-blur-md flex items-center gap-2 group shadow-lg relative cursor-pointer"
+          style={{
+            background: 'var(--tq-glass-bg)',
+            border: '1px solid var(--tq-glass-border)',
+          }}
+          aria-label="Open Pro Tools"
+          title="Open Pro Tools"
+        >
+          <div
+            className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ background: 'var(--tq-gradient-glass)' }}
+          />
+          <SquareChevronRight
+            className="w-5 h-5 transition-colors"
+            style={{ color: 'var(--tq-text-secondary)' }}
+          />
+          <span
+            className="text-sm transition-colors"
+            style={{ color: 'var(--tq-text-secondary)' }}
+          >
+            Pro Tools
+          </span>
+        </motion.button>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div className="fixed inset-0 flex items-center justify-center z-50 text-[18px]">
+            <motion.div
+              className="absolute inset-0 cursor-pointer"
+              style={{
+                backgroundColor: 'var(--tq-surface-1)',
+                backdropFilter: 'blur(10px)',
+                WebkitBackdropFilter: 'blur(10px)',
+              }}
+              onClick={() => setIsOpen(false)}
+              title="Close Panel"
+            />
+
+            <motion.div
+              className="relative w-[1200px] h-[800px] rounded-2xl shadow-2xl overflow-hidden tq-glass"
+              style={{
+                background: 'var(--tq-surface-1)',
+              }}
+            >
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'var(--tq-gradient-subtle)' }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'var(--tq-gradient-glass)' }}
+              />
+
+              <div className="relative h-full flex flex-col">
+                <div
+                  className="flex items-center justify-between p-6"
+                  style={{ borderBottom: '1px solid var(--tq-border-1)' }}
+                >
+                  <h2
+                    className="text-xl font-medium flex items-center gap-2 overflow-hidden"
+                    style={{ color: 'var(--tq-text-secondary)' }}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex items-center gap-2"
+                      >
+                        <span className="text-xl">
+                          {tabDetails[activeTab].title}
+                        </span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </h2>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="transition-colors cursor-pointer"
+                    style={{ color: 'var(--tq-text-muted)' }}
+                    title="Close"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-2 [&::-webkit-scrollbar]:w-[5px] rounded-[4px]">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeTab}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {activeTab === 'bookmarks' && (
+                        <ErrorBoundary componentName="Bookmarks">
+                          <BookmarkComponent />
+                        </ErrorBoundary>
+                      )}
+                      {activeTab === 'todos' && (
+                        <ErrorBoundary componentName="Tasks">
+                          <TaskComponent />
+                        </ErrorBoundary>
+                      )}
+                      {activeTab === 'notes' && (
+                        <ErrorBoundary componentName="Notes">
+                          <NotesComponent />
+                        </ErrorBoundary>
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div
+                  className="p-4"
+                  style={{ borderTop: '1px solid var(--tq-border-1)' }}
+                >
+                  <div className="flex justify-center space-x-8">
+                    {Object.keys(tabDetails).map((tab) => {
+                      const key = tab as TabKey;
+                      return (
+                        <TabButton
+                          key={key}
+                          icon={tabDetails[key].icon}
+                          isActive={activeTab === key}
+                          onClick={() => setActiveTab(key)}
+                          label={tabDetails[key].title}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default ToolsPanel;

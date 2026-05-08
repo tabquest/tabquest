@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { CHRISTMAS_MODE } from '../utils/constants';
+import type { RootState } from '../utils/redux/store';
+
 import {
   Copy,
   ExternalLink,
@@ -18,7 +20,6 @@ import {
   FaReddit,
   FaXTwitter,
 } from 'react-icons/fa6';
-import type { RootState } from '../utils/redux/store';
 
 const SocialPopover = () => {
   const SocialProfiles = useSelector(
@@ -36,15 +37,13 @@ const SocialPopover = () => {
   const [profileImageError, setProfileImageError] = useState(false);
 
   useEffect(
-    () => (
+    () =>
       (window.ononline = window.onoffline =
         () => setIsOnline(navigator.onLine)),
-      undefined
-    ),
     [],
   );
 
-  const SocialIcons: Record<string, React.ReactNode> = {
+  const SocialIcons: Record<string, React.ReactElement> = {
     linkedin: <FaLinkedin />,
     github: <FaGithub />,
     twitter: <FaXTwitter />,
@@ -58,8 +57,10 @@ const SocialPopover = () => {
     setTimeout(() => setCopiedText(''), 2000);
   };
 
-  const validateUrl = (url: string): string => {
-    if (!/^https?:\/\//i.test(url)) return `https://${url}`;
+  const validateUrl = (url: string) => {
+    if (!/^https?:\/\//i.test(url)) {
+      return `https://${url}`;
+    }
     return url;
   };
 
@@ -74,7 +75,10 @@ const SocialPopover = () => {
       {CHRISTMAS_MODE && (
         <motion.div
           initial={{ scale: 0, rotate: 0 }}
-          animate={{ scale: 1, rotate: [0, -10, 10, -5, 5, 0] }}
+          animate={{
+            scale: 1,
+            rotate: [0, -10, 10, -5, 5, 0],
+          }}
           transition={{
             delay: 0.5,
             scale: { type: 'spring' },
@@ -96,7 +100,9 @@ const SocialPopover = () => {
         onMouseLeave={() => setIsOpen(false)}
         className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base transition-all cursor-pointer tq-glass"
         title="View Profile"
-        style={{ background: 'var(--tq-glass-bg)' }}
+        style={{
+          background: 'var(--tq-glass-bg)',
+        }}
       >
         {profileImageUrl && !profileImageError ? (
           <img
@@ -144,7 +150,9 @@ const SocialPopover = () => {
         >
           <div
             className="w-72 rounded-xl p-4 shadow-xl tq-glass"
-            style={{ background: 'var(--tq-glass-bg)' }}
+            style={{
+              background: 'var(--tq-glass-bg)',
+            }}
           >
             <div
               className="flex items-center justify-between pb-3 mb-3"
@@ -275,7 +283,9 @@ const SocialPopover = () => {
             >
               <div
                 className="flex items-center gap-2 rounded-lg px-4 py-3 shadow-xl tq-glass"
-                style={{ background: 'var(--tq-glass-bg)' }}
+                style={{
+                  background: 'var(--tq-glass-bg)',
+                }}
               >
                 <Check
                   className="h-4 w-4"
