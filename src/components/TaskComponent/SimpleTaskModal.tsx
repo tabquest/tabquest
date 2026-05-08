@@ -3,11 +3,17 @@ import { motion } from 'framer-motion';
 import { X, AlignLeft, Bell } from 'lucide-react';
 import './custom.css';
 
+interface SimpleTaskValues {
+  title: string;
+  reminderDateTime: string;
+}
+
 interface SimpleTaskModalProps {
   onClose: () => void;
   onSubmit: (values: SimpleTaskValues) => void;
   initialValues?: Partial<SimpleTaskValues>;
   isEditing?: boolean;
+  selectedFolder?: string;
 }
 
 const SimpleTaskModal = ({

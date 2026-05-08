@@ -475,12 +475,15 @@ const TaskComponent = () => {
                 name: 'title',
                 label: 'List Name',
                 type: 'text',
+                placeholder: 'Enter list name',
                 required: true,
                 validate: (value: string) =>
                   !value.trim() ? 'List name is required' : null,
               },
             ]}
-            initialValues={editingFolder ? { title: editingFolder.title } : {}}
+            initialValues={
+              editingFolder ? { title: editingFolder.title } : { title: '' }
+            }
           />
         )}
 
@@ -499,9 +502,15 @@ const TaskComponent = () => {
                     })
                 : handleAddTask
             }
-            initialValues={editingTask || {}}
+            initialValues={
+              editingTask
+                ? {
+                    title: editingTask.title,
+                    reminderDateTime: editingTask.reminderDateTime || '',
+                  }
+                : {}
+            }
             isEditing={!!editingTask}
-            selectedFolder={selectedFolder}
           />
         )}
       </AnimatePresence>

@@ -7,7 +7,7 @@ interface Field {
   label: string;
   type: string;
   required?: boolean;
-  placeholder: string;
+  placeholder?: string;
   validate?: (value: string) => string | null;
 }
 
