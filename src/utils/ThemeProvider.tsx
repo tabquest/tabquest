@@ -23,11 +23,8 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const theme = useMemo(() => getTheme(resolvedKey), [resolvedKey]);
 
   const bgStyle = useMemo((): React.CSSProperties => {
-    if (!background || background.type === 'theme') return {};
-    if (background.type === 'gradient')
-      return { background: background.gradient };
-    return {};
-  }, [background]);
+    return {}; // gradient type removed; image handled by overlay divs below
+  }, []);
 
   const isCustomBackground = background && background.type !== 'theme';
 

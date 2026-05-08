@@ -79,40 +79,6 @@ const SettingsPanel = () => {
     type: 'theme',
   }) as BackgroundConfig;
 
-  const GRADIENT_PRESETS = [
-    {
-      name: 'Aurora',
-      value: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
-    },
-    {
-      name: 'Ocean',
-      value: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
-    },
-    {
-      name: 'Sunset',
-      value: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-    },
-    {
-      name: 'Forest',
-      value: 'linear-gradient(135deg, #0a0a0a 0%, #1a2f1a 50%, #0d2b0d 100%)',
-    },
-    {
-      name: 'Ember',
-      value: 'linear-gradient(135deg, #1a0a0a 0%, #2d1b1b 50%, #3d1515 100%)',
-    },
-    {
-      name: 'Cosmic',
-      value: 'linear-gradient(135deg, #0d0d1a 0%, #1a0d33 50%, #0d1a33 100%)',
-    },
-    {
-      name: 'Mint',
-      value: 'linear-gradient(135deg, #0a1a0f 0%, #0d2b1a 50%, #0a2010 100%)',
-    },
-    {
-      name: 'Slate',
-      value: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a2e 100%)',
-    },
-  ];
   const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
   const isHighlightingFeedback = false;
 
@@ -971,67 +937,113 @@ const SettingsPanel = () => {
                         Background
                       </h3>
                     </div>
+
+                    {/* Theme vs Image toggle */}
                     <div className="flex gap-2">
-                      {(['theme', 'gradient', 'image'] as BackgroundType[]).map(
-                        (type) => (
-                          <button
-                            key={type}
-                            type="button"
-                            onClick={() => {
-                              const config: BackgroundConfig =
-                                type === 'gradient'
+                      {(['theme', 'image'] as BackgroundType[]).map((type) => (
+                        <button
+                          key={type}
+                          type="button"
+                          onClick={() => {
+                            dispatch(
+                              updateBackground(
+                                type === 'image'
                                   ? {
-                                      type: 'gradient',
-                                      gradient: GRADIENT_PRESETS[0].value,
+                                      type: 'image',
+                                      imageUrl: '/backgrounds/city-night.jpg',
+                                      overlayOpacity: 0.3,
+                                      blur: 0,
                                     }
-                                  : type === 'image'
-                                    ? {
-                                        type: 'image',
-                                        imageUrl: '',
-                                        overlayOpacity: 0.4,
-                                        blur: 0,
-                                      }
-                                    : { type: 'theme' };
-                              dispatch(updateBackground(config));
-                            }}
-                            className={`px-3 py-1.5 text-xs rounded-full border transition-all capitalize cursor-pointer ${
-                              currentBackground.type === type
-                                ? 'border-[var(--tq-accent)] text-[var(--tq-accent)]'
-                                : 'border-[var(--tq-border-1)] text-[var(--tq-text-muted)] hover:text-[var(--tq-text-primary)]'
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ),
-                      )}
+                                  : { type: 'theme' },
+                              ),
+                            );
+                          }}
+                          className={`px-4 py-1.5 text-xs rounded-full border transition-all capitalize cursor-pointer ${
+                            currentBackground.type === type
+                              ? 'border-[var(--tq-accent)] text-[var(--tq-accent)]'
+                              : 'border-[var(--tq-border-1)] text-[var(--tq-text-muted)] hover:text-[var(--tq-text-primary)]'
+                          }`}
+                        >
+                          {type === 'theme' ? 'Default' : 'Custom'}
+                        </button>
+                      ))}
                     </div>
-                    {currentBackground.type === 'gradient' && (
-                      <div className="grid grid-cols-4 gap-2">
-                        {GRADIENT_PRESETS.map((preset) => (
-                          <button
-                            key={preset.name}
-                            type="button"
-                            title={preset.name}
-                            onClick={() =>
-                              dispatch(
-                                updateBackground({
-                                  type: 'gradient',
-                                  gradient: preset.value,
-                                }),
-                              )
-                            }
-                            className={`h-10 rounded-lg border-2 transition-all cursor-pointer ${
-                              currentBackground.gradient === preset.value
-                                ? 'border-[var(--tq-accent)] scale-105'
-                                : 'border-transparent hover:border-white/30'
-                            }`}
-                            style={{ background: preset.value }}
-                          />
-                        ))}
-                      </div>
-                    )}
+
+                    {/* Built-in wallpaper grid — only when type === 'image' */}
                     {currentBackground.type === 'image' && (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
+                        {/* Built-in wallpaper thumbnails grid (2 rows × 3 cols) */}
+                        <p
+                          className="text-[10px] uppercase tracking-widest opacity-50"
+                          style={{ color: 'var(--tq-text-muted)' }}
+                        >
+                          Built-in wallpapers
+                        </p>
+                        <div className="grid grid-cols-3 gap-2">
+                          {[
+                            {
+                              label: 'City Night',
+                              path: '/backgrounds/city-night.jpg',
+                            },
+                            {
+                              label: 'Mountains',
+                              path: '/backgrounds/mountains.jpg',
+                            },
+                            {
+                              label: 'Galaxy',
+                              path: '/backgrounds/galaxy.jpg',
+                            },
+                            {
+                              label: 'Forest',
+                              path: '/backgrounds/forest.jpg',
+                            },
+                            { label: 'Ocean', path: '/backgrounds/ocean.jpg' },
+                            {
+                              label: 'Neon City',
+                              path: '/backgrounds/neon-city.jpg',
+                            },
+                          ].map((bg) => (
+                            <button
+                              key={bg.path}
+                              type="button"
+                              title={bg.label}
+                              onClick={() =>
+                                dispatch(
+                                  updateBackground({
+                                    ...currentBackground,
+                                    type: 'image',
+                                    imageUrl: bg.path,
+                                  }),
+                                )
+                              }
+                              className={`relative h-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                                currentBackground.imageUrl === bg.path
+                                  ? 'border-[var(--tq-accent)] scale-[1.03]'
+                                  : 'border-transparent hover:border-white/30'
+                              }`}
+                              style={{
+                                backgroundImage: `url(${bg.path})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                              }}
+                            >
+                              {currentBackground.imageUrl === bg.path && (
+                                <div className="absolute inset-0 bg-[var(--tq-accent)] opacity-20" />
+                              )}
+                              <span className="absolute bottom-0.5 left-0 right-0 text-center text-[8px] text-white/70 font-medium">
+                                {bg.label}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Custom upload */}
+                        <p
+                          className="text-[10px] uppercase tracking-widest opacity-50 mt-2"
+                          style={{ color: 'var(--tq-text-muted)' }}
+                        >
+                          Or upload your own
+                        </p>
                         <input
                           type="file"
                           accept="image/*"
@@ -1050,8 +1062,9 @@ const SettingsPanel = () => {
                                 updateBackground({
                                   type: 'image',
                                   imageUrl: ev.target?.result as string,
-                                  overlayOpacity: 0.4,
-                                  blur: 0,
+                                  overlayOpacity:
+                                    currentBackground.overlayOpacity ?? 0.3,
+                                  blur: currentBackground.blur ?? 0,
                                 }),
                               );
                             reader.readAsDataURL(file);
@@ -1066,42 +1079,39 @@ const SettingsPanel = () => {
                           }}
                         >
                           <Upload size={14} />
-                          {currentBackground.imageUrl
-                            ? 'Change image'
-                            : 'Choose image (max 3MB)'}
+                          {currentBackground.imageUrl &&
+                          !currentBackground.imageUrl.startsWith(
+                            '/backgrounds/',
+                          )
+                            ? 'Change custom image'
+                            : 'Upload custom image (max 3MB)'}
                         </label>
-                        {currentBackground.imageUrl && (
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-12 h-8 rounded border"
-                              style={{
-                                backgroundImage: `url(${currentBackground.imageUrl})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                borderColor: 'var(--tq-border-1)',
-                              }}
-                            />
+
+                        {/* Overlay opacity slider */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
                             <span
                               className="text-xs"
+                              style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                              Overlay
+                            </span>
+                            <span
+                              className="text-[10px] font-mono"
                               style={{ color: 'var(--tq-text-muted)' }}
                             >
-                              Image loaded
+                              {Math.round(
+                                (currentBackground.overlayOpacity ?? 0.3) * 100,
+                              )}
+                              %
                             </span>
                           </div>
-                        )}
-                        <div className="flex items-center gap-3">
-                          <span
-                            className="text-xs w-20"
-                            style={{ color: 'var(--tq-text-secondary)' }}
-                          >
-                            Overlay
-                          </span>
                           <input
                             type="range"
                             min="0"
-                            max="0.9"
+                            max="0.85"
                             step="0.05"
-                            value={currentBackground.overlayOpacity ?? 0.4}
+                            value={currentBackground.overlayOpacity ?? 0.3}
                             onChange={(e) =>
                               dispatch(
                                 updateBackground({
@@ -1110,7 +1120,42 @@ const SettingsPanel = () => {
                                 }),
                               )
                             }
-                            className="flex-1"
+                            className="w-full"
+                            style={{ accentColor: 'var(--tq-accent)' }}
+                          />
+                        </div>
+
+                        {/* Blur slider */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span
+                              className="text-xs"
+                              style={{ color: 'var(--tq-text-secondary)' }}
+                            >
+                              Blur
+                            </span>
+                            <span
+                              className="text-[10px] font-mono"
+                              style={{ color: 'var(--tq-text-muted)' }}
+                            >
+                              {currentBackground.blur ?? 0}px
+                            </span>
+                          </div>
+                          <input
+                            type="range"
+                            min="0"
+                            max="20"
+                            step="1"
+                            value={currentBackground.blur ?? 0}
+                            onChange={(e) =>
+                              dispatch(
+                                updateBackground({
+                                  ...currentBackground,
+                                  blur: parseInt(e.target.value),
+                                }),
+                              )
+                            }
+                            className="w-full"
                             style={{ accentColor: 'var(--tq-accent)' }}
                           />
                         </div>

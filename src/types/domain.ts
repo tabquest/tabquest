@@ -60,14 +60,13 @@ export interface UINotification {
   body: string;
 }
 
-export type BackgroundType = 'theme' | 'gradient' | 'image';
+export type BackgroundType = 'theme' | 'image';
 
 export interface BackgroundConfig {
   type: BackgroundType;
-  gradient?: string;
-  imageUrl?: string;
-  overlayOpacity?: number;
-  blur?: number;
+  imageUrl?: string; // path like '/backgrounds/city-night.jpg' or base64 data URL
+  overlayOpacity?: number; // 0-0.9, default 0.3
+  blur?: number; // 0-20px, default 0
 }
 
 export interface Settings {
