@@ -14,8 +14,12 @@ import { getThemeTokens, resolveThemeKey, getTheme } from './themes';
  * to know which theme is currently active.
  */
 const ThemeProvider = ({ children }) => {
-  const selectedTheme = useSelector((state) => state.settings.theme) || 'midnight_default';
-  const resolvedKey = useMemo(() => resolveThemeKey(selectedTheme), [selectedTheme]);
+  const selectedTheme =
+    useSelector((state) => state.settings.theme) || 'midnight_default';
+  const resolvedKey = useMemo(
+    () => resolveThemeKey(selectedTheme),
+    [selectedTheme],
+  );
   const tokens = useMemo(() => getThemeTokens(resolvedKey), [resolvedKey]);
   const theme = useMemo(() => getTheme(resolvedKey), [resolvedKey]);
 

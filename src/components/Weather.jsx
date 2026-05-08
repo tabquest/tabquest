@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Cloud, WifiOff, MapPin, AlertCircle } from 'lucide-react';
-import { OPENWEATHER_API_URL, WEATHER_CACHE_DURATION } from '../utils/constants';
+import {
+  OPENWEATHER_API_URL,
+  WEATHER_CACHE_DURATION,
+} from '../utils/constants';
 import { useSelector } from 'react-redux';
 
 const Weather = () => {
@@ -41,7 +44,7 @@ const Weather = () => {
       }
     }
 
-    keysToDelete.forEach(key => localStorage.removeItem(key));
+    keysToDelete.forEach((key) => localStorage.removeItem(key));
   };
 
   const getCache = () => {
@@ -49,7 +52,9 @@ const Weather = () => {
     if (!cacheData) return null;
     try {
       const { data, timestamp } = JSON.parse(cacheData);
-      const isFresh = new Date().getTime() - new Date(timestamp).getTime() < WEATHER_CACHE_DURATION;
+      const isFresh =
+        new Date().getTime() - new Date(timestamp).getTime() <
+        WEATHER_CACHE_DURATION;
       return isFresh ? data : null;
     } catch {
       return null;
@@ -125,7 +130,10 @@ const Weather = () => {
               style={{ color: 'var(--tq-text-secondary)' }}
               data-testid="wifi-off-icon"
             />
-            <span className="text-sm" style={{ color: 'var(--tq-text-secondary)' }}>
+            <span
+              className="text-sm"
+              style={{ color: 'var(--tq-text-secondary)' }}
+            >
               Weather info unavailable
             </span>
           </div>
@@ -135,8 +143,14 @@ const Weather = () => {
       return (
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Cloud className="w-6 h-6" style={{ color: 'var(--tq-text-primary)' }} />
-            <span className="text-sm font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
+            <Cloud
+              className="w-6 h-6"
+              style={{ color: 'var(--tq-text-primary)' }}
+            />
+            <span
+              className="text-sm font-semibold"
+              style={{ color: 'var(--tq-text-primary)' }}
+            >
               {temp}°
             </span>
           </div>
@@ -166,7 +180,10 @@ const Weather = () => {
 
     if (isLoading) {
       return (
-        <div className="text-center" style={{ color: 'var(--tq-text-secondary)' }}>
+        <div
+          className="text-center"
+          style={{ color: 'var(--tq-text-secondary)' }}
+        >
           Loading weather...
         </div>
       );
@@ -179,14 +196,26 @@ const Weather = () => {
     return (
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Cloud className="w-6 h-6" style={{ color: 'var(--tq-text-primary)' }} />
-          <span className="text-lg font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
+          <Cloud
+            className="w-6 h-6"
+            style={{ color: 'var(--tq-text-primary)' }}
+          />
+          <span
+            className="text-lg font-semibold"
+            style={{ color: 'var(--tq-text-primary)' }}
+          >
             {kelvinToCelsius(weatherData?.main?.temp)}°
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5" style={{ color: 'var(--tq-text-primary)' }} />
-          <span className="text-sm font-semibold" style={{ color: 'var(--tq-text-primary)' }}>
+          <MapPin
+            className="w-5 h-5"
+            style={{ color: 'var(--tq-text-primary)' }}
+          />
+          <span
+            className="text-sm font-semibold"
+            style={{ color: 'var(--tq-text-primary)' }}
+          >
             {weatherData?.name}, {weatherData?.sys?.country}
           </span>
         </div>

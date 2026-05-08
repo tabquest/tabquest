@@ -9,7 +9,7 @@ const FolderSidebar = ({
   setShowFolderPopup,
   setEditingFolder,
   setShowDeleteConfirm,
-  bookmarks
+  bookmarks,
 }) => {
   return (
     <motion.div
@@ -33,8 +33,11 @@ const FolderSidebar = ({
           <motion.div
             key={folder.id}
             whileHover={{ x: 2 }}
-            className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'tq-surface-3 tq-text-primary' : 'tq-text-secondary hover:tq-text-primary'
-              }`}
+            className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${
+              selectedFolder === folder.id
+                ? 'tq-surface-3 tq-text-primary'
+                : 'tq-text-secondary hover:tq-text-primary'
+            }`}
           >
             <div
               className="flex-1 flex items-center gap-2 cursor-pointer"
@@ -44,7 +47,11 @@ const FolderSidebar = ({
               <Folder size={16} />
               <span>{folder.title}</span>
               <span className="text-sm tq-text-muted">
-                ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
+                (
+                {folder.isDefault
+                  ? bookmarks.filter((b) => b.starred).length
+                  : folder.count}
+                )
               </span>
             </div>
             {!folder.isDefault && (
@@ -62,7 +69,9 @@ const FolderSidebar = ({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="tq-text-muted hover:tq-danger cursor-pointer"
-                  onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                  onClick={() =>
+                    setShowDeleteConfirm({ type: 'folder', id: folder.id })
+                  }
                   title="Delete Folder"
                 >
                   <Trash2 size={16} />

@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search, Folder, Edit2, Trash2, Star, Heart, List, Grid3X3 } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Folder,
+  Edit2,
+  Trash2,
+  Star,
+  Heart,
+  List,
+  Grid3X3,
+} from 'lucide-react';
 import {
   setIsAddingNew,
   addFolder,
@@ -11,7 +21,7 @@ import {
   updateBookmark,
   deleteBookmark,
   updateFolder,
-  deleteFolder
+  deleteFolder,
 } from '../../utils/redux/bookmarkSlice';
 import { loadFromLocalStorage } from '../../utils/loadFromLocalStorage';
 import PopupModal from './PopupModal';
@@ -22,16 +32,22 @@ const FAVORITES_FOLDER = {
   id: 'favorites',
   title: 'Favorites',
   count: 0,
-  isDefault: true
+  isDefault: true,
 };
 
 const MAX_TAGS = 3;
 
-
 const BookmarkComponent = () => {
   const dispatch = useDispatch();
-  const { folders, bookmarks, isAddingNew } = useSelector(state => state.bookmarks);
-  const [newBookmark, setNewBookmark] = useState({ title: '', url: '', tags: [], folder: '' });
+  const { folders, bookmarks, isAddingNew } = useSelector(
+    (state) => state.bookmarks,
+  );
+  const [newBookmark, setNewBookmark] = useState({
+    title: '',
+    url: '',
+    tags: [],
+    folder: '',
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [showFolderPopup, setShowFolderPopup] = useState(false);
@@ -47,38 +63,41 @@ const BookmarkComponent = () => {
   // Load initial data
   useEffect(() => {
     const { folders: savedFolders, bookmarks } = loadFromLocalStorage();
-    const foldersWithFavorites = [FAVORITES_FOLDER, ...savedFolders.filter(f => f.id !== FAVORITES_FOLDER.id)];
+    const foldersWithFavorites = [
+      FAVORITES_FOLDER,
+      ...savedFolders.filter((f) => f.id !== FAVORITES_FOLDER.id),
+    ];
     dispatch(setFolders(foldersWithFavorites));
     dispatch(setBookmarks(bookmarks));
   }, [dispatch]);
 
-
-
   const handleAddFolder = (values) => {
     if (values.title && values.title.trim()) {
       const trimmedTitle = values.title.trim();
-      const isDuplicate = folders.some(folder => 
-        folder.title.toLowerCase() === trimmedTitle.toLowerCase()
+      const isDuplicate = folders.some(
+        (folder) => folder.title.toLowerCase() === trimmedTitle.toLowerCase(),
       );
-      
+
       if (isDuplicate) {
         setError('A folder with this name already exists!');
         setTimeout(() => setError(''), 3000);
         return;
       }
-      
-      dispatch(addFolder({
-        id: Date.now().toString(),
-        title: trimmedTitle,
-        count: 0
-      }));
+
+      dispatch(
+        addFolder({
+          id: Date.now().toString(),
+          title: trimmedTitle,
+          count: 0,
+        }),
+      );
       setShowFolderPopup(false);
     }
   };
 
   const handleDeleteFolder = (folderId) => {
-    const folderBookmarks = bookmarks.filter(b => b.folder === folderId);
-    folderBookmarks.forEach(bookmark => {
+    const folderBookmarks = bookmarks.filter((b) => b.folder === folderId);
+    folderBookmarks.forEach((bookmark) => {
       dispatch(deleteBookmark(bookmark.id));
     });
     dispatch(deleteFolder(folderId));
@@ -91,16 +110,18 @@ const BookmarkComponent = () => {
   const handleUpdateFolder = (id, newTitle) => {
     if (newTitle.trim()) {
       const trimmedTitle = newTitle.trim();
-      const isDuplicate = folders.some(folder => 
-        folder.id !== id && folder.title.toLowerCase() === trimmedTitle.toLowerCase()
+      const isDuplicate = folders.some(
+        (folder) =>
+          folder.id !== id &&
+          folder.title.toLowerCase() === trimmedTitle.toLowerCase(),
       );
-      
+
       if (isDuplicate) {
         setError('A folder with this name already exists!');
         setTimeout(() => setError(''), 3000);
         return;
       }
-      
+
       dispatch(updateFolder({ id, title: trimmedTitle }));
       setEditingFolder(null);
     }
@@ -109,8 +130,13 @@ const BookmarkComponent = () => {
   const handleUpdateBookmark = (id, updates) => {
     if (updates.title.trim() && updates.url.trim()) {
       const url = updates.url.trim();
-      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
-      dispatch(updateBookmark({ id, updates: { ...updates, url: formattedUrl } }));
+      const formattedUrl =
+        url.startsWith('http://') || url.startsWith('https://')
+          ? url
+          : `https://${url}`;
+      dispatch(
+        updateBookmark({ id, updates: { ...updates, url: formattedUrl } }),
+      );
       setEditingBookmark(null);
     }
   };
@@ -118,11 +144,14 @@ const BookmarkComponent = () => {
   const handleAddBookmark = (bookmark) => {
     if (bookmark.title.trim() && bookmark.url.trim()) {
       const url = bookmark.url.trim();
-      const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+      const formattedUrl =
+        url.startsWith('http://') || url.startsWith('https://')
+          ? url
+          : `https://${url}`;
 
       const tags = bookmark.tags
         .split(', ')
-        .map(tag => tag.trim())
+        .map((tag) => tag.trim())
         .filter(Boolean)
         .slice(0, MAX_TAGS);
 
@@ -134,7 +163,7 @@ const BookmarkComponent = () => {
         folder: selectedFolder,
         dateAdded: Date.now(),
         starred: false,
-        originalFolder: selectedFolder
+        originalFolder: selectedFolder,
       };
       dispatch(addBookmark(newBookmark));
       setShowBookmarkPopup(false);
@@ -148,17 +177,21 @@ const BookmarkComponent = () => {
 
     // Check if the bookmark is already in the favorites folder
     if (!bookmark.starred) {
-      const isAlreadyFavorite = bookmarks.some(b => b.id === bookmark.id && b.starred);
+      const isAlreadyFavorite = bookmarks.some(
+        (b) => b.id === bookmark.id && b.starred,
+      );
       if (isAlreadyFavorite) {
         return; // Do not add duplicate favorite
       }
     }
 
-    dispatch(updateBookmark({
-      id: bookmark.id,
-      updates,
-      addToFavorites: !bookmark.starred
-    }));
+    dispatch(
+      updateBookmark({
+        id: bookmark.id,
+        updates,
+        addToFavorites: !bookmark.starred,
+      }),
+    );
   };
 
   const handleDeleteBookmark = (bookmarkId) => {
@@ -166,15 +199,17 @@ const BookmarkComponent = () => {
     setShowDeleteConfirm(null);
   };
 
-  const filteredBookmarks = bookmarks.filter(bookmark => {
+  const filteredBookmarks = bookmarks.filter((bookmark) => {
     const searchTerms = searchQuery.toLowerCase();
-    const matchesSearch = searchQuery ? (
-      bookmark.title.toLowerCase().includes(searchTerms) ||
-      bookmark.url.toLowerCase().includes(searchTerms) ||
-      bookmark.tags.some(tag => tag.toLowerCase().includes(searchTerms))
-    ) : true;
-    const matchesFolder = selectedFolder ? bookmark.folder === selectedFolder ||
-      (selectedFolder === FAVORITES_FOLDER.id && bookmark.starred) : true;
+    const matchesSearch = searchQuery
+      ? bookmark.title.toLowerCase().includes(searchTerms) ||
+        bookmark.url.toLowerCase().includes(searchTerms) ||
+        bookmark.tags.some((tag) => tag.toLowerCase().includes(searchTerms))
+      : true;
+    const matchesFolder = selectedFolder
+      ? bookmark.folder === selectedFolder ||
+        (selectedFolder === FAVORITES_FOLDER.id && bookmark.starred)
+      : true;
     return matchesSearch && (searchQuery ? true : matchesFolder);
   });
 
@@ -182,9 +217,13 @@ const BookmarkComponent = () => {
     if (!query) return text;
     const parts = text.split(new RegExp(`(${query})`, 'gi'));
     return parts.map((part, i) =>
-      part.toLowerCase() === query.toLowerCase()
-        ? <span key={i} className="tq-warning-bg transition-colors duration-200">{part}</span>
-        : part
+      part.toLowerCase() === query.toLowerCase() ? (
+        <span key={i} className="tq-warning-bg transition-colors duration-200">
+          {part}
+        </span>
+      ) : (
+        part
+      ),
     );
   };
 
@@ -194,17 +233,21 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        style={{ overflowY: 'auto', height: "72vh" }}
+        style={{ overflowY: 'auto', height: '72vh' }}
         className="w-64 border-r tq-border-1 p-4 custom-scrollbar"
       >
         <motion.button
-          whileHover={{ scale: 1.02, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+          whileHover={{
+            scale: 1.02,
+            background: 'rgba(var(--tq-accent-rgb), 0.25)',
+            borderColor: 'rgba(var(--tq-accent-rgb), 0.5)',
+          }}
           whileTap={{ scale: 0.98 }}
           className="w-full mb-4 px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-          style={{ 
+          style={{
             background: 'rgba(var(--tq-accent-rgb), 0.15)',
             borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
           }}
           onClick={() => setShowFolderPopup(true)}
           title="Create New Folder"
@@ -218,20 +261,33 @@ const BookmarkComponent = () => {
             <motion.div
               key={folder.id}
               whileHover={{ x: 2 }}
-              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${selectedFolder === folder.id ? 'tq-surface-3 tq-text-primary' : 'tq-text-secondary hover:tq-text-primary'
-                }`}
+              className={`w-full px-4 py-2 rounded-lg flex items-center justify-between group ${
+                selectedFolder === folder.id
+                  ? 'tq-surface-3 tq-text-primary'
+                  : 'tq-text-secondary hover:tq-text-primary'
+              }`}
             >
               <div
                 className="flex-1 flex items-center gap-2 cursor-pointer"
                 onClick={() => setSelectedFolder(folder.id)}
                 title={`Switch to ${folder.title}`}
               >
-                {folder.id === 'favorites' ? <Heart size={18} /> : <Folder size={16} />}
+                {folder.id === 'favorites' ? (
+                  <Heart size={18} />
+                ) : (
+                  <Folder size={16} />
+                )}
                 <span>
-                  {folder.title.length > 11 ? `${folder.title.slice(0, 11)}..` : folder.title}
+                  {folder.title.length > 11
+                    ? `${folder.title.slice(0, 11)}..`
+                    : folder.title}
                 </span>
                 <span className="text-sm tq-text-muted">
-                  ({folder.isDefault ? bookmarks.filter(b => b.starred).length : folder.count})
+                  (
+                  {folder.isDefault
+                    ? bookmarks.filter((b) => b.starred).length
+                    : folder.count}
+                  )
                 </span>
               </div>
               {!folder.isDefault && (
@@ -249,7 +305,9 @@ const BookmarkComponent = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     className="tq-text-muted hover:tq-danger cursor-pointer"
-                    onClick={() => setShowDeleteConfirm({ type: 'folder', id: folder.id })}
+                    onClick={() =>
+                      setShowDeleteConfirm({ type: 'folder', id: folder.id })
+                    }
                     title="Delete Folder"
                   >
                     <Trash2 size={16} />
@@ -265,7 +323,7 @@ const BookmarkComponent = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{ overflowY: 'auto', height: "72vh" }}
+        style={{ overflowY: 'auto', height: '72vh' }}
         className="flex-1 p-4 custom-scrollbar"
       >
         <AnimatePresence>
@@ -280,10 +338,13 @@ const BookmarkComponent = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        
+
         <div className="relative mb-6 flex items-center gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted" size={18} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted"
+              size={18}
+            />
             <input
               type="text"
               placeholder="Search bookmarks..."
@@ -327,14 +388,18 @@ const BookmarkComponent = () => {
               <motion.button
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                whileHover={{ scale: 1.05, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                whileHover={{
+                  scale: 1.05,
+                  background: 'rgba(var(--tq-accent-rgb), 0.25)',
+                  borderColor: 'rgba(var(--tq-accent-rgb), 0.5)',
+                }}
                 whileTap={{ scale: 0.95 }}
                 className="px-4 py-2 rounded-lg text-white flex items-center gap-2 cursor-pointer transition-all font-bold border backdrop-blur-xl"
-                style={{ 
-                    background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                    borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                style={{
+                  background: 'rgba(var(--tq-accent-rgb), 0.15)',
+                  borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
                 }}
                 onClick={() => setShowBookmarkPopup(true)}
                 title="Add New Bookmark"
@@ -353,13 +418,12 @@ const BookmarkComponent = () => {
         ) : viewMode === 'list' ? (
           <div className="space-y-3">
             <AnimatePresence mode="popLayout">
-              {filteredBookmarks.map(bookmark => (
+              {filteredBookmarks.map((bookmark) => (
                 <motion.div
                   key={bookmark.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-
                   whileHover={{ scale: 1.01, x: 4 }}
                   className="group p-4 tq-gradient-subtle hover:from-white/10 hover:to-white/15 rounded-xl border tq-border-1 transition-all duration-200 cursor-pointer"
                   onClick={() => window.open(bookmark.url, '_blank')}
@@ -375,7 +439,11 @@ const BookmarkComponent = () => {
                           e.stopPropagation();
                           handleStarBookmark(bookmark);
                         }}
-                        title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
+                        title={
+                          bookmark.starred
+                            ? 'Remove from Favorites'
+                            : 'Add to Favorites'
+                        }
                       >
                         {bookmark.starred ? (
                           <Star fill="currentColor" size={18} />
@@ -390,7 +458,7 @@ const BookmarkComponent = () => {
                             bookmark.title.length > 40
                               ? `${bookmark.title.slice(0, 40)}...`
                               : bookmark.title,
-                            searchQuery
+                            searchQuery,
                           )}
                         </h3>
                         <p className="text-sm tq-text-muted mb-2">
@@ -398,12 +466,12 @@ const BookmarkComponent = () => {
                             bookmark.url.length > 50
                               ? `${bookmark.url.slice(0, 50)}...`
                               : bookmark.url,
-                            searchQuery
+                            searchQuery,
                           )}
                         </p>
                         {bookmark.tags.length > 0 && (
                           <div className="flex gap-2 flex-wrap">
-                            {bookmark.tags.map(tag => (
+                            {bookmark.tags.map((tag) => (
                               <span
                                 key={tag}
                                 className="text-xs px-3 py-1 tq-surface-3 rounded-full tq-text-secondary hover:tq-hover-bg transition-colors"
@@ -436,7 +504,10 @@ const BookmarkComponent = () => {
                           className="p-2 tq-text-muted hover:text-white hover:tq-danger-bg rounded-lg transition-colors cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
+                            setShowDeleteConfirm({
+                              type: 'bookmark',
+                              id: bookmark.id,
+                            });
                           }}
                           title="Delete Bookmark"
                         >
@@ -452,7 +523,7 @@ const BookmarkComponent = () => {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <AnimatePresence>
-              {filteredBookmarks.map(bookmark => (
+              {filteredBookmarks.map((bookmark) => (
                 <motion.div
                   key={bookmark.id}
                   initial={{ opacity: 0 }}
@@ -470,7 +541,11 @@ const BookmarkComponent = () => {
                       e.stopPropagation();
                       handleStarBookmark(bookmark);
                     }}
-                    title={bookmark.starred ? "Remove from Favorites" : "Add to Favorites"}
+                    title={
+                      bookmark.starred
+                        ? 'Remove from Favorites'
+                        : 'Add to Favorites'
+                    }
                   >
                     {bookmark.starred ? (
                       <Star fill="currentColor" size={18} />
@@ -498,7 +573,10 @@ const BookmarkComponent = () => {
                       className="p-1.5 bg-black/60 rounded tq-text-secondary hover:tq-danger cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id });
+                        setShowDeleteConfirm({
+                          type: 'bookmark',
+                          id: bookmark.id,
+                        });
                       }}
                       title="Delete Bookmark"
                     >
@@ -513,20 +591,22 @@ const BookmarkComponent = () => {
                           bookmark.title.length > 25
                             ? `${bookmark.title.slice(0, 25)}...`
                             : bookmark.title,
-                          searchQuery
+                          searchQuery,
                         )}
                       </h3>
                       <p className="text-xs tq-text-muted line-clamp-1">
                         {highlightText(
-                          bookmark.url.replace(/^https?:\/\//, '').split('/')[0],
-                          searchQuery
+                          bookmark.url
+                            .replace(/^https?:\/\//, '')
+                            .split('/')[0],
+                          searchQuery,
                         )}
                       </p>
                     </div>
 
                     {bookmark.tags.length > 0 && (
                       <div className="flex justify-center gap-1 mt-2">
-                        {bookmark.tags.slice(0, 2).map(tag => (
+                        {bookmark.tags.slice(0, 2).map((tag) => (
                           <span
                             key={tag}
                             className="text-xs px-2 py-0.5 tq-surface-3 rounded-full tq-text-secondary"
@@ -561,8 +641,8 @@ const BookmarkComponent = () => {
                 name: 'title',
                 label: 'Folder Name',
                 type: 'text',
-                placeholder: 'Enter folder name...'
-              }
+                placeholder: 'Enter folder name...',
+              },
             ]}
           />
         )}
@@ -572,14 +652,16 @@ const BookmarkComponent = () => {
             title="Edit Folder"
             initialValues={{ title: editingFolder.title }}
             onClose={() => setEditingFolder(null)}
-            onSubmit={(values) => handleUpdateFolder(editingFolder.id, values.title)}
+            onSubmit={(values) =>
+              handleUpdateFolder(editingFolder.id, values.title)
+            }
             fields={[
               {
                 name: 'title',
                 label: 'Folder Name',
                 type: 'text',
-                placeholder: 'Enter folder name...'
-              }
+                placeholder: 'Enter folder name...',
+              },
             ]}
           />
         )}
@@ -594,38 +676,47 @@ const BookmarkComponent = () => {
                 name: 'title',
                 label: 'Title',
                 type: 'text',
-                placeholder: 'Enter bookmark title...'
+                placeholder: 'Enter bookmark title...',
               },
               {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
                 placeholder: 'https://example.com',
-                validate: value => {
+                validate: (value) => {
                   if (!value || !value.trim()) return 'URL is required';
-                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  const formatted = value.startsWith('http')
+                    ? value
+                    : `https://${value}`;
                   try {
                     new URL(formatted);
-                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                    if (
+                      !value.includes('.') &&
+                      !value.includes('localhost') &&
+                      !value.includes(':')
+                    ) {
                       return 'Please enter a valid URL';
                     }
                   } catch (e) {
                     return 'Please enter a valid URL';
                   }
-                }
+                },
               },
               {
                 name: 'tags',
                 label: `Tags (${MAX_TAGS})`,
                 type: 'text',
                 placeholder: 'tech, design, development...',
-                validate: value => {
-                  const tags = value.split(',').map(t => t.trim()).filter(Boolean);
+                validate: (value) => {
+                  const tags = value
+                    .split(',')
+                    .map((t) => t.trim())
+                    .filter(Boolean);
                   if (tags.length > MAX_TAGS) {
                     return `Maximum ${MAX_TAGS} tags allowed`;
                   }
-                }
-              }
+                },
+              },
             ]}
           />
         )}
@@ -636,19 +727,19 @@ const BookmarkComponent = () => {
             initialValues={{
               title: editingBookmark.title,
               url: editingBookmark.url,
-              tags: editingBookmark.tags.join(', ')
+              tags: editingBookmark.tags.join(', '),
             }}
             onClose={() => setEditingBookmark(null)}
             onSubmit={(values) => {
               const tags = values.tags
                 .split(',')
-                .map(tag => tag.trim())
+                .map((tag) => tag.trim())
                 .filter(Boolean)
                 .slice(0, MAX_TAGS);
 
               handleUpdateBookmark(editingBookmark.id, {
                 ...values,
-                tags
+                tags,
               });
             }}
             fields={[
@@ -656,38 +747,47 @@ const BookmarkComponent = () => {
                 name: 'title',
                 label: 'Title',
                 type: 'text',
-                placeholder: 'Enter bookmark title...'
+                placeholder: 'Enter bookmark title...',
               },
               {
                 name: 'url',
                 label: 'URL',
                 type: 'text',
                 placeholder: 'https://example.com',
-                validate: value => {
+                validate: (value) => {
                   if (!value || !value.trim()) return 'URL is required';
-                  const formatted = value.startsWith('http') ? value : `https://${value}`;
+                  const formatted = value.startsWith('http')
+                    ? value
+                    : `https://${value}`;
                   try {
                     new URL(formatted);
-                    if (!value.includes('.') && !value.includes('localhost') && !value.includes(':')) {
+                    if (
+                      !value.includes('.') &&
+                      !value.includes('localhost') &&
+                      !value.includes(':')
+                    ) {
                       return 'Please enter a valid URL';
                     }
                   } catch (e) {
                     return 'Please enter a valid URL';
                   }
-                }
+                },
               },
               {
                 name: 'tags',
                 label: `Tags (${MAX_TAGS}) Eg: Tech, Design, WebDev`,
                 type: 'text',
                 placeholder: 'tech, design, development...',
-                validate: value => {
-                  const tags = value.split(',').map(t => t.trim()).filter(Boolean);
+                validate: (value) => {
+                  const tags = value
+                    .split(',')
+                    .map((t) => t.trim())
+                    .filter(Boolean);
                   if (tags.length > MAX_TAGS) {
                     return `Maximum ${MAX_TAGS} tags allowed`;
                   }
-                }
-              }
+                },
+              },
             ]}
           />
         )}

@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Star, Edit2, Trash2, X, Code, StickyNote, Copy, Check, FileType } from 'lucide-react';
 import {
-    addNote,
-    updateNote,
-    deleteNote,
-    toggleStarred,
-    setSelectedNote,
-    setFilter
+  Plus,
+  Search,
+  Star,
+  Edit2,
+  Trash2,
+  X,
+  Code,
+  StickyNote,
+  Copy,
+  Check,
+  FileType,
+} from 'lucide-react';
+import {
+  addNote,
+  updateNote,
+  deleteNote,
+  toggleStarred,
+  setSelectedNote,
+  setFilter,
 } from '../../utils/redux/notesSlice';
 import ValidationModal from './ValidationModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -20,274 +32,294 @@ const MIN_TAGS = 1;
 const MAX_PREVIEW_LENGTH = 33;
 
 const NotesComponent = () => {
-    const dispatch = useDispatch();
-    const notes = useSelector(state => state.notes.items);
+  const dispatch = useDispatch();
+  const notes = useSelector((state) => state.notes.items);
 
-    const filter = useSelector(state => state.notes.filter);
-    const options = [
-        { value: "all", label: "All Notes" },
-        { value: "favorites", label: "Favorites" },
-    ];
+  const filter = useSelector((state) => state.notes.filter);
+  const options = [
+    { value: 'all', label: 'All Notes' },
+    { value: 'favorites', label: 'Favorites' },
+  ];
 
-    const selectedNote = useSelector(state => state.notes.selectedNote);
+  const selectedNote = useSelector((state) => state.notes.selectedNote);
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showValidationModal, setShowValidationModal] = useState(false);
-    const [validationMessage, setValidationMessage] = useState('');
-    const [copied, setCopied] = useState(false);
-    const [formData, setFormData] = useState({
-        heading: '',
-        content: '',
-        tags: '',
-        type: 'note',
-    });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showValidationModal, setShowValidationModal] = useState(false);
+  const [validationMessage, setValidationMessage] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [formData, setFormData] = useState({
+    heading: '',
+    content: '',
+    tags: '',
+    type: 'note',
+  });
 
-    const Highlight = ({ text, searchQuery }) => {
-        if (!searchQuery.trim()) return text;
-        const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
-        return (
-            <>
-                {parts.map((part, index) =>
-                    part.toLowerCase() === searchQuery.toLowerCase() ? (
-                        <span key={index} className="tq-warning-bg rounded px-0.5">{part}</span>
-                    ) : part
-                )}
-            </>
-        );
-    };
+  const Highlight = ({ text, searchQuery }) => {
+    if (!searchQuery.trim()) return text;
+    const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
+    return (
+      <>
+        {parts.map((part, index) =>
+          part.toLowerCase() === searchQuery.toLowerCase() ? (
+            <span key={index} className="tq-warning-bg rounded px-0.5">
+              {part}
+            </span>
+          ) : (
+            part
+          ),
+        )}
+      </>
+    );
+  };
 
-    const handleCopyCode = async (content) => {
-        await navigator.clipboard.writeText(content);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
+  const handleCopyCode = async (content) => {
+    await navigator.clipboard.writeText(content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-    const renderContent = (note) => {
-        if (note.type === 'snippet') {
-            return (
-                <div className="relative bg-black/50 rounded-md p-3 font-mono text-sm">
-                    <div className="absolute top-2 right-2">
-                        <Code size={14} className="tq-text-muted" />
-                    </div>
-                    <pre className="whitespace-pre-wrap overflow-x-auto break-words">
-                        {searchQuery ? (
-                            <Highlight text={note.content} searchQuery={searchQuery} />
-                        ) : (
-                            note.content.length > MAX_PREVIEW_LENGTH
-                                ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
-                                : note.content
-                        )}
-                    </pre>
-                </div>
-            );
-        }
+  const renderContent = (note) => {
+    if (note.type === 'snippet') {
+      return (
+        <div className="relative bg-black/50 rounded-md p-3 font-mono text-sm">
+          <div className="absolute top-2 right-2">
+            <Code size={14} className="tq-text-muted" />
+          </div>
+          <pre className="whitespace-pre-wrap overflow-x-auto break-words">
+            {searchQuery ? (
+              <Highlight text={note.content} searchQuery={searchQuery} />
+            ) : note.content.length > MAX_PREVIEW_LENGTH ? (
+              note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
+            ) : (
+              note.content
+            )}
+          </pre>
+        </div>
+      );
+    }
 
-        if (note.type === 'markdown') {
-            return (
-                <div className="relative bg-black/30 rounded-md p-3">
-                    <div className="absolute top-2 right-2">
-                        <FileType size={14} className="tq-text-muted" />
-                    </div>
-                    <p className="tq-text-muted break-words font-mono text-sm">
-                        {searchQuery ? (
-                            <Highlight text={note.content} searchQuery={searchQuery} />
-                        ) : (
-                            note.content.length > MAX_PREVIEW_LENGTH
-                                ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
-                                : note.content
-                        )}
-                    </p>
-                </div>
-            );
-        }
-
-        return (
-            <p className="tq-text-muted break-words">
-                {searchQuery ? (
-                    <Highlight text={note.content} searchQuery={searchQuery} />
-                ) : (
-                    note.content.length > MAX_PREVIEW_LENGTH
-                        ? note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
-                        : note.content
-                )}
-            </p>
-        );
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(Boolean);
-
-        if (tags.length < MIN_TAGS) {
-            setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
-            setShowValidationModal(true);
-            return;
-        }
-
-        const newNote = {
-            id: isEditing ? selectedNote.id : Date.now().toString(),
-            heading: formData.heading,
-            content: formData.content,
-            tags,
-            timestamp: isEditing ? selectedNote.timestamp : new Date().toISOString(),
-            starred: isEditing ? selectedNote.starred : false,
-            type: formData.type,
-        };
-
-        if (isEditing) {
-            dispatch(updateNote(newNote));
-        } else {
-            dispatch(addNote(newNote));
-        }
-
-        setFormData({ heading: '', content: '', tags: '', type: 'note' });
-        setShowAddModal(false);
-        setIsEditing(false);
-        dispatch(setSelectedNote(null));
-    };
-
-    const handleDelete = () => {
-        if (!selectedNote) return;
-        dispatch(deleteNote(selectedNote.id));
-        handleCloseModals();
-    };
-
-    const handleEditClick = (note) => {
-        dispatch(setSelectedNote(note));
-        setIsEditing(true);
-    };
-
-
-    const filteredNotes = notes
-        .filter(note => {
-            const matchesFilter = filter === 'all' || (filter === 'favorites' && note.starred);
-            const matchesSearch = note.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-            return matchesFilter && matchesSearch;
-        })
-        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
-
-    const formatDate = (timestamp) => {
-        return new Date(timestamp).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
-
-    // handle modal closure
-    const handleCloseModal = () => {
-        setFormData({ heading: '', content: '', tags: '', type: 'note' });
-        setIsEditing(false);
-        setCopied(false);
-        setShowAddModal(false);
-        dispatch(setSelectedNote(null));
-    };
-
-
-
-    const handleAddNote = (formData) => {
-        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(Boolean);
-
-        if (tags.length < MIN_TAGS) {
-            setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
-            setShowValidationModal(true);
-            return;
-        }
-
-        const newNote = {
-            id: Date.now().toString(),
-            heading: formData.heading,
-            content: formData.content,
-            tags,
-            timestamp: new Date().toISOString(),
-            starred: false,
-            type: formData.type,
-        };
-
-        dispatch(addNote(newNote));
-        handleCloseModals();
-    };
-
-    const handleEditNote = (formData) => {
-        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(Boolean);
-
-        if (tags.length < MIN_TAGS) {
-            setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
-            setShowValidationModal(true);
-            return;
-        }
-
-        if (!selectedNote) return;
-
-        const updatedNote = {
-            ...selectedNote,
-            heading: formData.heading,
-            content: formData.content,
-            tags,
-            type: formData.type,
-        };
-
-        dispatch(updateNote(updatedNote));
-        handleCloseModals();
-    };
-
-    const handleCloseModals = () => {
-        setShowAddModal(false);
-        setIsEditing(false);
-        dispatch(setSelectedNote(null));
-        setShowDeleteModal(false);
-        setShowValidationModal(false);
-    };
+    if (note.type === 'markdown') {
+      return (
+        <div className="relative bg-black/30 rounded-md p-3">
+          <div className="absolute top-2 right-2">
+            <FileType size={14} className="tq-text-muted" />
+          </div>
+          <p className="tq-text-muted break-words font-mono text-sm">
+            {searchQuery ? (
+              <Highlight text={note.content} searchQuery={searchQuery} />
+            ) : note.content.length > MAX_PREVIEW_LENGTH ? (
+              note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
+            ) : (
+              note.content
+            )}
+          </p>
+        </div>
+      );
+    }
 
     return (
-        <div className="h-full flex flex-col">
-            {/* Fixed header */}
-            <div className="sticky top-0 z-30 rounded-lg p-4 bg-black/20 border tq-border-1 backdrop-blur-md">
+      <p className="tq-text-muted break-words">
+        {searchQuery ? (
+          <Highlight text={note.content} searchQuery={searchQuery} />
+        ) : note.content.length > MAX_PREVIEW_LENGTH ? (
+          note.content.substring(0, MAX_PREVIEW_LENGTH) + '.........'
+        ) : (
+          note.content
+        )}
+      </p>
+    );
+  };
 
-                <div className="flex items-center gap-4">
-                    <motion.button
-                        whileHover={{ scale: 1.05, background: 'rgba(var(--tq-accent-rgb), 0.25)', borderColor: 'rgba(var(--tq-accent-rgb), 0.5)' }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-white cursor-pointer font-bold border backdrop-blur-xl transition-all"
-                        style={{ 
-                            background: 'rgba(var(--tq-accent-rgb), 0.15)',
-                            borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
-                            boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-                        }}
-                        onClick={() => setShowAddModal(true)}
-                        title="Add Note"
-                    >
-                        <Plus size={18} />
-                        <span>Add Note</span>
-                    </motion.button>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const tags = formData.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
 
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search notes..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
-                        />
-                    </div>
+    if (tags.length < MIN_TAGS) {
+      setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
+      setShowValidationModal(true);
+      return;
+    }
 
-                    <div className="">
-                        <Dropdown
-                            value={filter}
-                            onChange={(e) => dispatch(setFilter(e.target.value))}
-                            options={options}
-                        />
-                    </div>
+    const newNote = {
+      id: isEditing ? selectedNote.id : Date.now().toString(),
+      heading: formData.heading,
+      content: formData.content,
+      tags,
+      timestamp: isEditing ? selectedNote.timestamp : new Date().toISOString(),
+      starred: isEditing ? selectedNote.starred : false,
+      type: formData.type,
+    };
 
-                    {/* <select
+    if (isEditing) {
+      dispatch(updateNote(newNote));
+    } else {
+      dispatch(addNote(newNote));
+    }
+
+    setFormData({ heading: '', content: '', tags: '', type: 'note' });
+    setShowAddModal(false);
+    setIsEditing(false);
+    dispatch(setSelectedNote(null));
+  };
+
+  const handleDelete = () => {
+    if (!selectedNote) return;
+    dispatch(deleteNote(selectedNote.id));
+    handleCloseModals();
+  };
+
+  const handleEditClick = (note) => {
+    dispatch(setSelectedNote(note));
+    setIsEditing(true);
+  };
+
+  const filteredNotes = notes
+    .filter((note) => {
+      const matchesFilter =
+        filter === 'all' || (filter === 'favorites' && note.starred);
+      const matchesSearch =
+        note.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        note.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+      return matchesFilter && matchesSearch;
+    })
+    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
+
+  const formatDate = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // handle modal closure
+  const handleCloseModal = () => {
+    setFormData({ heading: '', content: '', tags: '', type: 'note' });
+    setIsEditing(false);
+    setCopied(false);
+    setShowAddModal(false);
+    dispatch(setSelectedNote(null));
+  };
+
+  const handleAddNote = (formData) => {
+    const tags = formData.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    if (tags.length < MIN_TAGS) {
+      setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
+      setShowValidationModal(true);
+      return;
+    }
+
+    const newNote = {
+      id: Date.now().toString(),
+      heading: formData.heading,
+      content: formData.content,
+      tags,
+      timestamp: new Date().toISOString(),
+      starred: false,
+      type: formData.type,
+    };
+
+    dispatch(addNote(newNote));
+    handleCloseModals();
+  };
+
+  const handleEditNote = (formData) => {
+    const tags = formData.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    if (tags.length < MIN_TAGS) {
+      setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
+      setShowValidationModal(true);
+      return;
+    }
+
+    if (!selectedNote) return;
+
+    const updatedNote = {
+      ...selectedNote,
+      heading: formData.heading,
+      content: formData.content,
+      tags,
+      type: formData.type,
+    };
+
+    dispatch(updateNote(updatedNote));
+    handleCloseModals();
+  };
+
+  const handleCloseModals = () => {
+    setShowAddModal(false);
+    setIsEditing(false);
+    dispatch(setSelectedNote(null));
+    setShowDeleteModal(false);
+    setShowValidationModal(false);
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Fixed header */}
+      <div className="sticky top-0 z-30 rounded-lg p-4 bg-black/20 border tq-border-1 backdrop-blur-md">
+        <div className="flex items-center gap-4">
+          <motion.button
+            whileHover={{
+              scale: 1.05,
+              background: 'rgba(var(--tq-accent-rgb), 0.25)',
+              borderColor: 'rgba(var(--tq-accent-rgb), 0.5)',
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 rounded-lg flex items-center gap-2 text-white cursor-pointer font-bold border backdrop-blur-xl transition-all"
+            style={{
+              background: 'rgba(var(--tq-accent-rgb), 0.15)',
+              borderColor: 'rgba(var(--tq-accent-rgb), 0.3)',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+            }}
+            onClick={() => setShowAddModal(true)}
+            title="Add Note"
+          >
+            <Plus size={18} />
+            <span>Add Note</span>
+          </motion.button>
+
+          <div className="relative flex-1">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 tq-text-muted"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 tq-surface-2 border tq-border-1 rounded-lg tq-text-primary focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent"
+            />
+          </div>
+
+          <div className="">
+            <Dropdown
+              value={filter}
+              onChange={(e) => dispatch(setFilter(e.target.value))}
+              options={options}
+            />
+          </div>
+
+          {/* <select
                         value={filter}
                         onChange={(e) => dispatch(setFilter(e.target.value))}
                         className="tq-surface-3 hover:tq-hover-bg rounded-lg flex items-center gap-2 tq-text-primary px-4 py-2"
@@ -304,152 +336,158 @@ const NotesComponent = () => {
                         <option value="all" className="tq-surface-1 tq-text-primary">All Notes</option>
                         <option value="favorites" className="tq-surface-1 tq-text-primary">Favorites</option>
                     </select> */}
-                </div>
-            </div>
-
-            {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
-                    <AnimatePresence mode="popLayout">
-
-                        {filteredNotes.length === 0 ? (
-                            <motion.div
-                                key="no-notes"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            >
-                                <p>No notes found...</p>
-                            </motion.div>
-                        ) : (
-                            filteredNotes.map(note => (
-                                <motion.div
-                                    key={`note-${note.id}`}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    whileHover={{ scale: 1.02 }}
-                                    className="group tq-surface-2 border tq-border-1 rounded-lg p-4 cursor-pointer"
-                                    onClick={() => dispatch(setSelectedNote(note))}
-                                    title="View Note Details"
-                                >
-                                    {/* Note content */}
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center gap-2">
-                                            {note.type === 'snippet' ? (
-                                                <Code size={16} className="tq-text-muted" />
-                                            ) : (
-                                                <StickyNote size={16} className="tq-text-muted" />
-                                            )}
-                                            <h3 className="font-medium">
-                                                <Highlight
-                                                    text={note.heading.length > 20 ? note.heading.substring(0, 18) + '...' : note.heading}
-                                                    searchQuery={searchQuery}
-                                                />
-                                            </h3>
-                                        </div>
-                                        <motion.button
-                                            whileHover={{ scale: 1.2 }}
-                                            whileTap={{ scale: 0.9 }}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                dispatch(toggleStarred(note.id));
-                                            }}
-                                            className={`${note.starred ? 'tq-warning' : 'tq-text-muted'} cursor-pointer`}
-                                            title={note.starred ? "Remove from Favorites" : "Add to Favorites"}
-                                        >
-                                            <Star
-                                                size={16}
-                                                fill={note.starred ? "currentColor" : "none"}
-                                            />
-                                        </motion.button>
-                                    </div>
-
-                                    <div className="mb-3">
-                                        {renderContent(note)}
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-2 mb-2">
-                                        {note.tags.map(tag => (
-                                            <span
-                                                key={tag}
-                                                className="text-xs px-2 py-0.5 tq-surface-3 rounded"
-                                            >
-                                                <Highlight text={tag} searchQuery={searchQuery} />
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    <p className="text-xs tq-text-muted">{formatDate(note.timestamp)}</p>
-
-                                </motion.div>
-                            ))
-                        )}
-                    </AnimatePresence>
-                </div>
-            </div>
-
-            <AnimatePresence>
-                {showAddModal && (
-                    <PopupModal
-                        key="add-modal"
-                        isOpen={true}
-                        title="Add Note"
-                        onClose={handleCloseModals}
-                        onSubmit={handleAddNote}
-                        minTags={MIN_TAGS}
-                    />
-                )}
-
-                {isEditing && selectedNote && (
-                    <PopupModal
-                        key="edit-modal"
-                        isOpen={true}
-                        title="Edit Note"
-                        onClose={handleCloseModals}
-                        onSubmit={handleEditNote}
-                        initialValues={{
-                            heading: selectedNote.heading,
-                            content: selectedNote.content,
-                            tags: selectedNote.tags.join(', '),
-                            type: selectedNote.type
-                        }}
-                        isEditing={true}
-                        minTags={MIN_TAGS}
-                    />
-                )}
-
-                {selectedNote && !isEditing && (
-                    <ViewNotesModal
-                        key="view-modal"
-                        note={selectedNote}
-                        isOpen={true}
-                        onClose={handleCloseModals}
-                        onEdit={() => handleEditClick(selectedNote)}
-                        onDelete={() => setShowDeleteModal(true)}
-                        formatDate={formatDate}
-                    />
-                )}
-
-                {showDeleteModal && (
-                    <DeleteConfirmModal
-                        key="delete-modal"
-                        type="note"
-                        onConfirm={handleDelete}
-                        onCancel={() => setShowDeleteModal(false)}
-                    />
-                )}
-
-                {showValidationModal && (
-                    <ValidationModal
-                        key="validation-modal"
-                        message={validationMessage}
-                        onClose={() => setShowValidationModal(false)}
-                    />
-                )}
-            </AnimatePresence>
         </div>
-    );
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+          <AnimatePresence mode="popLayout">
+            {filteredNotes.length === 0 ? (
+              <motion.div
+                key="no-notes"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <p>No notes found...</p>
+              </motion.div>
+            ) : (
+              filteredNotes.map((note) => (
+                <motion.div
+                  key={`note-${note.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  className="group tq-surface-2 border tq-border-1 rounded-lg p-4 cursor-pointer"
+                  onClick={() => dispatch(setSelectedNote(note))}
+                  title="View Note Details"
+                >
+                  {/* Note content */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      {note.type === 'snippet' ? (
+                        <Code size={16} className="tq-text-muted" />
+                      ) : (
+                        <StickyNote size={16} className="tq-text-muted" />
+                      )}
+                      <h3 className="font-medium">
+                        <Highlight
+                          text={
+                            note.heading.length > 20
+                              ? note.heading.substring(0, 18) + '...'
+                              : note.heading
+                          }
+                          searchQuery={searchQuery}
+                        />
+                      </h3>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        dispatch(toggleStarred(note.id));
+                      }}
+                      className={`${note.starred ? 'tq-warning' : 'tq-text-muted'} cursor-pointer`}
+                      title={
+                        note.starred
+                          ? 'Remove from Favorites'
+                          : 'Add to Favorites'
+                      }
+                    >
+                      <Star
+                        size={16}
+                        fill={note.starred ? 'currentColor' : 'none'}
+                      />
+                    </motion.button>
+                  </div>
+
+                  <div className="mb-3">{renderContent(note)}</div>
+
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {note.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs px-2 py-0.5 tq-surface-3 rounded"
+                      >
+                        <Highlight text={tag} searchQuery={searchQuery} />
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-xs tq-text-muted">
+                    {formatDate(note.timestamp)}
+                  </p>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showAddModal && (
+          <PopupModal
+            key="add-modal"
+            isOpen={true}
+            title="Add Note"
+            onClose={handleCloseModals}
+            onSubmit={handleAddNote}
+            minTags={MIN_TAGS}
+          />
+        )}
+
+        {isEditing && selectedNote && (
+          <PopupModal
+            key="edit-modal"
+            isOpen={true}
+            title="Edit Note"
+            onClose={handleCloseModals}
+            onSubmit={handleEditNote}
+            initialValues={{
+              heading: selectedNote.heading,
+              content: selectedNote.content,
+              tags: selectedNote.tags.join(', '),
+              type: selectedNote.type,
+            }}
+            isEditing={true}
+            minTags={MIN_TAGS}
+          />
+        )}
+
+        {selectedNote && !isEditing && (
+          <ViewNotesModal
+            key="view-modal"
+            note={selectedNote}
+            isOpen={true}
+            onClose={handleCloseModals}
+            onEdit={() => handleEditClick(selectedNote)}
+            onDelete={() => setShowDeleteModal(true)}
+            formatDate={formatDate}
+          />
+        )}
+
+        {showDeleteModal && (
+          <DeleteConfirmModal
+            key="delete-modal"
+            type="note"
+            onConfirm={handleDelete}
+            onCancel={() => setShowDeleteModal(false)}
+          />
+        )}
+
+        {showValidationModal && (
+          <ValidationModal
+            key="validation-modal"
+            message={validationMessage}
+            onClose={() => setShowValidationModal(false)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
 export default NotesComponent;

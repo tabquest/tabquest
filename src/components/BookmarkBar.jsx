@@ -133,7 +133,9 @@ const BookmarkBar = () => {
                 className="text-xs font-medium transition-colors duration-200 text-center truncate w-full px-1"
                 style={{ color: 'var(--tq-text-secondary)' }}
               >
-                {bookmark.name.length > 8 ? `${bookmark.name.slice(0, 8)}...` : bookmark.name}
+                {bookmark.name.length > 8
+                  ? `${bookmark.name.slice(0, 8)}...`
+                  : bookmark.name}
               </span>
             </motion.a>
           ))}

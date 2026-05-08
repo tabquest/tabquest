@@ -5,22 +5,23 @@ import {
   X,
   PenTool,
   SquareChevronRight,
-} from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import BookmarkComponent from "./BookmarkComponent";
-import TaskComponent from "./TaskComponent";
-import NotesComponent from "./NotesComponent";
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import BookmarkComponent from './BookmarkComponent';
+import TaskComponent from './TaskComponent';
+import NotesComponent from './NotesComponent';
+import ErrorBoundary from './ErrorBoundary';
 
 const tabDetails = {
-  bookmarks: { title: "Bookmarks", icon: <Bookmark size={20} /> },
-  todos: { title: "Task Manager", icon: <ListTodo size={20} /> },
-  notes: { title: "Notes", icon: <Code size={20} /> }
+  bookmarks: { title: 'Bookmarks', icon: <Bookmark size={20} /> },
+  todos: { title: 'Task Manager', icon: <ListTodo size={20} /> },
+  notes: { title: 'Notes', icon: <Code size={20} /> },
 };
 
 const ToolsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("bookmarks");
+  const [activeTab, setActiveTab] = useState('bookmarks');
 
   // Handle escape key to close panel
   useEffect(() => {
@@ -71,9 +72,7 @@ const ToolsPanel = () => {
 
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            className="fixed inset-0 flex items-center justify-center z-50 text-[18px]"
-          >
+          <motion.div className="fixed inset-0 flex items-center justify-center z-50 text-[18px]">
             {/* Backdrop */}
             <motion.div
               className="absolute inset-0 cursor-pointer"
@@ -123,8 +122,12 @@ const ToolsPanel = () => {
                         transition={{ duration: 0.3 }}
                         className="flex items-center gap-2"
                       >
-                        {React.cloneElement(tabDetails[activeTab].icon, { size: 24 })}
-                        <span className="text-xl">{tabDetails[activeTab].title}</span>
+                        {React.cloneElement(tabDetails[activeTab].icon, {
+                          size: 24,
+                        })}
+                        <span className="text-xl">
+                          {tabDetails[activeTab].title}
+                        </span>
                       </motion.div>
                     </AnimatePresence>
                   </h2>
@@ -154,9 +157,21 @@ const ToolsPanel = () => {
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ duration: 0.3 }}
                     >
-                      {activeTab === "bookmarks" && <BookmarkComponent />}
-                      {activeTab === "todos" && <TaskComponent />}
-                      {activeTab === "notes" && <NotesComponent />}
+                      {activeTab === 'bookmarks' && (
+                        <ErrorBoundary componentName="Bookmarks">
+                          <BookmarkComponent />
+                        </ErrorBoundary>
+                      )}
+                      {activeTab === 'todos' && (
+                        <ErrorBoundary componentName="Tasks">
+                          <TaskComponent />
+                        </ErrorBoundary>
+                      )}
+                      {activeTab === 'notes' && (
+                        <ErrorBoundary componentName="Notes">
+                          <NotesComponent />
+                        </ErrorBoundary>
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 </div>
@@ -189,15 +204,24 @@ const ToolsPanel = () => {
 
 const TabButton = ({ icon, isActive, onClick, label }) => (
   <motion.button
-    whileHover={{ scale: 1.05, background: isActive ? 'var(--tq-surface-elevated)' : 'var(--tq-surface-2)' }}
+    whileHover={{
+      scale: 1.05,
+      background: isActive
+        ? 'var(--tq-surface-elevated)'
+        : 'var(--tq-surface-2)',
+    }}
     whileTap={{ scale: 0.95 }}
     onClick={onClick}
     className="flex items-center space-x-2 px-5 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm border border-transparent"
     style={{
       color: isActive ? 'var(--tq-text-primary)' : 'var(--tq-text-muted)',
-      background: isActive ? 'var(--tq-surface-elevated)' : 'var(--tq-surface-1)',
+      background: isActive
+        ? 'var(--tq-surface-elevated)'
+        : 'var(--tq-surface-1)',
       borderColor: isActive ? 'rgba(255,255,255,0.08)' : 'var(--tq-border-1)',
-      boxShadow: isActive ? 'inset 0 4px 12px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1)' : 'none',
+      boxShadow: isActive
+        ? 'inset 0 4px 12px rgba(0,0,0,0.5), 0 0 1px rgba(255,255,255,0.1)'
+        : 'none',
     }}
     title={`Switch to ${label}`}
   >

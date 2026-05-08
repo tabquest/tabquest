@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Weather from './Weather';
+import ErrorBoundary from './ErrorBoundary';
 import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { Search, ChevronDown } from 'lucide-react';
 import { FaGoogle, FaYoutube } from 'react-icons/fa';
-import { BiLogoBing } from "react-icons/bi";
-import { SiDuckduckgo } from "react-icons/si";
+import { BiLogoBing } from 'react-icons/bi';
+import { SiDuckduckgo } from 'react-icons/si';
 
 const SearchBar = ({ onFocusChange }) => {
   const SearchEngineName = useSelector((state) => state.settings.searchEngine);
@@ -51,11 +52,13 @@ const SearchBar = ({ onFocusChange }) => {
 
   const getAlternateOption = () => {
     const alternateIcon =
-      SearchEngineName === 'Google'
-        ? <FaGoogle size={16} />
-        : SearchEngineName === 'DuckDuckGo'
-          ? <SiDuckduckgo size={16} />
-          : <BiLogoBing size={16} />;
+      SearchEngineName === 'Google' ? (
+        <FaGoogle size={16} />
+      ) : SearchEngineName === 'DuckDuckGo' ? (
+        <SiDuckduckgo size={16} />
+      ) : (
+        <BiLogoBing size={16} />
+      );
 
     return searchEngine === 'webSearch'
       ? { icon: <FaYoutube size={16} />, text: 'YouTube', value: 'youtube' }
@@ -93,7 +96,7 @@ const SearchBar = ({ onFocusChange }) => {
           }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
         >
           {/* Subtle inner glow */}
           <div
@@ -109,7 +112,10 @@ const SearchBar = ({ onFocusChange }) => {
               setTimeout(() => setIsTyping(false), 200);
             }}
           >
-            <div className="relative w-full sm:min-w-[185px] sm:w-auto" ref={dropdownRef}>
+            <div
+              className="relative w-full sm:min-w-[185px] sm:w-auto"
+              ref={dropdownRef}
+            >
               <motion.button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -135,7 +141,9 @@ const SearchBar = ({ onFocusChange }) => {
                     <FaYoutube size={18} />
                   )}
                   <span className="text-[16px] font-medium">
-                    {searchEngine === 'webSearch' ? SearchEngineName : 'YouTube'}
+                    {searchEngine === 'webSearch'
+                      ? SearchEngineName
+                      : 'YouTube'}
                   </span>
                 </div>
                 <motion.div
@@ -171,7 +179,9 @@ const SearchBar = ({ onFocusChange }) => {
                       <div className="p-1.5 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
                         {getAlternateOption().icon}
                       </div>
-                      <span className="font-medium">{getAlternateOption().text}</span>
+                      <span className="font-medium">
+                        {getAlternateOption().text}
+                      </span>
                     </motion.button>
                   </motion.div>
                 )}
@@ -209,7 +219,9 @@ const SearchBar = ({ onFocusChange }) => {
           </form>
         </motion.div>
 
-        <Weather />
+        <ErrorBoundary componentName="Weather">
+          <Weather />
+        </ErrorBoundary>
       </div>
     </motion.div>
   );

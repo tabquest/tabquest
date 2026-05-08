@@ -1,0 +1,47 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+
+const Snowflake = ({ id }: { id: number }) => {
+  return (
+    <motion.div
+      initial={{ y: -20, opacity: 0 }}
+      animate={{
+        y: '110vh',
+        opacity: [0, 1, 0],
+        rotate: 360,
+      }}
+      transition={{
+        duration: Math.random() * 10 + 10,
+        repeat: Infinity,
+        ease: 'linear',
+        delay: Math.random() * 10,
+      }}
+      className="fixed tq-text-primary pointer-events-none z-0"
+      style={{
+        left: `${Math.random() * 100}vw`,
+        fontSize: `${Math.random() * 1.5 + 0.5}rem`,
+      }}
+    >
+      ❄
+    </motion.div>
+  );
+};
+
+const ChristmasSnowfall = () => {
+  const [snowflakes, setSnowflakes] = useState<number[]>([]);
+
+  useEffect(() => {
+    const flakes = Array.from({ length: 30 }).map((_, i) => i);
+    setSnowflakes(flakes);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+      {snowflakes.map((id) => (
+        <Snowflake key={id} id={id} />
+      ))}
+    </div>
+  );
+};
+
+export default ChristmasSnowfall;

@@ -8,13 +8,12 @@ const BookmarkList = ({
   setEditingBookmark,
   setShowDeleteConfirm,
   highlightText,
-  searchQuery
+  searchQuery,
 }) => {
-  
   return (
     <div className="space-y-2">
       <AnimatePresence mode="popLayout">
-        {filteredBookmarks.map(bookmark => (
+        {filteredBookmarks.map((bookmark) => (
           <motion.div
             key={bookmark.id}
             initial={{ opacity: 0, y: 10 }}
@@ -28,17 +27,20 @@ const BookmarkList = ({
                 <motion.button
                   whileHover={{ scale: 1.2, rotate: 180 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`cursor-pointer transition-colors duration-200 ${bookmark.starred ? 'tq-yellow' : 'tq-text-muted hover:tq-yellow'
-                    }`}
+                  className={`cursor-pointer transition-colors duration-200 ${
+                    bookmark.starred
+                      ? 'tq-yellow'
+                      : 'tq-text-muted hover:tq-yellow'
+                  }`}
                   onClick={() => handleStarBookmark(bookmark)}
-                  title={bookmark.starred ? "Unstar Bookmark" : "Star Bookmark"}
+                  title={bookmark.starred ? 'Unstar Bookmark' : 'Star Bookmark'}
                 >
                   <Star size={16} />
                 </motion.button>
 
                 <div>
                   <div
-                    onClick={() => window.location.replace(bookmark.url)}
+                    onClick={() => window.open(bookmark.url, '_blank')}
                     className="tq-text-primary font-medium hover:underline cursor-pointer"
                     title="Open Bookmark"
                   >
@@ -49,7 +51,7 @@ const BookmarkList = ({
                   </p>
                   {bookmark.tags.length > 0 && (
                     <div className="flex gap-2 mt-1">
-                      {bookmark.tags.map(tag => (
+                      {bookmark.tags.map((tag) => (
                         <span
                           key={tag}
                           className="text-xs px-2 py-0.5 tq-surface-3 rounded transition-colors duration-200 hover:tq-hover-bg"
@@ -77,7 +79,12 @@ const BookmarkList = ({
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     className="p-1 tq-text-muted hover:tq-danger cursor-pointer"
-                    onClick={() => setShowDeleteConfirm({ type: 'bookmark', id: bookmark.id })}
+                    onClick={() =>
+                      setShowDeleteConfirm({
+                        type: 'bookmark',
+                        id: bookmark.id,
+                      })
+                    }
                     title="Delete Bookmark"
                   >
                     <Trash2 size={16} />
