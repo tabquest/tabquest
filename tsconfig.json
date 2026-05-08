@@ -14,7 +14,8 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "isolatedModules": true,
-    "allowJs": true
+    "allowJs": true,
+    "types": ["jest"]
   },
   "include": ["src", "vite-env.d.ts"]
 }

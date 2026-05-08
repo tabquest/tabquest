@@ -28,6 +28,11 @@ import SimpleTaskModal from './SimpleTaskModal';
 import TaskItem from './TaskItem';
 import type { Folder, Task } from '../../types/domain';
 
+interface DeleteConfirmState {
+  type: string;
+  id: string;
+}
+
 const DEFAULT_FOLDERS: Folder[] = [
   {
     id: 'today',
@@ -43,6 +48,29 @@ const DEFAULT_FOLDERS: Folder[] = [
   },
 ];
 
+const isToday = (date: Date): boolean => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
+};
+
+const calculateFolderCounts = (folders: Folder[], tasks: Task[]): Folder[] =>
+  folders.map((folder) => ({
+    ...folder,
+    count: tasks.filter((task) =>
+      folder.id === 'today'
+        ? task.reminderDateTime &&
+          isToday(new Date(task.reminderDateTime)) &&
+          !task.completed
+        : folder.id === 'archive'
+          ? task.completed
+          : task.folder === folder.id && !task.completed,
+    ).length,
+  }));
+
 const TaskComponent = () => {
   const dispatch = useAppDispatch();
   const { folders, tasks } = useAppSelector((state) => state.tasks);
@@ -51,24 +79,16 @@ const TaskComponent = () => {
   const [showTaskPopup, setShowTaskPopup] = useState(false);
   const [editingFolder, setEditingFolder] = useState<Folder | null>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{
-    type: string;
-    id: string;
-  } | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] =
+    useState<DeleteConfirmState | null>(null);
 
   const currentFolder = folders.find((f) => f.id === selectedFolder);
   const headerTitle = currentFolder ? currentFolder.title : 'Tasks';
 
-  const [newTask, setNewTask] = useState({
-    title: '',
-    reminderDateTime: '',
-    folder: '',
-  });
-  const [searchQuery, setSearchQuery] = useState('');
-
+  // Load initial data
   useEffect(() => {
     const { folders: savedFolders, tasks: savedTasks } = loadFromLocalStorage();
-    const foldersWithDefaults = [
+    const foldersWithDefaults: Folder[] = [
       ...DEFAULT_FOLDERS,
       ...savedFolders.filter(
         (f) => !DEFAULT_FOLDERS.some((df) => df.id === f.id),
@@ -92,20 +112,11 @@ const TaskComponent = () => {
     dispatch(setTasks(savedTasks));
   }, [dispatch]);
 
+  // Save data on changes
   useEffect(() => {
     const nonDefaultFolders = folders.filter((f) => !f.isDefault);
     saveToLocalStorage(nonDefaultFolders, tasks);
   }, [folders, tasks]);
-
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return (
-      date &&
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
-  };
 
   const handleAddFolder = (values: Record<string, string>) => {
     if (values.title && values.title.trim()) {
@@ -121,27 +132,15 @@ const TaskComponent = () => {
     }
   };
 
-  const calculateFolderCounts = (folders: Folder[], tasks: Task[]) => {
-    return folders.map((folder) => ({
-      ...folder,
-      count: tasks.filter((task) =>
-        folder.id === 'today'
-          ? task.reminderDateTime &&
-            isToday(new Date(task.reminderDateTime)) &&
-            !task.completed
-          : folder.id === 'archive'
-            ? task.completed
-            : task.folder === folder.id && !task.completed,
-      ).length,
-    }));
-  };
-
-  const handleAddTask = (task: { title: string; reminderDateTime: string }) => {
-    if (task.title.trim()) {
+  const handleAddTask = (values: {
+    title: string;
+    reminderDateTime: string;
+  }) => {
+    if (values.title.trim()) {
       const newTask: Task = {
         id: Date.now().toString(),
-        title: task.title.trim(),
-        reminderDateTime: task.reminderDateTime,
+        title: values.title.trim(),
+        reminderDateTime: values.reminderDateTime,
         folder: selectedFolder,
         dateAdded: Date.now(),
         completed: false,
@@ -208,10 +207,7 @@ const TaskComponent = () => {
     setEditingTask(null);
   };
 
-  const handleEditFolder = (
-    folderId: string,
-    updates: Record<string, string>,
-  ) => {
+  const handleEditFolder = (folderId: string, updates: { title: string }) => {
     dispatch(
       updateFolder({
         id: folderId,
@@ -284,7 +280,7 @@ const TaskComponent = () => {
           new Date(a.reminderDateTime).getTime() -
           new Date(b.reminderDateTime).getTime()
         );
-      return (b.dateAdded || 0) - (a.dateAdded || 0);
+      return (b.dateAdded ?? 0) - (a.dateAdded ?? 0);
     });
 
   return (
@@ -470,7 +466,8 @@ const TaskComponent = () => {
             }}
             onSubmit={
               editingFolder
-                ? (values) => handleEditFolder(editingFolder.id, values)
+                ? (values) =>
+                    handleEditFolder(editingFolder.id, { title: values.title })
                 : handleAddFolder
             }
             fields={[
@@ -483,7 +480,7 @@ const TaskComponent = () => {
                   !value.trim() ? 'List name is required' : null,
               },
             ]}
-            initialValues={editingFolder || {}}
+            initialValues={editingFolder ? { title: editingFolder.title } : {}}
           />
         )}
 

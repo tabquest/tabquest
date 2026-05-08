@@ -25,10 +25,26 @@ We welcome contributions from the open-source community! Whether you want to fix
    pnpm dev
    ```
 
+### Quality Gate
+
+This project runs a **TypeScript type check** as part of CI. Before pushing, verify your changes pass:
+
+```bash
+pnpm typecheck
+```
+
+You can also run linting:
+
+```bash
+pnpm lint
+pnpm format:check
+```
+
 ### Making Changes
 1. **Create a new branch** for your feature or bugfix: `git checkout -b feature-name`
 2. **Make your changes** and commit them with descriptive messages.
-3. **Push to your fork** and submit a **Pull Request** to the `main` branch.
+3. Run `pnpm typecheck` to ensure no type errors.
+4. **Push to your fork** and submit a **Pull Request** to the `main` branch.
 
 ### Backend Contributions
 Since this is an open-source project, our backend components are also public. The **Weather API** is hosted on Val Town and can be viewed/contributed to here:

@@ -4,8 +4,6 @@ import {
   Plus,
   Search,
   Star,
-  Edit2,
-  Trash2,
   Code,
   StickyNote,
   Copy,

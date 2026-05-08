@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
@@ -35,13 +35,6 @@ const FAVORITES_FOLDER = {
 };
 
 const MAX_TAGS = 3;
-
-interface NewBookmarkState {
-  title: string;
-  url: string;
-  tags: string[];
-  folder: string;
-}
 
 const BookmarkComponent = () => {
   const dispatch = useAppDispatch();

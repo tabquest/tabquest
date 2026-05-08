@@ -143,76 +143,121 @@ const ViewNotesModal = ({
               <div className="tq-glass shadow-2xl p-4 rounded-2xl prose prose-invert prose-sm max-w-none select-text">
                 <ReactMarkdown
                   components={{
-                    h1: ({ children }: { children: React.ReactNode }) => (
-                      <h1 className="tq-text-muted text-xl font-bold mb-2 select-text">
+                    h1: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'h1'>) => (
+                      <h1
+                        className="tq-text-muted text-xl font-bold mb-2 select-text"
+                        {...props}
+                      >
                         {children}
                       </h1>
                     ),
-                    h2: ({ children }: { children: React.ReactNode }) => (
-                      <h2 className="tq-text-muted text-lg font-semibold mb-2 select-text">
+                    h2: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'h2'>) => (
+                      <h2
+                        className="tq-text-muted text-lg font-semibold mb-2 select-text"
+                        {...props}
+                      >
                         {children}
                       </h2>
                     ),
-                    h3: ({ children }: { children: React.ReactNode }) => (
-                      <h3 className="tq-text-muted text-base font-medium mb-1 select-text">
+                    h3: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'h3'>) => (
+                      <h3
+                        className="tq-text-muted text-base font-medium mb-1 select-text"
+                        {...props}
+                      >
                         {children}
                       </h3>
                     ),
-                    p: ({ children }: { children: React.ReactNode }) => (
-                      <p className="tq-text-muted mb-2 select-text">
+                    p: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'p'>) => (
+                      <p className="tq-text-muted mb-2 select-text" {...props}>
                         {children}
                       </p>
                     ),
-                    strong: ({ children }: { children: React.ReactNode }) => (
-                      <strong className="tq-text-muted font-semibold select-text">
+                    strong: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'strong'>) => (
+                      <strong
+                        className="tq-text-muted font-semibold select-text"
+                        {...props}
+                      >
                         {children}
                       </strong>
                     ),
-                    code: ({ children }: { children: React.ReactNode }) => (
-                      <code className="tq-text-muted tq-surface-1 px-1 rounded text-sm select-text">
+                    code: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'code'>) => (
+                      <code
+                        className="tq-text-muted tq-surface-1 px-1 rounded text-sm select-text"
+                        {...props}
+                      >
                         {children}
                       </code>
                     ),
-                    pre: ({ children }: { children: React.ReactNode }) => (
-                      <pre className="tq-surface-1 tq-text-muted p-3 rounded overflow-x-auto select-text">
+                    pre: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'pre'>) => (
+                      <pre
+                        className="tq-surface-1 tq-text-muted p-3 rounded overflow-x-auto select-text"
+                        {...props}
+                      >
                         {children}
                       </pre>
                     ),
-                    blockquote: ({
-                      children,
-                    }: {
-                      children: React.ReactNode;
-                    }) => (
-                      <blockquote className="tq-text-muted border-l-4 tq-border-1 pl-4 italic select-text">
-                        {children}
-                      </blockquote>
+                    blockquote: (
+                      props: React.ComponentPropsWithoutRef<'blockquote'>,
+                    ) => (
+                      <blockquote
+                        className="tq-text-muted border-l-4 tq-border-1 pl-4 italic select-text"
+                        {...props}
+                      />
                     ),
-                    a: ({
-                      children,
-                      href,
-                    }: {
-                      children: React.ReactNode;
-                      href?: string;
-                    }) => (
+                    a: (props: React.ComponentPropsWithoutRef<'a'>) => (
                       <a
-                        href={href}
                         className="tq-accent hover:underline select-text"
-                      >
-                        {children}
-                      </a>
+                        {...props}
+                      />
                     ),
-                    ul: ({ children }: { children: React.ReactNode }) => (
-                      <ul className="tq-text-muted list-disc ml-4 mb-2 select-text">
+                    ul: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'ul'>) => (
+                      <ul
+                        className="tq-text-muted list-disc ml-4 mb-2 select-text"
+                        {...props}
+                      >
                         {children}
                       </ul>
                     ),
-                    ol: ({ children }: { children: React.ReactNode }) => (
-                      <ol className="tq-text-muted list-decimal ml-4 mb-2 select-text">
+                    ol: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'ol'>) => (
+                      <ol
+                        className="tq-text-muted list-decimal ml-4 mb-2 select-text"
+                        {...props}
+                      >
                         {children}
                       </ol>
                     ),
-                    li: ({ children }: { children: React.ReactNode }) => (
-                      <li className="tq-text-muted mb-1 select-text">
+                    li: ({
+                      children,
+                      ...props
+                    }: React.ComponentPropsWithoutRef<'li'>) => (
+                      <li className="tq-text-muted mb-1 select-text" {...props}>
                         {children}
                       </li>
                     ),

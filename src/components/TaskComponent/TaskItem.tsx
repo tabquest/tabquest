@@ -1,5 +1,5 @@
 import { forwardRef, useState } from 'react';
-import { Calendar, Bell, Edit2, Trash2 } from 'lucide-react';
+import { Bell, Edit2, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Task } from '../../types/domain';
 
@@ -101,10 +101,7 @@ const TaskItem = forwardRef<HTMLDivElement, TaskItemProps>(
                               offset="15%"
                               stopColor="rgba(255, 255, 255, 0.95)"
                             />
-                            <stop
-                              offset="50%"
-                              stopColor="rgb(255, 255, 255)"
-                            />
+                            <stop offset="50%" stopColor="rgb(255, 255, 255)" />
                             <stop
                               offset="85%"
                               stopColor="rgba(255, 255, 255, 0.95)"

@@ -5,10 +5,9 @@ import './custom.css';
 
 interface SimpleTaskModalProps {
   onClose: () => void;
-  onSubmit: (values: { title: string; reminderDateTime: string }) => void;
-  initialValues?: { title?: string; reminderDateTime?: string };
+  onSubmit: (values: SimpleTaskValues) => void;
+  initialValues?: Partial<SimpleTaskValues>;
   isEditing?: boolean;
-  selectedFolder?: string;
 }
 
 const SimpleTaskModal = ({
@@ -16,7 +15,6 @@ const SimpleTaskModal = ({
   onSubmit,
   initialValues = {},
   isEditing = false,
-  selectedFolder,
 }: SimpleTaskModalProps) => {
   const [values, setValues] = useState<{
     title: string;
