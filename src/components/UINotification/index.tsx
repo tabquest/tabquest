@@ -1,8 +1,17 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X } from 'lucide-react';
 
-const UINotification = ({ notification, onClose }) => {
+interface Notification {
+  title: string;
+  body: string;
+}
+
+interface UINotificationProps {
+  notification: Notification | null;
+  onClose: () => void;
+}
+
+const UINotification = ({ notification, onClose }: UINotificationProps) => {
   if (!notification) return null;
 
   return (
