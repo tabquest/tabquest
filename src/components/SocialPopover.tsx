@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { CHRISTMAS_MODE } from '../utils/constants';
@@ -35,6 +35,8 @@ const SocialPopover = () => {
   const [copiedText, setCopiedText] = useState('');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [profileImageError, setProfileImageError] = useState(false);
+  const [popoverPos, setPopoverPos] = useState({ top: 0, right: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(
     () =>
@@ -70,8 +72,20 @@ const SocialPopover = () => {
     ? `https://github.com/${githubUsername}.png`
     : null;
 
+  const handleMouseEnter = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPopoverPos({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      });
+    }
+    setIsOpen(true);
+  };
+
   return (
-    <div className="relative inline-block z-[50]">
+    // Wrapper keeps layout flow; z-index here is irrelevant for the fixed popover
+    <div className="relative inline-block">
       {CHRISTMAS_MODE && (
         <motion.div
           initial={{ scale: 0, rotate: 0 }}
@@ -96,7 +110,8 @@ const SocialPopover = () => {
         </motion.div>
       )}
       <button
-        onMouseEnter={() => setIsOpen(true)}
+        ref={buttonRef}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={() => setIsOpen(false)}
         className="flex items-center space-x-3 rounded-xl px-3 py-2.5 text-base transition-all cursor-pointer tq-glass"
         title="View Profile"
@@ -140,7 +155,11 @@ const SocialPopover = () => {
 
       {isOpen && (
         <motion.div
-          className="absolute right-0 pt-1 z-50"
+          // position:fixed escapes all transform/opacity stacking contexts so
+          // this always renders above everything else in the document, both in
+          // dev and in the dist build where Vite may reorder CSS chunks.
+          className="fixed z-[9999]"
+          style={{ top: popoverPos.top, right: popoverPos.right }}
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
           initial={{ opacity: 0, scale: 0.9 }}
@@ -275,7 +294,7 @@ const SocialPopover = () => {
 
           {copiedText && (
             <motion.div
-              className="fixed top-1 right-2 z-50 animate-in fade-in slide-in-from-top-4 duration-300"
+              className="fixed top-1 right-2 z-[9999] animate-in fade-in slide-in-from-top-4 duration-300"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
