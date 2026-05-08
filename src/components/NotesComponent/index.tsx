@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Plus,
-  Search,
-  Star,
-  Code,
-  StickyNote,
-  Copy,
-  Check,
-  FileType,
-} from 'lucide-react';
+import { Plus, Search, Star, Code, StickyNote, FileType } from 'lucide-react';
 import {
   addNote,
   updateNote,
@@ -77,19 +68,6 @@ const NotesComponent = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    heading: '',
-    content: '',
-    tags: '',
-    type: 'note',
-  });
-
-  const handleCopyCode = async (content: string) => {
-    await navigator.clipboard.writeText(content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   const renderContent = (note: Note): React.ReactNode => {
     if (note.type === 'snippet') {
@@ -143,44 +121,6 @@ const NotesComponent = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const tags = formData.tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-
-    if (tags.length < MIN_TAGS) {
-      setValidationMessage(`Please add at least ${MIN_TAGS} tags`);
-      setShowValidationModal(true);
-      return;
-    }
-
-    const newNote: Note = {
-      id: isEditing && selectedNote ? selectedNote.id : Date.now().toString(),
-      heading: formData.heading,
-      content: formData.content,
-      tags,
-      timestamp:
-        isEditing && selectedNote
-          ? selectedNote.timestamp
-          : new Date().toISOString(),
-      starred: isEditing && selectedNote ? selectedNote.starred : false,
-      type: formData.type as Note['type'],
-    };
-
-    if (isEditing) {
-      dispatch(updateNote(newNote));
-    } else {
-      dispatch(addNote(newNote));
-    }
-
-    setFormData({ heading: '', content: '', tags: '', type: 'note' });
-    setShowAddModal(false);
-    setIsEditing(false);
-    dispatch(setSelectedNote(null));
-  };
-
   const handleDelete = () => {
     if (!selectedNote) return;
     dispatch(deleteNote(selectedNote.id));
@@ -217,14 +157,6 @@ const NotesComponent = () => {
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
-
-  const handleCloseModal = () => {
-    setFormData({ heading: '', content: '', tags: '', type: 'note' });
-    setIsEditing(false);
-    setCopied(false);
-    setShowAddModal(false);
-    dispatch(setSelectedNote(null));
   };
 
   const handleAddNote = (formData: FormData) => {

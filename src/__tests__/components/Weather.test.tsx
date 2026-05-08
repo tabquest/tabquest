@@ -3,15 +3,17 @@ import '@testing-library/jest-dom';
 import Weather from '../../components/Weather';
 
 beforeEach(() => {
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({
-      main: { temp: 30 },
-      weather: [{ description: 'clear sky', icon: '01d' }],
-      name: 'Chennai',
-      sys: { country: 'IN' },
-    }),
-  });
+  globalThis.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: async () => ({
+        main: { temp: 30 },
+        weather: [{ description: 'clear sky', icon: '01d' }],
+        name: 'Chennai',
+        sys: { country: 'IN' },
+      }),
+    } as Response),
+  ) as typeof globalThis.fetch;
 });
 
 describe('Weather component', () => {
