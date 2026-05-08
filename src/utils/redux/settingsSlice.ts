@@ -4,6 +4,7 @@ import type {
   Settings,
   SocialProfiles,
   BookmarkLink,
+  BackgroundConfig,
 } from '../../types/domain';
 
 interface SettingsState extends Settings {}
@@ -36,6 +37,8 @@ const defaultSettings: SettingsState = {
   weatherLocation: 'Chennai',
   hideSeconds: false,
   use12Hour: false,
+  background: { type: 'theme' } as BackgroundConfig,
+  focusMode: false,
   socialProfiles: {
     linkedin: 'https://www.linkedin.com/',
     github: 'https://github.com/tabquest',
@@ -118,6 +121,18 @@ const settingsSlice = createSlice({
       state.theme = resolveThemeKey(action.payload || defaultSettings.theme);
       saveToLocalStorage(state);
     },
+    updateBackground(state, action: PayloadAction<BackgroundConfig>) {
+      state.background = action.payload;
+      saveToLocalStorage(state);
+    },
+    setFocusMode(state, action: PayloadAction<boolean>) {
+      state.focusMode = action.payload;
+      saveToLocalStorage(state);
+    },
+    toggleFocusMode(state) {
+      state.focusMode = !state.focusMode;
+      saveToLocalStorage(state);
+    },
   },
 });
 
@@ -127,6 +142,9 @@ export const {
   updateSocialProfiles,
   updateBookmarks,
   updateTheme,
+  updateBackground,
+  setFocusMode,
+  toggleFocusMode,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

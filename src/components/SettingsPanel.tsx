@@ -21,6 +21,10 @@ import {
   Star,
   Tag,
   MousePointer2,
+  Database,
+  Download,
+  Upload,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { RiRedditLine } from 'react-icons/ri';
 import { FaXTwitter, FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa6';
@@ -31,7 +35,18 @@ import {
   updateSocialProfiles,
   updateBookmarks,
   updateTheme,
+  updateBackground,
 } from '../utils/redux/settingsSlice';
+import {
+  setFolders as setBookmarkFolders,
+  setBookmarks,
+} from '../utils/redux/bookmarkSlice';
+import {
+  setFolders as setTaskFolders,
+  setTasks,
+} from '../utils/redux/taskSlice';
+import { setNotes } from '../utils/redux/notesSlice';
+import type { BackgroundConfig, BackgroundType } from '../types/domain';
 import { FEEDBACK_PROMPT_INTERVAL, initialState } from '../utils/constants';
 
 import type { Settings as SettingsType, BookmarkLink } from '../types/domain';
@@ -56,6 +71,48 @@ const SettingsPanel = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [isFeedbackPopup, setIsFeedbackPopup] = useState(false);
+  const [importExportMessage, setImportExportMessage] = useState<string | null>(
+    null,
+  );
+  const fullState = useAppSelector((state) => state);
+  const currentBackground = (settings.background ?? {
+    type: 'theme',
+  }) as BackgroundConfig;
+
+  const GRADIENT_PRESETS = [
+    {
+      name: 'Aurora',
+      value: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+    },
+    {
+      name: 'Ocean',
+      value: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+    },
+    {
+      name: 'Sunset',
+      value: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    },
+    {
+      name: 'Forest',
+      value: 'linear-gradient(135deg, #0a0a0a 0%, #1a2f1a 50%, #0d2b0d 100%)',
+    },
+    {
+      name: 'Ember',
+      value: 'linear-gradient(135deg, #1a0a0a 0%, #2d1b1b 50%, #3d1515 100%)',
+    },
+    {
+      name: 'Cosmic',
+      value: 'linear-gradient(135deg, #0d0d1a 0%, #1a0d33 50%, #0d1a33 100%)',
+    },
+    {
+      name: 'Mint',
+      value: 'linear-gradient(135deg, #0a1a0f 0%, #0d2b1a 50%, #0a2010 100%)',
+    },
+    {
+      name: 'Slate',
+      value: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a2e 100%)',
+    },
+  ];
   const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
   const isHighlightingFeedback = false;
 
@@ -385,6 +442,84 @@ const SettingsPanel = () => {
       ...formState,
       bookmarks: formState.bookmarks.filter((_, i) => i !== index),
     });
+  };
+
+  const handleExport = () => {
+    const backup = {
+      version: APP_VERSION,
+      exportedAt: new Date().toISOString(),
+      data: {
+        settings: fullState.settings,
+        bookmarks: fullState.bookmarks,
+        tasks: fullState.tasks,
+        notes: fullState.notes,
+      },
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tabquest-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target?.result as string);
+        const { data } = parsed;
+        if (
+          !data?.settings ||
+          !data?.bookmarks ||
+          !data?.tasks ||
+          !data?.notes
+        ) {
+          alert('Invalid backup file: missing required data sections.');
+          return;
+        }
+        dispatch(
+          updateUserInfo({
+            userName: data.settings.userName,
+            userRole: data.settings.userRole,
+            userPortfolioUrl: data.settings.userPortfolioUrl,
+          }),
+        );
+        dispatch(updateTheme(data.settings.theme));
+        dispatch(
+          updateSearchPreferences({
+            searchEngine: data.settings.searchEngine,
+            weatherLocation: data.settings.weatherLocation,
+            hideSeconds: data.settings.hideSeconds,
+            use12Hour: data.settings.use12Hour,
+          }),
+        );
+        if (data.settings.socialProfiles)
+          dispatch(updateSocialProfiles(data.settings.socialProfiles));
+        if (data.settings.bookmarks)
+          dispatch(updateBookmarks(data.settings.bookmarks));
+        if (data.bookmarks.folders)
+          dispatch(setBookmarkFolders(data.bookmarks.folders));
+        if (data.bookmarks.bookmarks)
+          dispatch(setBookmarks(data.bookmarks.bookmarks));
+        if (data.tasks.folders) dispatch(setTaskFolders(data.tasks.folders));
+        if (data.tasks.tasks) dispatch(setTasks(data.tasks.tasks));
+        if (data.notes.items) dispatch(setNotes(data.notes.items));
+        setImportExportMessage('Data imported successfully!');
+        setTimeout(() => setImportExportMessage(null), 3000);
+      } catch {
+        alert(
+          'Failed to parse backup file. Make sure it is a valid TabQuest JSON backup.',
+        );
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
@@ -817,6 +952,172 @@ const SettingsPanel = () => {
                     </div>
                   </motion.div>
 
+                  {/* Background Section */}
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.14 }}
+                    className="space-y-4"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <ImageIcon
+                        className="w-3.5 h-3.5 opacity-60"
+                        style={{ color: 'var(--tq-accent)' }}
+                      />
+                      <h3
+                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
+                        style={{ color: 'var(--tq-text-primary)' }}
+                      >
+                        Background
+                      </h3>
+                    </div>
+                    <div className="flex gap-2">
+                      {(['theme', 'gradient', 'image'] as BackgroundType[]).map(
+                        (type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => {
+                              const config: BackgroundConfig =
+                                type === 'gradient'
+                                  ? {
+                                      type: 'gradient',
+                                      gradient: GRADIENT_PRESETS[0].value,
+                                    }
+                                  : type === 'image'
+                                    ? {
+                                        type: 'image',
+                                        imageUrl: '',
+                                        overlayOpacity: 0.4,
+                                        blur: 0,
+                                      }
+                                    : { type: 'theme' };
+                              dispatch(updateBackground(config));
+                            }}
+                            className={`px-3 py-1.5 text-xs rounded-full border transition-all capitalize cursor-pointer ${
+                              currentBackground.type === type
+                                ? 'border-[var(--tq-accent)] text-[var(--tq-accent)]'
+                                : 'border-[var(--tq-border-1)] text-[var(--tq-text-muted)] hover:text-[var(--tq-text-primary)]'
+                            }`}
+                          >
+                            {type}
+                          </button>
+                        ),
+                      )}
+                    </div>
+                    {currentBackground.type === 'gradient' && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {GRADIENT_PRESETS.map((preset) => (
+                          <button
+                            key={preset.name}
+                            type="button"
+                            title={preset.name}
+                            onClick={() =>
+                              dispatch(
+                                updateBackground({
+                                  type: 'gradient',
+                                  gradient: preset.value,
+                                }),
+                              )
+                            }
+                            className={`h-10 rounded-lg border-2 transition-all cursor-pointer ${
+                              currentBackground.gradient === preset.value
+                                ? 'border-[var(--tq-accent)] scale-105'
+                                : 'border-transparent hover:border-white/30'
+                            }`}
+                            style={{ background: preset.value }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    {currentBackground.type === 'image' && (
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          id="bg-image-upload"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            if (file.size > 3 * 1024 * 1024) {
+                              alert('Image must be under 3MB');
+                              return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = (ev) =>
+                              dispatch(
+                                updateBackground({
+                                  type: 'image',
+                                  imageUrl: ev.target?.result as string,
+                                  overlayOpacity: 0.4,
+                                  blur: 0,
+                                }),
+                              );
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                        <label
+                          htmlFor="bg-image-upload"
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-xs transition-all hover:opacity-80"
+                          style={{
+                            borderColor: 'var(--tq-border-1)',
+                            color: 'var(--tq-text-secondary)',
+                          }}
+                        >
+                          <Upload size={14} />
+                          {currentBackground.imageUrl
+                            ? 'Change image'
+                            : 'Choose image (max 3MB)'}
+                        </label>
+                        {currentBackground.imageUrl && (
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-12 h-8 rounded border"
+                              style={{
+                                backgroundImage: `url(${currentBackground.imageUrl})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                borderColor: 'var(--tq-border-1)',
+                              }}
+                            />
+                            <span
+                              className="text-xs"
+                              style={{ color: 'var(--tq-text-muted)' }}
+                            >
+                              Image loaded
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="text-xs w-20"
+                            style={{ color: 'var(--tq-text-secondary)' }}
+                          >
+                            Overlay
+                          </span>
+                          <input
+                            type="range"
+                            min="0"
+                            max="0.9"
+                            step="0.05"
+                            value={currentBackground.overlayOpacity ?? 0.4}
+                            onChange={(e) =>
+                              dispatch(
+                                updateBackground({
+                                  ...currentBackground,
+                                  overlayOpacity: parseFloat(e.target.value),
+                                }),
+                              )
+                            }
+                            className="flex-1"
+                            style={{ accentColor: 'var(--tq-accent)' }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Clock3
@@ -1238,6 +1539,68 @@ const SettingsPanel = () => {
                         Submit Feedback
                       </span>
                     </motion.a>
+
+                    {/* Data Import / Export */}
+                    <div
+                      className="space-y-3 pt-4 border-t"
+                      style={{ borderColor: 'var(--tq-border-1)' }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Database
+                          size={16}
+                          style={{ color: 'var(--tq-accent)' }}
+                        />
+                        <h3
+                          className="text-sm font-semibold"
+                          style={{ color: 'var(--tq-text-primary)' }}
+                        >
+                          Data
+                        </h3>
+                      </div>
+                      <p
+                        className="text-xs"
+                        style={{ color: 'var(--tq-text-muted)' }}
+                      >
+                        Export all your data or restore from a backup.
+                      </p>
+                      {importExportMessage && (
+                        <p
+                          className="text-xs font-medium"
+                          style={{ color: 'var(--tq-accent)' }}
+                        >
+                          {importExportMessage}
+                        </p>
+                      )}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleExport}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer hover:opacity-80"
+                          style={{
+                            borderColor: 'var(--tq-border-1)',
+                            color: 'var(--tq-text-secondary)',
+                          }}
+                        >
+                          <Download size={13} /> Export
+                        </button>
+                        <label
+                          htmlFor="import-file"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer hover:opacity-80"
+                          style={{
+                            borderColor: 'var(--tq-border-1)',
+                            color: 'var(--tq-text-secondary)',
+                          }}
+                        >
+                          <Upload size={13} /> Import
+                        </label>
+                        <input
+                          id="import-file"
+                          type="file"
+                          accept=".json"
+                          className="hidden"
+                          onChange={handleImport}
+                        />
+                      </div>
+                    </div>
 
                     <motion.div
                       initial={{ opacity: 0 }}

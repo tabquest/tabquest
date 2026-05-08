@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
+import { EyeOff } from 'lucide-react';
 import Clock from './components/Clock';
 import SocialPopover from './components/SocialPopover';
 import ProgressBars from './components/ProgressBars';
@@ -10,6 +11,8 @@ import SettingsPanel from './components/SettingsPanel';
 import ToolsPanel from './components/ToolsPanel';
 import ErrorBoundary from './components/ErrorBoundary';
 import UINotification from './components/UINotification';
+import GreetingWidget from './components/GreetingWidget';
+import QuickCapture from './components/QuickCapture';
 
 import { MobileView, VersionChecker } from './features';
 
@@ -17,9 +20,15 @@ import { store, type RootState } from './utils/redux/store';
 import ChromeSearchBar from './components/ChromeSearchBar';
 import { checkDueReminders } from './services/reminderService';
 import { setTasks } from './utils/redux/taskSlice';
+import { toggleFocusMode, setFocusMode } from './utils/redux/settingsSlice';
 import ChristmasSnowfall from './components/ChristmasSnowfall';
 import { CHRISTMAS_MODE } from './utils/constants';
 import ThemeProvider from './utils/ThemeProvider';
+import {
+  handleKeyEvent,
+  registerShortcut,
+  unregisterShortcut,
+} from './utils/keyboard/shortcuts';
 
 interface Notification {
   title: string;
@@ -29,6 +38,8 @@ interface Notification {
 const AppContent = () => {
   const dispatch = useDispatch();
   const { tasks } = useSelector((state: RootState) => state.tasks);
+  const focusMode =
+    useSelector((state: RootState) => state.settings.focusMode) ?? false;
   const [notification, setNotification] = useState<Notification | null>(null);
   const [isSearchActive, setIsSearchActive] = useState<boolean>(false);
 
@@ -51,6 +62,20 @@ const AppContent = () => {
     }
   }, [tasks, dispatch]);
 
+  useEffect(() => {
+    registerShortcut('f', () => dispatch(toggleFocusMode()));
+    registerShortcut('escape', () => {
+      if (focusMode) dispatch(setFocusMode(false));
+    });
+    const listener = (e: KeyboardEvent) => handleKeyEvent(e);
+    window.addEventListener('keydown', listener);
+    return () => {
+      window.removeEventListener('keydown', listener);
+      unregisterShortcut('f');
+      unregisterShortcut('escape');
+    };
+  }, [focusMode, dispatch]);
+
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if (isMobile) {
     return <MobileView />;
@@ -63,6 +88,23 @@ const AppContent = () => {
       <VersionChecker />
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
 
+      {focusMode && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={() => dispatch(toggleFocusMode())}
+          className="fixed top-4 right-4 z-[999] flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full border backdrop-blur-md cursor-pointer transition-all hover:opacity-80"
+          style={{
+            borderColor: 'var(--tq-accent)',
+            color: 'var(--tq-accent)',
+            background: 'rgba(var(--tq-accent-rgb), 0.1)',
+          }}
+          title="Exit Focus Mode (F)"
+        >
+          <EyeOff size={13} /> Focus Mode
+        </motion.button>
+      )}
+
       <ErrorBoundary componentName="Header">
         <div
           className={`flex mt-2 justify-between shrink-0 relative ${isSearchActive ? 'z-10' : 'z-30'}`}
@@ -74,21 +116,25 @@ const AppContent = () => {
           >
             <Clock />
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            <SocialPopover />
-          </motion.div>
+          {!focusMode && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <SocialPopover />
+            </motion.div>
+          )}
         </div>
       </ErrorBoundary>
 
-      <ErrorBoundary componentName="Progress Bars">
-        <div className="w-full px-2 relative z-10">
-          <ProgressBars />
-        </div>
-      </ErrorBoundary>
+      {!focusMode && (
+        <ErrorBoundary componentName="Progress Bars">
+          <div className="w-full px-2 relative z-10">
+            <ProgressBars />
+          </div>
+        </ErrorBoundary>
+      )}
 
       <ErrorBoundary componentName="Search & Bookmarks">
         <motion.div
@@ -128,13 +174,17 @@ const AppContent = () => {
             </motion.div>
           )}
 
+          <div className="text-center mb-2">
+            <GreetingWidget />
+          </div>
+
           <div className="space-y-4">
             {isChrome ? (
               <ChromeSearchBar onFocusChange={setIsSearchActive} />
             ) : (
               <SearchBar onFocusChange={setIsSearchActive} />
             )}
-            <BookmarkBar />
+            {!focusMode && <BookmarkBar />}
           </div>
         </motion.div>
       </ErrorBoundary>
@@ -146,17 +196,22 @@ const AppContent = () => {
         className={`mt-auto shrink-0 relative ${isSearchActive ? 'z-10' : 'z-40'}`}
       />
 
-      <ErrorBoundary componentName="Settings Panel">
-        <SettingsPanel />
-      </ErrorBoundary>
-      <ErrorBoundary componentName="Pro Tools">
-        <ToolsPanel />
-      </ErrorBoundary>
+      {!focusMode && (
+        <ErrorBoundary componentName="Settings Panel">
+          <SettingsPanel />
+        </ErrorBoundary>
+      )}
+      {!focusMode && (
+        <ErrorBoundary componentName="Pro Tools">
+          <ToolsPanel />
+        </ErrorBoundary>
+      )}
 
       <UINotification
         notification={notification}
         onClose={() => setNotification(null)}
       />
+      <QuickCapture />
     </ThemeProvider>
   );
 };

@@ -60,6 +60,16 @@ export interface UINotification {
   body: string;
 }
 
+export type BackgroundType = 'theme' | 'gradient' | 'image';
+
+export interface BackgroundConfig {
+  type: BackgroundType;
+  gradient?: string;
+  imageUrl?: string;
+  overlayOpacity?: number;
+  blur?: number;
+}
+
 export interface Settings {
   userName: string;
   userRole: string;
@@ -71,4 +81,6 @@ export interface Settings {
   use12Hour: boolean;
   socialProfiles: SocialProfiles;
   bookmarks: BookmarkLink[];
+  background?: BackgroundConfig;
+  focusMode?: boolean;
 }
