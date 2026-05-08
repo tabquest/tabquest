@@ -3,18 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2 } from 'lucide-react';
 import { useAppDispatch } from '../../utils/redux/hooks';
 import { addNote } from '../../utils/redux/notesSlice';
-
-const PRINTABLE_KEY_RE = /^.$/;
-
-const isPrintableKey = (e: KeyboardEvent): boolean =>
-  PRINTABLE_KEY_RE.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey;
-
-const isInputFocused = (): boolean => {
-  const el = document.activeElement as HTMLElement | null;
-  if (!el) return false;
-  const tag = el.tagName.toLowerCase();
-  return tag === 'input' || tag === 'textarea' || el.isContentEditable;
-};
+import {
+  registerShortcut,
+  unregisterShortcut,
+} from '../../utils/keyboard/shortcuts';
 
 const getHeading = (text: string): string => {
   const firstLine = text
@@ -59,18 +51,16 @@ const QuickCapture = () => {
     setTimeout(closeOverlay, 800);
   }, [text, dispatch, closeOverlay]);
 
+  // Register Q as the quick capture shortcut via the shared registry
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (isOpen || isInputFocused()) return;
-      if (isPrintableKey(e)) {
-        e.preventDefault();
-        setText(e.key);
+    registerShortcut('q', () => {
+      if (!isOpen) {
+        setText('');
         setIsOpen(true);
         setSaved(false);
       }
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    });
+    return () => unregisterShortcut('q');
   }, [isOpen]);
 
   useEffect(() => {
@@ -118,26 +108,42 @@ const QuickCapture = () => {
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Edit2 size={18} style={{ color: 'var(--tq-accent)' }} />
+                <Edit2 size={16} style={{ color: 'var(--tq-accent)' }} />
                 <span
-                  className="font-medium text-base"
+                  className="font-medium text-sm"
                   style={{ color: 'var(--tq-text-primary)' }}
                 >
                   Quick Capture
                 </span>
               </div>
               <div
-                className="flex items-center gap-2 text-xs"
+                className="flex items-center gap-3 text-[10px]"
                 style={{ color: 'var(--tq-text-muted)' }}
               >
-                <kbd className="px-2 py-0.5 rounded-md font-mono bg-[var(--tq-glass-bg)] border border-[var(--tq-glass-border)]">
-                  Ctrl+Enter
-                </kbd>
-                <span>save</span>
-                <kbd className="px-2 py-0.5 rounded-md font-mono bg-[var(--tq-glass-bg)] border border-[var(--tq-glass-border)]">
-                  Esc
-                </kbd>
-                <span>discard</span>
+                <span className="flex items-center gap-1">
+                  <kbd
+                    className="px-1.5 py-0.5 rounded font-mono text-[9px]"
+                    style={{
+                      background: 'rgba(255,255,255,0.08)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                    }}
+                  >
+                    Ctrl+Enter
+                  </kbd>
+                  save
+                </span>
+                <span className="flex items-center gap-1">
+                  <kbd
+                    className="px-1.5 py-0.5 rounded font-mono text-[9px]"
+                    style={{
+                      background: 'rgba(255,255,255,0.08)',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                    }}
+                  >
+                    Esc
+                  </kbd>
+                  close
+                </span>
               </div>
             </div>
 
@@ -173,5 +179,31 @@ const QuickCapture = () => {
     </AnimatePresence>
   );
 };
+
+export const QuickCaptureHint = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 4 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.8, duration: 0.5 }}
+    className="flex items-center justify-center gap-1.5 mt-2"
+  >
+    <kbd
+      className="px-1.5 py-0.5 text-[10px] rounded font-mono"
+      style={{
+        background: 'rgba(255,255,255,0.06)',
+        border: '1px solid rgba(255,255,255,0.12)',
+        color: 'var(--tq-text-muted)',
+      }}
+    >
+      Q
+    </kbd>
+    <span
+      className="text-[10px]"
+      style={{ color: 'var(--tq-text-muted)', opacity: 0.6 }}
+    >
+      quick capture
+    </span>
+  </motion.div>
+);
 
 export default QuickCapture;

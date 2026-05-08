@@ -12,7 +12,7 @@ import ToolsPanel from './components/ToolsPanel';
 import ErrorBoundary from './components/ErrorBoundary';
 import UINotification from './components/UINotification';
 import GreetingWidget from './components/GreetingWidget';
-import QuickCapture from './components/QuickCapture';
+import QuickCapture, { QuickCaptureHint } from './components/QuickCapture';
 
 import { MobileView, VersionChecker } from './features';
 
@@ -186,6 +186,11 @@ const AppContent = () => {
             )}
             {!focusMode && <BookmarkBar />}
           </div>
+          {!focusMode && (
+            <div className="flex justify-center">
+              <QuickCaptureHint />
+            </div>
+          )}
         </motion.div>
       </ErrorBoundary>
 
