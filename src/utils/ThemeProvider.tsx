@@ -34,6 +34,9 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
     Object.entries(tokens).forEach(([prop, value]) => {
       (root as HTMLElement).style.setProperty(prop, value);
+      // Also set on documentElement so React portals rendered at document.body
+      // can inherit CSS custom properties (portals are outside .tabquest-app)
+      document.documentElement.style.setProperty(prop, value);
     });
 
     (root as HTMLElement).setAttribute('data-theme', resolvedKey);
