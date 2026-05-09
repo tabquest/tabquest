@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useAppSelector } from '../../utils/redux/hooks';
 
 const DEFAULT_USERNAME = 'user_name';
+const MAX_NAME_DISPLAY_LEN = 20;
 
 const getGreeting = (hour: number): string => {
   if (hour >= 5 && hour < 12) return 'Good morning';
@@ -170,10 +171,12 @@ const GreetingWidget = () => {
   const dayOfWeek = now.getDay();
   const greeting = getGreeting(hour);
   const isDefaultName = !userName || userName === DEFAULT_USERNAME;
-  const displayName = isDefaultName ? null : capitalize(userName);
+  const nameTooLong = userName && userName.length > MAX_NAME_DISPLAY_LEN;
+  const displayName =
+    isDefaultName || nameTooLong ? null : capitalize(userName);
   const greetingText = displayName
     ? `${greeting}, ${displayName}.`
-    : `${greeting}.`;
+    : `${greeting}!`;
   const subMessage = getSubMessage(hour, dayOfWeek);
 
   return (
