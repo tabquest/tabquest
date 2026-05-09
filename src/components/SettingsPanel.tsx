@@ -5,26 +5,21 @@ import {
   X,
   Plus,
   Save,
-  RotateCcw,
   Trash2,
   User,
-  Briefcase,
   Globe,
   MapPin,
   Search,
   AlertCircle,
-  Link,
-  Layout,
   Palette,
   Clock3,
-  Share2,
   Star,
-  Tag,
-  MousePointer2,
   Database,
   Download,
   Upload,
   Image as ImageIcon,
+  Sliders,
+  ChevronDown,
 } from 'lucide-react';
 import { RiRedditLine } from 'react-icons/ri';
 import { FaXTwitter, FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa6';
@@ -56,12 +51,56 @@ import { FeedbackForm } from '../features';
 import TabQuestLogo from '../images/TabQuest.png';
 import { THEME_LIST } from '../utils/themes';
 
+type TabId = 'profile' | 'appearance' | 'widgets' | 'data';
+
 interface AlertProps {
   message: string;
 }
 
+// ─── Style constants ──────────────────────────────────────────────────────────
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '8px 12px',
+  borderRadius: '8px',
+  fontSize: '13px',
+  background: 'var(--tq-surface-2)',
+  border: '1px solid var(--tq-border-1)',
+  color: 'var(--tq-text-primary)',
+  outline: 'none',
+};
+
+const sectionHeaderStyle: React.CSSProperties = {
+  fontSize: '10px',
+  fontWeight: 700,
+  letterSpacing: '0.15em',
+  textTransform: 'uppercase' as const,
+  color: 'var(--tq-text-muted)',
+  marginBottom: '8px',
+  marginTop: '16px',
+};
+
+const TABS: { id: TabId; icon: React.ReactNode; label: string }[] = [
+  { id: 'profile', icon: <User size={15} />, label: 'Profile' },
+  { id: 'appearance', icon: <Palette size={15} />, label: 'Theme' },
+  { id: 'widgets', icon: <Sliders size={15} />, label: 'Widgets' },
+  { id: 'data', icon: <Database size={15} />, label: 'Data' },
+];
+
+const WALLPAPERS = [
+  { label: 'City Night', path: '/backgrounds/city-night.jpg' },
+  { label: 'Mountains', path: '/backgrounds/mountains.jpg' },
+  { label: 'Galaxy', path: '/backgrounds/galaxy.jpg' },
+  { label: 'Forest', path: '/backgrounds/forest.jpg' },
+  { label: 'Ocean', path: '/backgrounds/ocean.jpg' },
+  { label: 'Neon City', path: '/backgrounds/neon-city.jpg' },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 const SettingsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>('profile');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dispatch = useAppDispatch();
   const settings = useAppSelector((state) => state.settings);
@@ -80,15 +119,16 @@ const SettingsPanel = () => {
   }) as BackgroundConfig;
 
   const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
-  const isHighlightingFeedback = false;
+
+  const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
+
+  // ─── Effects ────────────────────────────────────────────────────────────────
 
   useEffect(() => {
     const hasSubmitted = localStorage.getItem('tabquest_feedback_submitted');
-
     if (!hasSubmitted) {
       const lastShown = localStorage.getItem('tabquest_feedback_last_shown');
       const now = Date.now();
-
       if (!lastShown || now - parseInt(lastShown) > FEEDBACK_PROMPT_INTERVAL) {
         setShowFeedbackPrompt(true);
         localStorage.setItem('tabquest_feedback_last_shown', now.toString());
@@ -100,19 +140,13 @@ const SettingsPanel = () => {
     }
   }, [isOpen]);
 
-  const handlePromptClick = () => {
-    setIsFeedbackPopup(true);
-  };
-
   useEffect(() => {
     setFormState(settings);
   }, [settings]);
 
   useEffect(() => {
     if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 3000);
+      const timer = setTimeout(() => setError(null), 3000);
       return () => clearTimeout(timer);
     }
   }, [error]);
@@ -126,11 +160,8 @@ const SettingsPanel = () => {
         setIsDropdownOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -139,20 +170,7 @@ const SettingsPanel = () => {
         panelRef.current &&
         !panelRef.current.contains(event.target as Node)
       ) {
-        const hasChanges =
-          formState.userName !== settings.userName ||
-          formState.userRole !== settings.userRole ||
-          formState.userPortfolioUrl !== settings.userPortfolioUrl ||
-          formState.searchEngine !== settings.searchEngine ||
-          formState.weatherLocation !== settings.weatherLocation ||
-          formState.theme !== settings.theme ||
-          formState.hideSeconds !== settings.hideSeconds ||
-          formState.use12Hour !== settings.use12Hour ||
-          JSON.stringify(formState.socialProfiles) !==
-            JSON.stringify(settings.socialProfiles) ||
-          JSON.stringify(formState.bookmarks) !==
-            JSON.stringify(settings.bookmarks);
-
+        const hasChanges = detectChanges();
         if (hasChanges) {
           handleAutoSave();
         } else {
@@ -160,31 +178,15 @@ const SettingsPanel = () => {
         }
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState, settings]);
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen) {
-        const hasChanges =
-          formState.userName !== settings.userName ||
-          formState.userRole !== settings.userRole ||
-          formState.userPortfolioUrl !== settings.userPortfolioUrl ||
-          formState.searchEngine !== settings.searchEngine ||
-          formState.weatherLocation !== settings.weatherLocation ||
-          formState.theme !== settings.theme ||
-          formState.hideSeconds !== settings.hideSeconds ||
-          formState.use12Hour !== settings.use12Hour ||
-          JSON.stringify(formState.socialProfiles) !==
-            JSON.stringify(settings.socialProfiles) ||
-          JSON.stringify(formState.bookmarks) !==
-            JSON.stringify(settings.bookmarks);
-
+        const hasChanges = detectChanges();
         if (hasChanges) {
           handleAutoSave();
         } else {
@@ -192,29 +194,42 @@ const SettingsPanel = () => {
         }
       }
     };
-
     document.addEventListener('keydown', handleEscKey);
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
+    return () => document.removeEventListener('keydown', handleEscKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, formState, settings]);
 
-  const handleClockSettingToggle = (settingName: string) => {
-    const currentValue = formState[settingName as keyof SettingsType];
-    const newValue = !currentValue;
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-    setFormState({
-      ...formState,
-      [settingName]: newValue,
-    });
+  const detectChanges = () =>
+    formState.userName !== settings.userName ||
+    formState.userRole !== settings.userRole ||
+    formState.userPortfolioUrl !== settings.userPortfolioUrl ||
+    formState.searchEngine !== settings.searchEngine ||
+    formState.weatherLocation !== settings.weatherLocation ||
+    formState.theme !== settings.theme ||
+    formState.hideSeconds !== settings.hideSeconds ||
+    formState.use12Hour !== settings.use12Hour ||
+    JSON.stringify(formState.socialProfiles) !==
+      JSON.stringify(settings.socialProfiles) ||
+    JSON.stringify(formState.bookmarks) !== JSON.stringify(settings.bookmarks);
 
-    dispatch(
-      updateSearchPreferences({
-        ...formState,
-        [settingName]: newValue,
-      }),
-    );
+  const isValidUrl = (url: string) => {
+    if (!url) return false;
+    try {
+      const pattern = new RegExp(
+        '^(https?:\\/\\/)' +
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+          '((\\d{1,3}\\.){3}\\d{1,3}))' +
+          "(\\:\\d+)?(\\/[-a-z\\d%_.~+@!$&'()*,;:=]*)*" +
+          '(\\?[;&a-z\\d%_.~+=-]*)?' +
+          "(\\#[-a-z\\d_.~!$&'()*+,;=:@%]*)?$",
+        'i',
+      );
+      return !!pattern.test(url);
+    } catch {
+      return false;
+    }
   };
 
   const Alert = ({ message }: AlertProps) => (
@@ -238,53 +253,38 @@ const SettingsPanel = () => {
     </motion.div>
   );
 
-  const isValidUrl = (url: string) => {
-    if (!url) return false;
-    try {
-      const pattern = new RegExp(
-        '^(https?:\\/\\/)' +
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-          '((\\d{1,3}\\.){3}\\d{1,3}))' +
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+@!$&'()*,;:=]*)*" +
-          '(\\?[;&a-z\\d%_.~+=-]*)?' +
-          "(\\#[-a-z\\d_.~!$&'()*+,;=:@%]*)?$",
-        'i',
-      );
-      return !!pattern.test(url);
-    } catch {
-      return false;
-    }
-  };
+  // ─── Save / Reset ────────────────────────────────────────────────────────────
 
-  const handleAutoSave = () => {
+  const validateAndCollect = () => {
     if (
       !formState.userName.trim() ||
       !formState.userRole.trim() ||
       !formState.weatherLocation.trim()
     ) {
       setError('Please fill in all required fields');
-      return;
+      return false;
     }
-
     for (const bookmark of formState.bookmarks) {
       if (!bookmark.name.trim() || !bookmark.url.trim()) {
         setError('All favourites must have a name and URL');
-        return;
+        return false;
       }
       if (!isValidUrl(bookmark.url)) {
         setError(`Invalid URL format for "${bookmark.name}"`);
-        return;
+        return false;
       }
     }
-
     for (const [platform, url] of Object.entries(formState.socialProfiles)) {
       const urlStr = url as string;
       if (urlStr.trim() && !isValidUrl(urlStr)) {
         setError(`Invalid URL format for ${platform}`);
-        return;
+        return false;
       }
     }
+    return true;
+  };
 
+  const dispatchAllSettings = () => {
     dispatch(
       updateUserInfo({
         userName: formState.userName || settings.userName || '',
@@ -293,7 +293,6 @@ const SettingsPanel = () => {
           formState.userPortfolioUrl || settings.userPortfolioUrl || '',
       }),
     );
-
     dispatch(
       updateSearchPreferences({
         searchEngine: formState.searchEngine || settings.searchEngine,
@@ -306,19 +305,18 @@ const SettingsPanel = () => {
     dispatch(
       updateTheme(formState.theme || settings.theme || initialState.theme),
     );
-
-    if (formState.socialProfiles) {
+    if (formState.socialProfiles)
       dispatch(updateSocialProfiles(formState.socialProfiles));
-    }
+    if (formState.bookmarks) dispatch(updateBookmarks(formState.bookmarks));
+  };
 
-    if (formState.bookmarks) {
-      dispatch(updateBookmarks(formState.bookmarks));
-    }
-
+  const handleAutoSave = () => {
+    if (!validateAndCollect()) return;
+    dispatchAllSettings();
     setIsOpen(false);
   };
 
-  const handleSave = () => {
+  const handleSaveProfile = () => {
     if (!formState.userName.trim()) {
       setError('Username is required');
       return;
@@ -327,11 +325,39 @@ const SettingsPanel = () => {
       setError('User role is required');
       return;
     }
+    for (const [platform, url] of Object.entries(formState.socialProfiles)) {
+      const urlStr = url as string;
+      if (urlStr.trim() && !isValidUrl(urlStr)) {
+        setError(`Invalid URL format for ${platform}`);
+        return;
+      }
+    }
+    dispatch(
+      updateUserInfo({
+        userName: formState.userName,
+        userRole: formState.userRole,
+        userPortfolioUrl: formState.userPortfolioUrl,
+      }),
+    );
+    dispatch(updateSocialProfiles(formState.socialProfiles));
+  };
+
+  const handleSaveWidgets = () => {
     if (!formState.weatherLocation.trim()) {
       setError('Weather location is required');
       return;
     }
+    dispatch(
+      updateSearchPreferences({
+        searchEngine: formState.searchEngine,
+        weatherLocation: formState.weatherLocation,
+        hideSeconds: formState.hideSeconds,
+        use12Hour: formState.use12Hour,
+      }),
+    );
+  };
 
+  const handleSaveBookmarks = () => {
     for (const bookmark of formState.bookmarks) {
       if (!bookmark.name.trim() || !bookmark.url.trim()) {
         setError('All favourites must have a name and URL');
@@ -342,56 +368,13 @@ const SettingsPanel = () => {
         return;
       }
     }
-
-    for (const [platform, url] of Object.entries(formState.socialProfiles)) {
-      const urlStr = url as string;
-      if (urlStr.trim() && !isValidUrl(urlStr)) {
-        setError(`Invalid URL format for ${platform}`);
-        return;
-      }
-    }
-
-    dispatch(
-      updateUserInfo({
-        userName: formState.userName,
-        userRole: formState.userRole,
-        userPortfolioUrl: formState.userPortfolioUrl,
-      }),
-    );
-    dispatch(
-      updateSearchPreferences({
-        searchEngine: formState.searchEngine,
-        weatherLocation: formState.weatherLocation,
-        hideSeconds: formState.hideSeconds,
-        use12Hour: formState.use12Hour,
-      }),
-    );
-    dispatch(updateTheme(formState.theme || initialState.theme));
-    dispatch(updateSocialProfiles(formState.socialProfiles));
     dispatch(updateBookmarks(formState.bookmarks));
-    setIsOpen(false);
   };
 
-  const handleReset = () => {
-    setFormState(initialState);
-    dispatch(
-      updateUserInfo({
-        userName: initialState.userName,
-        userRole: initialState.userRole,
-        userPortfolioUrl: initialState.userPortfolioUrl,
-      }),
-    );
-    dispatch(
-      updateSearchPreferences({
-        searchEngine: initialState.searchEngine,
-        weatherLocation: initialState.weatherLocation,
-        hideSeconds: initialState.hideSeconds,
-        use12Hour: initialState.use12Hour,
-      }),
-    );
-    dispatch(updateTheme(initialState.theme));
-    dispatch(updateSocialProfiles(initialState.socialProfiles));
-    dispatch(updateBookmarks(initialState.bookmarks));
+  const handleClockToggle = (key: 'use12Hour' | 'hideSeconds') => {
+    const newValue = !formState[key];
+    setFormState({ ...formState, [key]: newValue });
+    dispatch(updateSearchPreferences({ ...formState, [key]: newValue }));
   };
 
   const addBookmark = () => {
@@ -409,6 +392,8 @@ const SettingsPanel = () => {
       bookmarks: formState.bookmarks.filter((_, i) => i !== index),
     });
   };
+
+  // ─── Export / Import ─────────────────────────────────────────────────────────
 
   const handleExport = () => {
     const backup = {
@@ -488,16 +473,1111 @@ const SettingsPanel = () => {
     e.target.value = '';
   };
 
-  const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
+  // ─── Tab content renderers ───────────────────────────────────────────────────
 
-  const inputStyle = {
-    background: 'var(--tq-surface-3)',
-    border: '1px solid var(--tq-border-1)',
-    color: 'var(--tq-text-primary)',
+  const renderProfile = () => (
+    <div style={{ padding: '16px 0' }}>
+      {/* Avatar placeholder */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '20px',
+        }}
+      >
+        <div
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            background: 'rgba(var(--tq-accent-rgb), 0.15)',
+            border: '2px solid rgba(var(--tq-accent-rgb), 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <User size={28} style={{ color: 'var(--tq-accent)', opacity: 0.7 }} />
+        </div>
+      </div>
+
+      <p style={sectionHeaderStyle}>Personal Info</p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <input
+          type="text"
+          value={formState.userName}
+          onChange={(e) =>
+            setFormState({ ...formState, userName: e.target.value })
+          }
+          placeholder="Name"
+          style={inputStyle}
+          data-no-theme-transition="true"
+        />
+        <input
+          type="text"
+          value={formState.userRole}
+          onChange={(e) =>
+            setFormState({ ...formState, userRole: e.target.value })
+          }
+          placeholder="Role"
+          style={inputStyle}
+          data-no-theme-transition="true"
+        />
+        <div style={{ position: 'relative' }}>
+          <Globe
+            size={13}
+            style={{
+              position: 'absolute',
+              left: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--tq-text-muted)',
+            }}
+          />
+          <input
+            type="text"
+            value={formState.userPortfolioUrl}
+            onChange={(e) =>
+              setFormState({ ...formState, userPortfolioUrl: e.target.value })
+            }
+            placeholder="Portfolio URL"
+            style={{ ...inputStyle, paddingLeft: '30px' }}
+            data-no-theme-transition="true"
+          />
+        </div>
+      </div>
+
+      <p style={sectionHeaderStyle}>Social Links</p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {(
+          [
+            { key: 'linkedin', Icon: FaLinkedin, placeholder: 'LinkedIn URL' },
+            { key: 'github', Icon: FaGithub, placeholder: 'GitHub URL' },
+            {
+              key: 'twitter',
+              Icon: FaXTwitter,
+              placeholder: 'X (Twitter) URL',
+            },
+            {
+              key: 'instagram',
+              Icon: FaInstagram,
+              placeholder: 'Instagram URL',
+            },
+            { key: 'reddit', Icon: RiRedditLine, placeholder: 'Reddit URL' },
+          ] as const
+        ).map(({ key, Icon, placeholder }) => (
+          <div key={key} style={{ position: 'relative' }}>
+            <Icon
+              size={13}
+              style={{
+                position: 'absolute',
+                left: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--tq-accent)',
+                opacity: 0.7,
+              }}
+            />
+            <input
+              type="url"
+              value={(formState.socialProfiles[key] as string) ?? ''}
+              onChange={(e) =>
+                setFormState({
+                  ...formState,
+                  socialProfiles: {
+                    ...formState.socialProfiles,
+                    [key]: e.target.value,
+                  },
+                })
+              }
+              placeholder={placeholder}
+              style={{ ...inputStyle, paddingLeft: '30px' }}
+              data-no-theme-transition="true"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: '20px' }}>
+        <button
+          onClick={handleSaveProfile}
+          style={{
+            width: '100%',
+            padding: '10px 16px',
+            borderRadius: '10px',
+            fontSize: '13px',
+            fontWeight: 600,
+            background: 'var(--tq-accent)',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+          }}
+        >
+          <Save size={14} />
+          Save Changes
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderAppearance = () => (
+    <div style={{ padding: '16px 0' }}>
+      <p style={{ ...sectionHeaderStyle, marginTop: 0 }}>Theme</p>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: '8px',
+        }}
+      >
+        {THEME_LIST.map((theme) => {
+          const isSelected =
+            (formState.theme || initialState.theme) === theme.key;
+          return (
+            <button
+              key={theme.key}
+              type="button"
+              onClick={() => {
+                setFormState({ ...formState, theme: theme.key });
+                dispatch(updateTheme(theme.key));
+              }}
+              title={`Switch to ${theme.label} theme`}
+              style={{
+                borderRadius: '10px',
+                padding: '8px',
+                cursor: 'pointer',
+                border: isSelected
+                  ? '2px solid var(--tq-accent)'
+                  : '1px solid var(--tq-border-1)',
+                background: isSelected
+                  ? 'var(--tq-surface-elevated)'
+                  : 'var(--tq-surface-3)',
+                boxShadow: isSelected
+                  ? '0 0 12px var(--tq-accent-glow)'
+                  : 'none',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <div
+                style={{
+                  height: '32px',
+                  borderRadius: '6px',
+                  background: `linear-gradient(to right, ${theme.preview[0]}, ${theme.preview[1]}, ${theme.preview[2]})`,
+                }}
+              />
+              <p
+                style={{
+                  marginTop: '4px',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  color: 'var(--tq-text-secondary)',
+                  textAlign: 'center',
+                }}
+              >
+                {theme.label}
+                {theme.isDefault && (
+                  <span
+                    style={{
+                      marginLeft: '3px',
+                      fontSize: '7px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      background: 'rgba(var(--tq-accent-rgb),.15)',
+                      color: 'var(--tq-accent)',
+                      border: '1px solid rgba(var(--tq-accent-rgb),.3)',
+                      borderRadius: '4px',
+                      padding: '1px 3px',
+                    }}
+                  >
+                    Default
+                  </span>
+                )}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+
+      <p style={sectionHeaderStyle}>Background</p>
+
+      {/* Theme vs Image toggle */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+        {(['theme', 'image'] as BackgroundType[]).map((type) => (
+          <button
+            key={type}
+            type="button"
+            onClick={() => {
+              dispatch(
+                updateBackground(
+                  type === 'image'
+                    ? {
+                        type: 'image',
+                        imageUrl: '/backgrounds/city-night.jpg',
+                        overlayOpacity: 0.3,
+                        blur: 0,
+                      }
+                    : { type: 'theme' },
+                ),
+              );
+            }}
+            style={{
+              padding: '5px 14px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              textTransform: 'capitalize',
+              background: 'transparent',
+              border:
+                currentBackground.type === type
+                  ? '1px solid var(--tq-accent)'
+                  : '1px solid var(--tq-border-1)',
+              color:
+                currentBackground.type === type
+                  ? 'var(--tq-accent)'
+                  : 'var(--tq-text-muted)',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {type === 'theme' ? 'Default' : 'Custom'}
+          </button>
+        ))}
+      </div>
+
+      {currentBackground.type === 'image' && (
+        <div>
+          <p
+            style={{
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: 'var(--tq-text-muted)',
+              opacity: 0.6,
+              marginBottom: '8px',
+            }}
+          >
+            Built-in wallpapers
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '8px',
+              marginBottom: '12px',
+            }}
+          >
+            {WALLPAPERS.map((bg) => (
+              <button
+                key={bg.path}
+                type="button"
+                title={bg.label}
+                onClick={() =>
+                  dispatch(
+                    updateBackground({
+                      ...currentBackground,
+                      type: 'image',
+                      imageUrl: bg.path,
+                    }),
+                  )
+                }
+                style={{
+                  position: 'relative',
+                  height: '52px',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  backgroundImage: `url(${bg.path})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  border:
+                    currentBackground.imageUrl === bg.path
+                      ? '2px solid var(--tq-accent)'
+                      : '2px solid transparent',
+                  transform:
+                    currentBackground.imageUrl === bg.path
+                      ? 'scale(1.03)'
+                      : 'scale(1)',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {currentBackground.imageUrl === bg.path && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'var(--tq-accent)',
+                      opacity: 0.18,
+                    }}
+                  />
+                )}
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: '2px',
+                    left: 0,
+                    right: 0,
+                    textAlign: 'center',
+                    fontSize: '8px',
+                    color: 'rgba(255,255,255,0.75)',
+                    fontWeight: 500,
+                  }}
+                >
+                  {bg.label}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <p
+            style={{
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: 'var(--tq-text-muted)',
+              opacity: 0.6,
+              marginBottom: '8px',
+            }}
+          >
+            Or upload your own
+          </p>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            id="bg-image-upload"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              if (file.size > 3 * 1024 * 1024) {
+                alert('Image must be under 3MB');
+                return;
+              }
+              const reader = new FileReader();
+              reader.onload = (ev) =>
+                dispatch(
+                  updateBackground({
+                    type: 'image',
+                    imageUrl: ev.target?.result as string,
+                    overlayOpacity: currentBackground.overlayOpacity ?? 0.3,
+                    blur: currentBackground.blur ?? 0,
+                  }),
+                );
+              reader.readAsDataURL(file);
+            }}
+          />
+          <label
+            htmlFor="bg-image-upload"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '7px 12px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              border: '1px solid var(--tq-border-1)',
+              color: 'var(--tq-text-secondary)',
+              marginBottom: '16px',
+              transition: 'opacity 0.15s ease',
+            }}
+          >
+            <Upload size={13} />
+            {currentBackground.imageUrl &&
+            !currentBackground.imageUrl.startsWith('/backgrounds/')
+              ? 'Change custom image'
+              : 'Upload custom image (max 3MB)'}
+          </label>
+
+          {/* Overlay slider */}
+          <div style={{ marginBottom: '12px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '4px',
+              }}
+            >
+              <span
+                style={{ fontSize: '12px', color: 'var(--tq-text-secondary)' }}
+              >
+                <ImageIcon
+                  size={12}
+                  style={{
+                    display: 'inline',
+                    marginRight: '4px',
+                    verticalAlign: 'middle',
+                  }}
+                />
+                Overlay
+              </span>
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontFamily: 'monospace',
+                  color: 'var(--tq-text-muted)',
+                }}
+              >
+                {Math.round((currentBackground.overlayOpacity ?? 0.3) * 100)}%
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="0.85"
+              step="0.05"
+              value={currentBackground.overlayOpacity ?? 0.3}
+              onChange={(e) =>
+                dispatch(
+                  updateBackground({
+                    ...currentBackground,
+                    overlayOpacity: parseFloat(e.target.value),
+                  }),
+                )
+              }
+              style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
+            />
+          </div>
+
+          {/* Blur slider */}
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '4px',
+              }}
+            >
+              <span
+                style={{ fontSize: '12px', color: 'var(--tq-text-secondary)' }}
+              >
+                Blur
+              </span>
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontFamily: 'monospace',
+                  color: 'var(--tq-text-muted)',
+                }}
+              >
+                {currentBackground.blur ?? 0}px
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              value={currentBackground.blur ?? 0}
+              onChange={(e) =>
+                dispatch(
+                  updateBackground({
+                    ...currentBackground,
+                    blur: parseInt(e.target.value),
+                  }),
+                )
+              }
+              style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderWidgets = () => (
+    <div style={{ padding: '16px 0' }}>
+      {!isChrome && (
+        <>
+          <p style={{ ...sectionHeaderStyle, marginTop: 0 }}>Search</p>
+          <div
+            ref={dropdownRef}
+            style={{ position: 'relative', marginBottom: '12px' }}
+          >
+            <Search
+              size={13}
+              style={{
+                position: 'absolute',
+                left: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--tq-text-muted)',
+                zIndex: 1,
+              }}
+            />
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              title="Select Search Engine"
+              style={{
+                ...inputStyle,
+                paddingLeft: '30px',
+                paddingRight: '32px',
+                textAlign: 'left',
+                cursor: 'pointer',
+                display: 'block',
+              }}
+            >
+              {formState.searchEngine || 'Select Search Engine'}
+            </button>
+            <ChevronDown
+              size={14}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: `translateY(-50%) rotate(${isDropdownOpen ? '180deg' : '0deg'})`,
+                color: 'var(--tq-text-muted)',
+                transition: 'transform 0.2s ease',
+                pointerEvents: 'none',
+              }}
+            />
+            {isDropdownOpen && (
+              <ul
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  left: 0,
+                  right: 0,
+                  borderRadius: '10px',
+                  border: '1px solid var(--tq-border-1)',
+                  backdropFilter: 'blur(40px)',
+                  WebkitBackdropFilter: 'blur(40px)',
+                  background: 'var(--tq-glass-bg)',
+                  zIndex: 100,
+                  overflow: 'hidden',
+                  listStyle: 'none',
+                  margin: 0,
+                  padding: 0,
+                  boxShadow: '0 16px 40px rgba(0,0,0,0.4)',
+                }}
+              >
+                {['Google', 'Bing', 'DuckDuckGo'].map((engine) => (
+                  <li
+                    key={engine}
+                    onClick={() => {
+                      setFormState({ ...formState, searchEngine: engine });
+                      setIsDropdownOpen(false);
+                    }}
+                    title={`Select ${engine}`}
+                    style={{
+                      padding: '10px 14px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      color: 'var(--tq-text-primary)',
+                      borderBottom: '1px solid rgba(255,255,255,0.05)',
+                      transition: 'all 0.12s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--tq-hover-bg)';
+                      e.currentTarget.style.color = 'var(--tq-accent)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'var(--tq-text-primary)';
+                    }}
+                  >
+                    {engine}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </>
+      )}
+
+      <p style={{ ...sectionHeaderStyle, marginTop: isChrome ? 0 : undefined }}>
+        <MapPin
+          size={11}
+          style={{
+            display: 'inline',
+            marginRight: '4px',
+            verticalAlign: 'middle',
+          }}
+        />
+        Weather
+      </p>
+      <input
+        type="text"
+        value={formState.weatherLocation}
+        onChange={(e) =>
+          setFormState({ ...formState, weatherLocation: e.target.value })
+        }
+        placeholder="City name (e.g. London)"
+        style={{ ...inputStyle, marginBottom: '12px' }}
+        data-no-theme-transition="true"
+      />
+
+      <p style={sectionHeaderStyle}>
+        <Clock3
+          size={11}
+          style={{
+            display: 'inline',
+            marginRight: '4px',
+            verticalAlign: 'middle',
+          }}
+        />
+        Clock
+      </p>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          marginBottom: '20px',
+        }}
+      >
+        {(
+          [
+            { key: 'use12Hour', label: '12-hour format' },
+            { key: 'hideSeconds', label: 'Hide seconds' },
+          ] as const
+        ).map(({ key, label }) => (
+          <div
+            key={key}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px 12px',
+              borderRadius: '8px',
+              background: 'var(--tq-surface-2)',
+              border: '1px solid var(--tq-border-1)',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '13px',
+                color: 'var(--tq-text-primary)',
+                fontWeight: 500,
+              }}
+            >
+              {label}
+            </span>
+            <button
+              onClick={() => handleClockToggle(key)}
+              title={`Toggle ${label}`}
+              style={{
+                position: 'relative',
+                width: '40px',
+                height: '22px',
+                borderRadius: '11px',
+                border: 'none',
+                cursor: 'pointer',
+                backgroundColor: formState[key]
+                  ? 'rgba(var(--tq-accent-rgb), 0.6)'
+                  : 'var(--tq-surface-elevated)',
+                transition: 'background-color 0.2s ease',
+                flexShrink: 0,
+              }}
+            >
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: formState[key] ? '20px' : '2px',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  transition: 'left 0.2s ease',
+                }}
+              />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={handleSaveWidgets}
+        style={{
+          width: '100%',
+          padding: '10px 16px',
+          borderRadius: '10px',
+          fontSize: '13px',
+          fontWeight: 600,
+          background: 'var(--tq-accent)',
+          border: 'none',
+          color: '#fff',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '6px',
+        }}
+      >
+        <Save size={14} />
+        Save
+      </button>
+    </div>
+  );
+
+  const renderData = () => (
+    <div style={{ padding: '16px 0' }}>
+      <p style={{ ...sectionHeaderStyle, marginTop: 0 }}>
+        <Star
+          size={11}
+          style={{
+            display: 'inline',
+            marginRight: '4px',
+            verticalAlign: 'middle',
+          }}
+        />
+        Bookmark Bar
+        <span style={{ opacity: 0.5, marginLeft: '4px', fontWeight: 400 }}>
+          ({formState.bookmarks.length}/8)
+        </span>
+      </p>
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+          marginBottom: '10px',
+        }}
+      >
+        {formState.bookmarks.map((bookmark: BookmarkLink, index: number) => (
+          <div
+            key={index}
+            style={{
+              padding: '10px 12px',
+              borderRadius: '8px',
+              background: 'var(--tq-surface-2)',
+              border: '1px solid var(--tq-border-1)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <input
+                type="text"
+                value={bookmark.name}
+                onChange={(e) => {
+                  const newBookmarks = [...formState.bookmarks];
+                  newBookmarks[index] = { ...bookmark, name: e.target.value };
+                  setFormState({ ...formState, bookmarks: newBookmarks });
+                }}
+                placeholder="Site Name"
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  borderBottom: '1px solid rgba(255,255,255,0.1)',
+                  outline: 'none',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: 'var(--tq-text-primary)',
+                  padding: '2px 0',
+                }}
+                data-no-theme-transition="true"
+              />
+              <button
+                onClick={() => removeBookmark(index)}
+                title="Remove bookmark"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--tq-text-muted)',
+                  padding: '2px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  opacity: 0.6,
+                  transition: 'opacity 0.15s ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.6')}
+              >
+                <Trash2 size={13} />
+              </button>
+            </div>
+            <input
+              type="url"
+              value={bookmark.url}
+              onChange={(e) => {
+                const newBookmarks = [...formState.bookmarks];
+                newBookmarks[index] = { ...bookmark, url: e.target.value };
+                setFormState({ ...formState, bookmarks: newBookmarks });
+              }}
+              placeholder="https://..."
+              style={{
+                background: 'transparent',
+                border: 'none',
+                borderBottom: '1px solid rgba(255,255,255,0.07)',
+                outline: 'none',
+                fontSize: '11px',
+                color: 'var(--tq-text-secondary)',
+                width: '100%',
+                padding: '2px 0',
+              }}
+              data-no-theme-transition="true"
+            />
+          </div>
+        ))}
+
+        {formState.bookmarks.length === 0 && (
+          <div
+            style={{
+              padding: '24px',
+              borderRadius: '10px',
+              border: '1px dashed var(--tq-border-1)',
+              textAlign: 'center',
+              opacity: 0.4,
+            }}
+          >
+            <Star size={24} style={{ margin: '0 auto 6px', opacity: 0.3 }} />
+            <p
+              style={{
+                fontSize: '11px',
+                color: 'var(--tq-text-muted)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              No bookmarks yet
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+        <button
+          onClick={addBookmark}
+          disabled={formState.bookmarks.length >= 8}
+          title="Add bookmark"
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: 600,
+            background: 'transparent',
+            border: '1px solid var(--tq-border-1)',
+            color: 'var(--tq-text-secondary)',
+            cursor: formState.bookmarks.length >= 8 ? 'not-allowed' : 'pointer',
+            opacity: formState.bookmarks.length >= 8 ? 0.4 : 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+            transition: 'all 0.15s ease',
+          }}
+        >
+          <Plus size={13} />
+          Add link
+        </button>
+        <button
+          onClick={handleSaveBookmarks}
+          title="Save bookmarks"
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: 600,
+            background: 'var(--tq-accent)',
+            border: 'none',
+            color: '#fff',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+          }}
+        >
+          <Save size={13} />
+          Save
+        </button>
+      </div>
+
+      <p style={sectionHeaderStyle}>Data</p>
+      <p
+        style={{
+          fontSize: '12px',
+          color: 'var(--tq-text-muted)',
+          marginBottom: '10px',
+        }}
+      >
+        Export all your data or restore from a backup.
+      </p>
+      {importExportMessage && (
+        <p
+          style={{
+            fontSize: '12px',
+            fontWeight: 600,
+            color: 'var(--tq-accent)',
+            marginBottom: '8px',
+          }}
+        >
+          {importExportMessage}
+        </p>
+      )}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
+        <button
+          onClick={handleExport}
+          title="Export data"
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: 500,
+            background: 'transparent',
+            border: '1px solid var(--tq-border-1)',
+            color: 'var(--tq-text-secondary)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+          }}
+        >
+          <Download size={13} />
+          Export JSON
+        </button>
+        <label
+          htmlFor="import-file"
+          title="Import data"
+          style={{
+            flex: 1,
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: 500,
+            background: 'transparent',
+            border: '1px solid var(--tq-border-1)',
+            color: 'var(--tq-text-secondary)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px',
+          }}
+        >
+          <Upload size={13} />
+          Import JSON
+        </label>
+        <input
+          id="import-file"
+          type="file"
+          accept=".json"
+          className="hidden"
+          onChange={handleImport}
+        />
+      </div>
+
+      <p style={sectionHeaderStyle}>About</p>
+      <div
+        style={{
+          padding: '14px',
+          borderRadius: '10px',
+          background: 'var(--tq-surface-2)',
+          border: '1px solid var(--tq-border-1)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img
+            src={TabQuestLogo}
+            alt="TabQuest"
+            style={{ width: '18px', height: '18px', objectFit: 'contain' }}
+          />
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 700,
+              color: 'var(--tq-text-primary)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
+            }}
+          >
+            TabQuest
+          </span>
+          <span
+            style={{
+              fontSize: '11px',
+              color: 'var(--tq-text-muted)',
+              fontWeight: 500,
+            }}
+          >
+            v{APP_VERSION}
+          </span>
+        </div>
+
+        <motion.a
+          href="https://github.com/tabquest/tabquest"
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ y: -1 }}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '7px 12px',
+            borderRadius: '8px',
+            background: 'rgba(251,191,36,0.07)',
+            border: '1px solid rgba(251,191,36,0.2)',
+            textDecoration: 'none',
+            fontSize: '11px',
+            fontWeight: 700,
+            color: 'rgba(253,230,138,0.85)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+          }}
+        >
+          <Star size={13} className="fill-amber-400 text-amber-500" />
+          Star on GitHub
+          <FaGithub size={12} style={{ opacity: 0.5, marginLeft: 'auto' }} />
+        </motion.a>
+
+        <button
+          onClick={() => setIsFeedbackPopup(true)}
+          id="feedback-btn"
+          title="Submit Feedback"
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: 600,
+            background: 'rgba(var(--tq-accent-sec-rgb), 0.1)',
+            border: '1px solid rgba(var(--tq-accent-sec-rgb), 0.25)',
+            color: 'var(--tq-text-primary)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+          }}
+        >
+          <span>👋</span>
+          Feedback
+        </button>
+      </div>
+    </div>
+  );
+
+  const TAB_RENDERERS: Record<TabId, () => React.ReactNode> = {
+    profile: renderProfile,
+    appearance: renderAppearance,
+    widgets: renderWidgets,
+    data: renderData,
   };
 
-  const inputClass =
-    'w-full pl-11 pr-4 py-3 rounded-2xl focus:outline-none focus:border-[var(--tq-accent)]/50 transition-all text-[15px] font-medium';
+  // ─── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <>
@@ -519,7 +1599,7 @@ const SettingsPanel = () => {
           className="fixed bottom-20 right-6 z-40"
         >
           <motion.button
-            onClick={handlePromptClick}
+            onClick={() => setIsFeedbackPopup(true)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             animate={{ y: [0, -4, 0] }}
@@ -552,34 +1632,44 @@ const SettingsPanel = () => {
         </motion.div>
       )}
 
+      {/* Trigger button — glass pill */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 w-12 h-12 rounded-xl backdrop-blur-md flex items-center justify-center group shadow-lg z-40 cursor-pointer"
+            className="fixed bottom-6 right-6 z-40 cursor-pointer"
             title="Open Settings"
             style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '9px 14px',
+              borderRadius: '24px',
               background: 'var(--tq-glass-bg)',
+              backdropFilter: 'blur(14px)',
+              WebkitBackdropFilter: 'blur(14px)',
               border: '1px solid var(--tq-glass-border)',
+              color: 'var(--tq-text-secondary)',
+              fontSize: '13px',
+              fontWeight: 600,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
             }}
           >
-            <div
-              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: 'var(--tq-gradient-glass)' }}
-            />
             <SettingsIcon
-              className="w-5 h-5 transition-colors"
+              size={15}
               style={{ color: 'var(--tq-text-secondary)' }}
             />
+            <span>Settings</span>
           </motion.button>
         )}
       </AnimatePresence>
 
+      {/* Side panel */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -587,1113 +1677,151 @@ const SettingsPanel = () => {
             initial={{ x: '100%', opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed text-base inset-y-0 right-0 w-[420px] shadow-2xl z-[999] tq-glass"
+            transition={{ type: 'spring', stiffness: 300, damping: 35 }}
             style={{
+              position: 'fixed',
+              insetBlock: 0,
+              right: 0,
+              width: '320px',
+              zIndex: 999,
+              display: 'flex',
+              flexDirection: 'column',
               background: 'var(--tq-glass-bg)',
-              borderLeft: '1px solid var(--tq-border-1)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid var(--tq-glass-border)',
+              boxShadow: '-8px 0 40px rgba(0,0,0,0.3)',
             }}
           >
-            <div className="h-full overflow-y-auto [&::-webkit-scrollbar]:w-[5px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full">
-              <div className="absolute inset-0 pointer-events-none">
+            {/* Header */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '16px 16px 0',
+                flexShrink: 0,
+              }}
+            >
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
                 <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: 'var(--tq-gradient-subtle)' }}
-                />
-              </div>
-
-              <div className="relative z-100 px-6 py-8">
-                <div
-                  className="flex justify-between items-center mb-8 pb-4"
-                  style={{ borderBottom: '1px solid var(--tq-border-1)' }}
+                  style={{
+                    padding: '6px',
+                    borderRadius: '8px',
+                    background: 'rgba(var(--tq-accent-rgb), 0.12)',
+                  }}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="p-2 rounded-xl"
-                      style={{ background: 'rgba(var(--tq-accent-rgb), 0.1)' }}
-                    >
-                      <SettingsIcon
-                        className="w-6 h-6"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                    </div>
-                    <motion.h2
-                      initial={{ x: -20, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      className="text-xl font-semibold tracking-tight"
-                      style={{ color: 'var(--tq-text-primary)' }}
-                    >
-                      Settings
-                    </motion.h2>
-                  </div>
-                  <motion.button
-                    aria-label="Close Settings"
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-lg transition-all cursor-pointer"
-                    title="Close Settings"
-                    style={{ color: 'var(--tq-text-secondary)' }}
-                  >
-                    <X className="w-5 h-5" />
-                  </motion.button>
+                  <SettingsIcon
+                    size={16}
+                    style={{ color: 'var(--tq-accent)' }}
+                  />
                 </div>
-
-                <div className="space-y-14">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <User
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        Profile
-                      </h3>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="relative group">
-                        <User
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        />
-                        <input
-                          type="text"
-                          value={formState.userName}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              userName: e.target.value,
-                            })
-                          }
-                          placeholder="Username"
-                          className={inputClass}
-                          style={inputStyle}
-                          data-no-theme-transition="true"
-                        />
-                      </div>
-                      <div className="relative group">
-                        <Briefcase
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        />
-                        <input
-                          type="text"
-                          value={formState.userRole}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              userRole: e.target.value,
-                            })
-                          }
-                          placeholder="Role"
-                          className={inputClass}
-                          style={inputStyle}
-                          data-no-theme-transition="true"
-                        />
-                      </div>
-                      <div className="relative group">
-                        <Globe
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors group-focus-within:text-[var(--tq-accent)]"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        />
-                        <input
-                          type="text"
-                          value={formState.userPortfolioUrl}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              userPortfolioUrl: e.target.value,
-                            })
-                          }
-                          placeholder="Portfolio URL"
-                          className={inputClass}
-                          style={inputStyle}
-                          data-no-theme-transition="true"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="space-y-4"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Layout
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        {!isChrome ? 'Weather & Search' : 'Weather'}
-                      </h3>
-                    </div>
-                    <div className="space-y-3">
-                      {!isChrome && (
-                        <div className="relative w-full">
-                          <Search
-                            className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                            style={{ color: 'var(--tq-text-muted)' }}
-                          />
-                          <button
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="w-full pl-11 pr-4 py-2.5 rounded-xl text-left focus:outline-none cursor-pointer text-sm font-medium"
-                            title="Select Search Engine"
-                            style={{
-                              background: 'transparent',
-                              border: '1px solid var(--tq-border-1)',
-                              color: 'var(--tq-text-primary)',
-                            }}
-                          >
-                            {formState.searchEngine
-                              ? formState.searchEngine
-                              : 'Select Search Engine'}
-                            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path d="m6 9 6 6 6-6" />
-                              </svg>
-                            </span>
-                          </button>
-
-                          {isDropdownOpen && (
-                            <ul
-                              className="absolute w-full mt-2 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100] overflow-hidden tq-surface-overlay"
-                              style={{
-                                border: '1px solid var(--tq-border-1)',
-                                backdropFilter: 'blur(40px)',
-                                WebkitBackdropFilter: 'blur(40px)',
-                              }}
-                            >
-                              {['Google', 'Bing', 'DuckDuckGo'].map(
-                                (engine) => (
-                                  <li
-                                    key={engine}
-                                    onClick={() => {
-                                      setFormState({
-                                        ...formState,
-                                        searchEngine: engine,
-                                      });
-                                      setIsDropdownOpen(false);
-                                    }}
-                                    className="px-4 py-3.5 cursor-pointer transition-all text-[14px] font-semibold border-b border-white/5 last:border-b-0 hover:pl-6"
-                                    title={`Select ${engine}`}
-                                    style={{
-                                      color: 'var(--tq-text-primary)',
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        'var(--tq-hover-bg)';
-                                      e.currentTarget.style.color =
-                                        'var(--tq-accent)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        'transparent';
-                                      e.currentTarget.style.color =
-                                        'var(--tq-text-primary)';
-                                    }}
-                                  >
-                                    {engine}
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="relative">
-                        <MapPin
-                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        />
-                        <input
-                          type="text"
-                          value={formState.weatherLocation}
-                          onChange={(e) =>
-                            setFormState({
-                              ...formState,
-                              weatherLocation: e.target.value,
-                            })
-                          }
-                          placeholder="Weather Location"
-                          className={inputClass}
-                          style={inputStyle}
-                          data-no-theme-transition="true"
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.12 }}
-                    className="space-y-4"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Palette
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        Theme Appearance
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {THEME_LIST.map((theme) => {
-                        const isSelected =
-                          (formState.theme || initialState.theme) === theme.key;
-                        return (
-                          <button
-                            key={theme.key}
-                            type="button"
-                            onClick={() => {
-                              setFormState({ ...formState, theme: theme.key });
-                              dispatch(updateTheme(theme.key));
-                            }}
-                            className="rounded-xl p-2 transition-all cursor-pointer"
-                            title={`Switch to ${theme.label} theme`}
-                            style={{
-                              border: isSelected
-                                ? `2px solid var(--tq-accent)`
-                                : '1px solid var(--tq-border-1)',
-                              background: isSelected
-                                ? 'var(--tq-surface-elevated)'
-                                : 'var(--tq-surface-3)',
-                              boxShadow: isSelected
-                                ? '0 0 12px var(--tq-accent-glow)'
-                                : 'none',
-                            }}
-                          >
-                            <div
-                              className="h-9 w-full rounded-md"
-                              style={{
-                                background: `linear-gradient(to right, ${theme.preview[0]}, ${theme.preview[1]}, ${theme.preview[2]})`,
-                              }}
-                            />
-                            <p
-                              className="mt-1 text-[11px] font-medium flex items-center justify-center gap-1.5"
-                              style={{ color: 'var(--tq-text-secondary)' }}
-                            >
-                              {theme.label}
-                              {theme.isDefault && (
-                                <span
-                                  className="px-1.5 py-0.5 rounded-md text-[7.5px] font-bold uppercase tracking-wider"
-                                  style={{
-                                    background:
-                                      'rgba(var(--tq-accent-rgb),.15)',
-                                    color: 'var(--tq-accent)',
-                                    border:
-                                      '1px solid rgba(var(--tq-accent-rgb),.30)',
-                                  }}
-                                >
-                                  Default
-                                </span>
-                              )}
-                            </p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-
-                  {/* Background Section */}
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.14 }}
-                    className="space-y-4"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <ImageIcon
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        Background
-                      </h3>
-                    </div>
-
-                    {/* Theme vs Image toggle */}
-                    <div className="flex gap-2">
-                      {(['theme', 'image'] as BackgroundType[]).map((type) => (
-                        <button
-                          key={type}
-                          type="button"
-                          onClick={() => {
-                            dispatch(
-                              updateBackground(
-                                type === 'image'
-                                  ? {
-                                      type: 'image',
-                                      imageUrl: '/backgrounds/city-night.jpg',
-                                      overlayOpacity: 0.3,
-                                      blur: 0,
-                                    }
-                                  : { type: 'theme' },
-                              ),
-                            );
-                          }}
-                          className={`px-4 py-1.5 text-xs rounded-full border transition-all capitalize cursor-pointer ${
-                            currentBackground.type === type
-                              ? 'border-[var(--tq-accent)] text-[var(--tq-accent)]'
-                              : 'border-[var(--tq-border-1)] text-[var(--tq-text-muted)] hover:text-[var(--tq-text-primary)]'
-                          }`}
-                        >
-                          {type === 'theme' ? 'Default' : 'Custom'}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Built-in wallpaper grid — only when type === 'image' */}
-                    {currentBackground.type === 'image' && (
-                      <div className="space-y-3">
-                        {/* Built-in wallpaper thumbnails grid (2 rows × 3 cols) */}
-                        <p
-                          className="text-[10px] uppercase tracking-widest opacity-50"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        >
-                          Built-in wallpapers
-                        </p>
-                        <div className="grid grid-cols-3 gap-2">
-                          {[
-                            {
-                              label: 'City Night',
-                              path: '/backgrounds/city-night.jpg',
-                            },
-                            {
-                              label: 'Mountains',
-                              path: '/backgrounds/mountains.jpg',
-                            },
-                            {
-                              label: 'Galaxy',
-                              path: '/backgrounds/galaxy.jpg',
-                            },
-                            {
-                              label: 'Forest',
-                              path: '/backgrounds/forest.jpg',
-                            },
-                            { label: 'Ocean', path: '/backgrounds/ocean.jpg' },
-                            {
-                              label: 'Neon City',
-                              path: '/backgrounds/neon-city.jpg',
-                            },
-                          ].map((bg) => (
-                            <button
-                              key={bg.path}
-                              type="button"
-                              title={bg.label}
-                              onClick={() =>
-                                dispatch(
-                                  updateBackground({
-                                    ...currentBackground,
-                                    type: 'image',
-                                    imageUrl: bg.path,
-                                  }),
-                                )
-                              }
-                              className={`relative h-14 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                                currentBackground.imageUrl === bg.path
-                                  ? 'border-[var(--tq-accent)] scale-[1.03]'
-                                  : 'border-transparent hover:border-white/30'
-                              }`}
-                              style={{
-                                backgroundImage: `url(${bg.path})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                              }}
-                            >
-                              {currentBackground.imageUrl === bg.path && (
-                                <div className="absolute inset-0 bg-[var(--tq-accent)] opacity-20" />
-                              )}
-                              <span className="absolute bottom-0.5 left-0 right-0 text-center text-[8px] text-white/70 font-medium">
-                                {bg.label}
-                              </span>
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* Custom upload */}
-                        <p
-                          className="text-[10px] uppercase tracking-widest opacity-50 mt-2"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        >
-                          Or upload your own
-                        </p>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          id="bg-image-upload"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            if (file.size > 3 * 1024 * 1024) {
-                              alert('Image must be under 3MB');
-                              return;
-                            }
-                            const reader = new FileReader();
-                            reader.onload = (ev) =>
-                              dispatch(
-                                updateBackground({
-                                  type: 'image',
-                                  imageUrl: ev.target?.result as string,
-                                  overlayOpacity:
-                                    currentBackground.overlayOpacity ?? 0.3,
-                                  blur: currentBackground.blur ?? 0,
-                                }),
-                              );
-                            reader.readAsDataURL(file);
-                          }}
-                        />
-                        <label
-                          htmlFor="bg-image-upload"
-                          className="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-xs transition-all hover:opacity-80"
-                          style={{
-                            borderColor: 'var(--tq-border-1)',
-                            color: 'var(--tq-text-secondary)',
-                          }}
-                        >
-                          <Upload size={14} />
-                          {currentBackground.imageUrl &&
-                          !currentBackground.imageUrl.startsWith(
-                            '/backgrounds/',
-                          )
-                            ? 'Change custom image'
-                            : 'Upload custom image (max 3MB)'}
-                        </label>
-
-                        {/* Overlay opacity slider */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span
-                              className="text-xs"
-                              style={{ color: 'var(--tq-text-secondary)' }}
-                            >
-                              Overlay
-                            </span>
-                            <span
-                              className="text-[10px] font-mono"
-                              style={{ color: 'var(--tq-text-muted)' }}
-                            >
-                              {Math.round(
-                                (currentBackground.overlayOpacity ?? 0.3) * 100,
-                              )}
-                              %
-                            </span>
-                          </div>
-                          <input
-                            type="range"
-                            min="0"
-                            max="0.85"
-                            step="0.05"
-                            value={currentBackground.overlayOpacity ?? 0.3}
-                            onChange={(e) =>
-                              dispatch(
-                                updateBackground({
-                                  ...currentBackground,
-                                  overlayOpacity: parseFloat(e.target.value),
-                                }),
-                              )
-                            }
-                            className="w-full"
-                            style={{ accentColor: 'var(--tq-accent)' }}
-                          />
-                        </div>
-
-                        {/* Blur slider */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span
-                              className="text-xs"
-                              style={{ color: 'var(--tq-text-secondary)' }}
-                            >
-                              Blur
-                            </span>
-                            <span
-                              className="text-[10px] font-mono"
-                              style={{ color: 'var(--tq-text-muted)' }}
-                            >
-                              {currentBackground.blur ?? 0}px
-                            </span>
-                          </div>
-                          <input
-                            type="range"
-                            min="0"
-                            max="20"
-                            step="1"
-                            value={currentBackground.blur ?? 0}
-                            onChange={(e) =>
-                              dispatch(
-                                updateBackground({
-                                  ...currentBackground,
-                                  blur: parseInt(e.target.value),
-                                }),
-                              )
-                            }
-                            className="w-full"
-                            style={{ accentColor: 'var(--tq-accent)' }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Clock3
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        Clock Preferences
-                      </h3>
-                    </div>
-                    <div className="flex flex-row gap-3">
-                      <div
-                        className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-                        style={{
-                          background: 'var(--tq-surface-3)',
-                          border: '1px solid var(--tq-border-1)',
-                        }}
-                      >
-                        <span
-                          className="text-sm font-medium"
-                          style={{ color: 'var(--tq-text-primary)' }}
-                        >
-                          12-hour
-                        </span>
-                        <button
-                          onClick={() => handleClockSettingToggle('use12Hour')}
-                          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
-                          title="Toggle 12/24 hour format"
-                          style={{
-                            backgroundColor: formState.use12Hour
-                              ? 'rgba(var(--tq-accent-rgb),.50)'
-                              : 'var(--tq-surface-elevated)',
-                          }}
-                        >
-                          <span
-                            className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
-                            style={{
-                              transform: formState.use12Hour
-                                ? 'translateX(1.5rem)'
-                                : 'translateX(0.25rem)',
-                            }}
-                          />
-                        </button>
-                      </div>
-
-                      <div
-                        className="flex items-center gap-3 px-4 py-2.5 rounded-xl"
-                        style={{
-                          background: 'var(--tq-surface-3)',
-                          border: '1px solid var(--tq-border-1)',
-                        }}
-                      >
-                        <span
-                          className="text-sm font-medium"
-                          style={{ color: 'var(--tq-text-primary)' }}
-                        >
-                          Hide seconds
-                        </span>
-                        <button
-                          onClick={() =>
-                            handleClockSettingToggle('hideSeconds')
-                          }
-                          className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
-                          title="Toggle seconds visibility"
-                          style={{
-                            backgroundColor: formState.hideSeconds
-                              ? 'rgba(var(--tq-accent-rgb),.50)'
-                              : 'var(--tq-surface-elevated)',
-                          }}
-                        >
-                          <span
-                            className="inline-block h-5 w-5 transform rounded-full bg-white transition-transform"
-                            style={{
-                              transform: formState.hideSeconds
-                                ? 'translateX(1.5rem)'
-                                : 'translateX(0.25rem)',
-                            }}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="space-y-4"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Share2
-                        className="w-3.5 h-3.5 opacity-60"
-                        style={{ color: 'var(--tq-accent)' }}
-                      />
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                        style={{ color: 'var(--tq-text-primary)' }}
-                      >
-                        Social Profiles
-                      </h3>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      {Object.entries(formState.socialProfiles).map(
-                        ([platform, value]) => {
-                          const IconComponent =
-                            {
-                              github: FaGithub,
-                              twitter: FaXTwitter,
-                              linkedin: FaLinkedin,
-                              instagram: FaInstagram,
-                              reddit: RiRedditLine,
-                            }[platform] || Link;
-
-                          const displayName =
-                            platform === 'twitter'
-                              ? 'X'
-                              : platform.charAt(0).toUpperCase() +
-                                platform.slice(1);
-
-                          return (
-                            <motion.div
-                              key={platform}
-                              initial={{ opacity: 0, y: 5 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="group relative p-3 rounded-xl transition-all border"
-                              style={{
-                                background: 'var(--tq-surface-3)',
-                                borderColor: 'var(--tq-border-1)',
-                              }}
-                              whileHover={{
-                                borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
-                                background: 'var(--tq-surface-elevated)',
-                              }}
-                            >
-                              <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-2">
-                                  <IconComponent
-                                    className="w-4 h-4"
-                                    style={{ color: 'var(--tq-accent)' }}
-                                  />
-                                  <span
-                                    className="text-sm font-semibold"
-                                    style={{ color: 'var(--tq-text-primary)' }}
-                                  >
-                                    {displayName}
-                                  </span>
-                                </div>
-                                <input
-                                  type="url"
-                                  value={value as string}
-                                  onChange={(e) =>
-                                    setFormState({
-                                      ...formState,
-                                      socialProfiles: {
-                                        ...formState.socialProfiles,
-                                        [platform]: e.target.value,
-                                      },
-                                    })
-                                  }
-                                  placeholder="Paste link..."
-                                  className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-1 text-xs focus:outline-none focus:border-[var(--tq-accent)]/40 transition-all placeholder:opacity-30"
-                                  style={{ color: 'var(--tq-text-secondary)' }}
-                                  data-no-theme-transition="true"
-                                />
-                              </div>
-                            </motion.div>
-                          );
-                        },
-                      )}
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="space-y-4"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="p-1.5 rounded-lg"
-                          style={{
-                            background: 'rgba(var(--tq-accent-rgb), 0.1)',
-                          }}
-                        >
-                          <Star
-                            className="w-3.5 h-3.5"
-                            style={{ color: 'var(--tq-accent)' }}
-                          />
-                        </div>
-                        <h3
-                          className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70"
-                          style={{ color: 'var(--tq-text-primary)' }}
-                        >
-                          Favourites{' '}
-                          <span className="text-[10px] ml-1 opacity-50">
-                            ({formState.bookmarks.length}/8)
-                          </span>
-                        </h3>
-                      </div>
-                      <motion.button
-                        whileHover={{
-                          scale: 1.05,
-                          background: 'rgba(var(--tq-accent-rgb), 0.1)',
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={addBookmark}
-                        disabled={formState.bookmarks.length >= 8}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed border"
-                        style={{
-                          color: 'var(--tq-text-primary)',
-                          borderColor: 'var(--tq-border-1)',
-                        }}
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">
-                          Add
-                        </span>
-                      </motion.button>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      {formState.bookmarks.map(
-                        (bookmark: BookmarkLink, index: number) => (
-                          <motion.div
-                            key={index}
-                            layout
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="group relative p-3 rounded-xl transition-all border"
-                            style={{
-                              background: 'var(--tq-surface-3)',
-                              borderColor: 'var(--tq-border-1)',
-                            }}
-                            whileHover={{
-                              borderColor: 'rgba(var(--tq-accent-rgb), 0.4)',
-                              background: 'var(--tq-surface-elevated)',
-                            }}
-                          >
-                            <div className="flex flex-col gap-2">
-                              <div className="flex items-center gap-2">
-                                <div className="flex-1 flex items-center gap-2">
-                                  <Tag
-                                    className="w-4 h-4"
-                                    style={{ color: 'var(--tq-accent)' }}
-                                  />
-                                  <input
-                                    type="text"
-                                    value={bookmark.name}
-                                    onChange={(e) => {
-                                      const newBookmarks = [
-                                        ...formState.bookmarks,
-                                      ];
-                                      newBookmarks[index] = {
-                                        ...bookmark,
-                                        name: e.target.value,
-                                      };
-                                      setFormState({
-                                        ...formState,
-                                        bookmarks: newBookmarks,
-                                      });
-                                    }}
-                                    placeholder="Site Name"
-                                    className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-sm font-semibold focus:outline-none focus:border-[var(--tq-accent)]/80 transition-all placeholder:opacity-20"
-                                    style={{ color: 'var(--tq-text-primary)' }}
-                                    data-no-theme-transition="true"
-                                  />
-                                </div>
-                                <motion.button
-                                  whileHover={{
-                                    scale: 1.1,
-                                    color: 'var(--tq-danger)',
-                                    background: 'rgba(239, 68, 68, 0.1)',
-                                  }}
-                                  whileTap={{ scale: 0.9 }}
-                                  onClick={() => removeBookmark(index)}
-                                  className="p-1 rounded-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
-                                  style={{ color: 'var(--tq-text-secondary)' }}
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </motion.button>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Link
-                                  className="w-3.5 h-3.5 opacity-50"
-                                  style={{ color: 'var(--tq-text-secondary)' }}
-                                />
-                                <input
-                                  type="url"
-                                  value={bookmark.url}
-                                  onChange={(e) => {
-                                    const newBookmarks = [
-                                      ...formState.bookmarks,
-                                    ];
-                                    newBookmarks[index] = {
-                                      ...bookmark,
-                                      url: e.target.value,
-                                    };
-                                    setFormState({
-                                      ...formState,
-                                      bookmarks: newBookmarks,
-                                    });
-                                  }}
-                                  placeholder="URL"
-                                  className="w-full bg-transparent border-b border-[var(--tq-border-1)]/30 pb-0.5 text-xs focus:outline-none focus:border-[var(--tq-accent)]/80 transition-all placeholder:opacity-20"
-                                  style={{ color: 'var(--tq-text-secondary)' }}
-                                  data-no-theme-transition="true"
-                                />
-                              </div>
-                            </div>
-                          </motion.div>
-                        ),
-                      )}
-                      {formState.bookmarks.length === 0 && (
-                        <div
-                          className="w-full py-8 rounded-2xl border border-dashed flex flex-col items-center justify-center opacity-40"
-                          style={{ borderColor: 'var(--tq-border-1)' }}
-                        >
-                          <Star className="w-8 h-8 mb-2 opacity-20" />
-                          <p className="text-[11px] font-medium uppercase tracking-widest opacity-30">
-                            No favourites added yet
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-
-                  <div className="space-y-3">
-                    <div className="flex gap-3">
-                      <motion.button
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleSave}
-                        className="flex-1 px-4 py-2.5 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer text-sm font-semibold"
-                        title="Save all changes"
-                        style={{
-                          background: 'var(--tq-gradient-subtle)',
-                          border: '1px solid var(--tq-border-1)',
-                          color: 'var(--tq-text-primary)',
-                        }}
-                      >
-                        <Save
-                          className="w-4 h-4"
-                          style={{ color: 'var(--tq-text-secondary)' }}
-                        />
-                        Save Changes
-                      </motion.button>
-
-                      <motion.button
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.45 }}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleReset}
-                        className="flex-1 px-4 py-2.5 rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 group cursor-pointer text-sm font-semibold"
-                        title="Reset settings to default"
-                        style={{
-                          background: 'rgba(var(--tq-accent-rgb),.06)',
-                          border: '1px solid var(--tq-border-1)',
-                          color: 'var(--tq-text-primary)',
-                        }}
-                      >
-                        <RotateCcw
-                          className="w-4 h-4"
-                          style={{ color: 'var(--tq-text-secondary)' }}
-                        />
-                        Reset Settings
-                      </motion.button>
-                    </div>
-
-                    <motion.a
-                      id="feedback-btn"
-                      onClick={() => setIsFeedbackPopup(true)}
-                      rel="noopener noreferrer"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{
-                        y: 0,
-                        opacity: 1,
-                        scale: isHighlightingFeedback
-                          ? [1, 1.05, 1, 1.05, 1]
-                          : 1,
-                      }}
-                      transition={{
-                        delay: 0.5,
-                        scale: {
-                          duration: 0.5,
-                          repeat: isHighlightingFeedback ? 2 : 0,
-                        },
-                      }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full px-4 py-2.5 rounded-xl flex items-center justify-center gap-3 group cursor-pointer transition-all duration-300 text-sm font-semibold"
-                      title="Submit Feedback"
-                      style={{
-                        background: 'rgba(var(--tq-accent-sec-rgb),.10)',
-                        border: isHighlightingFeedback
-                          ? '2px solid var(--tq-accent-secondary)'
-                          : '1px solid rgba(var(--tq-accent-sec-rgb),.25)',
-                        color: 'var(--tq-text-primary)',
-                        boxShadow: isHighlightingFeedback
-                          ? '0 0 20px rgba(var(--tq-accent-sec-rgb),.50)'
-                          : 'none',
-                      }}
-                    >
-                      <MousePointer2
-                        className="w-5 h-5"
-                        style={{ color: 'var(--tq-accent-secondary)' }}
-                      />
-                      <span className="text-sm font-semibold">
-                        Submit Feedback
-                      </span>
-                    </motion.a>
-
-                    {/* Data Import / Export */}
-                    <div
-                      className="space-y-3 pt-4 border-t"
-                      style={{ borderColor: 'var(--tq-border-1)' }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Database
-                          size={16}
-                          style={{ color: 'var(--tq-accent)' }}
-                        />
-                        <h3
-                          className="text-sm font-semibold"
-                          style={{ color: 'var(--tq-text-primary)' }}
-                        >
-                          Data
-                        </h3>
-                      </div>
-                      <p
-                        className="text-xs"
-                        style={{ color: 'var(--tq-text-muted)' }}
-                      >
-                        Export all your data or restore from a backup.
-                      </p>
-                      {importExportMessage && (
-                        <p
-                          className="text-xs font-medium"
-                          style={{ color: 'var(--tq-accent)' }}
-                        >
-                          {importExportMessage}
-                        </p>
-                      )}
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleExport}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer hover:opacity-80"
-                          style={{
-                            borderColor: 'var(--tq-border-1)',
-                            color: 'var(--tq-text-secondary)',
-                          }}
-                        >
-                          <Download size={13} /> Export
-                        </button>
-                        <label
-                          htmlFor="import-file"
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer hover:opacity-80"
-                          style={{
-                            borderColor: 'var(--tq-border-1)',
-                            color: 'var(--tq-text-secondary)',
-                          }}
-                        >
-                          <Upload size={13} /> Import
-                        </label>
-                        <input
-                          id="import-file"
-                          type="file"
-                          accept=".json"
-                          className="hidden"
-                          onChange={handleImport}
-                        />
-                      </div>
-                    </div>
-
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="w-full flex flex-col items-center gap-4 mt-6 pt-6 border-t tq-border-1"
-                    >
-                      <motion.a
-                        href="https://github.com/tabquest/tabquest"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{
-                          y: -1,
-                          background: 'rgba(251, 191, 36, 0.1)',
-                        }}
-                        whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full transition-all group relative overflow-hidden"
-                        style={{
-                          background: 'rgba(251, 191, 36, 0.05)',
-                          border: '1px solid rgba(251, 191, 36, 0.15)',
-                        }}
-                      >
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-200/80 group-hover:text-amber-400 transition-colors">
-                          Star us on GitHub
-                        </span>
-                        <FaGithub className="w-3 h-3 text-white/20 group-hover:text-white/60 transition-colors ml-1" />
-                      </motion.a>
-
-                      <div className="flex items-center justify-center">
-                        <img
-                          src={TabQuestLogo}
-                          alt="TabQuest Logo"
-                          className="w-4 h-4 mr-2 object-contain"
-                        />
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-[0.2em]"
-                          style={{ color: 'var(--tq-text-muted)' }}
-                        >
-                          TabQuest{' '}
-                          <span className="opacity-80 ml-1 font-medium">
-                            v{APP_VERSION}
-                          </span>
-                        </span>
-                      </div>
-                    </motion.div>
-                  </div>
-                </div>
+                <span
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    color: 'var(--tq-text-primary)',
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  Settings
+                </span>
               </div>
+              <motion.button
+                aria-label="Close Settings"
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => {
+                  const hasChanges = detectChanges();
+                  if (hasChanges) handleAutoSave();
+                  else setIsOpen(false);
+                }}
+                title="Close Settings"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '6px',
+                  borderRadius: '6px',
+                  color: 'var(--tq-text-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <X size={17} />
+              </motion.button>
+            </div>
+
+            {/* Tab bar */}
+            <div
+              style={{
+                display: 'flex',
+                padding: '12px 16px 0',
+                gap: '4px',
+                flexShrink: 0,
+                borderBottom: '1px solid var(--tq-border-1)',
+                paddingBottom: '0',
+              }}
+            >
+              {TABS.map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    title={tab.label}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '8px 4px 10px',
+                      background: 'transparent',
+                      border: 'none',
+                      borderBottom: isActive
+                        ? '2px solid var(--tq-accent)'
+                        : '2px solid transparent',
+                      cursor: 'pointer',
+                      color: isActive
+                        ? 'var(--tq-accent)'
+                        : 'var(--tq-text-muted)',
+                      fontSize: '10px',
+                      fontWeight: isActive ? 700 : 500,
+                      letterSpacing: '0.04em',
+                      transition: 'all 0.15s ease',
+                      marginBottom: '-1px',
+                    }}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Tab content */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '0 16px 24px',
+              }}
+              className="[&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {TAB_RENDERERS[activeTab]()}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </motion.div>
         )}
