@@ -112,7 +112,7 @@ jobs:
       - name: Publish to Chrome Web Store
         id: publish-chrome
         if: github.event_name == 'push' || github.event.inputs.confirm == 'release'
-        uses: wdzeng/chrome-extension@v1
+        uses: wdzeng/chrome-extension@v2
         with:
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
