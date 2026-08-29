@@ -2,132 +2,109 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Progress {
-  year: string;
-  day: string;
+  year: number;
+  day: number;
 }
 
 const ProgressBars = () => {
-  const [progress, setProgress] = useState<Progress>({ year: '0', day: '0' });
+  const [progress, setProgress] = useState<Progress>({ year: 0, day: 0 });
 
   useEffect(() => {
-    const calculateProgress = () => {
+    const calculate = () => {
       const now = new Date();
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
-      const yearProgress =
-        ((now.getTime() - startOfYear.getTime()) /
-          (endOfYear.getTime() - startOfYear.getTime())) *
-        100;
 
-      const startOfDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      );
-      const endOfDay = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1,
-      );
-      const dayProgress =
-        ((now.getTime() - startOfDay.getTime()) /
-          (endOfDay.getTime() - startOfDay.getTime())) *
-        100;
+      const sy = new Date(now.getFullYear(), 0, 1);
+      const ey = new Date(now.getFullYear() + 1, 0, 1);
+      const year =
+        ((now.getTime() - sy.getTime()) / (ey.getTime() - sy.getTime())) * 100;
 
-      setProgress({
-        year: yearProgress.toFixed(0),
-        day: dayProgress.toFixed(0),
-      });
+      const sd = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const ed = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const day =
+        ((now.getTime() - sd.getTime()) / (ed.getTime() - sd.getTime())) * 100;
+
+      setProgress({ year, day });
     };
 
-    calculateProgress();
-    const interval = setInterval(calculateProgress, 1000);
-    return () => clearInterval(interval);
+    calculate();
+    const id = setInterval(calculate, 1000);
+    return () => clearInterval(id);
   }, []);
 
+  const bars = [
+    {
+      key: 'year',
+      value: progress.year,
+      label: 'Y',
+      color: 'var(--tq-progress-year)',
+      glow: 'rgba(99,102,241,.45)',
+    },
+    {
+      key: 'day',
+      value: progress.day,
+      label: 'D',
+      color: 'var(--tq-progress-day)',
+      glow: 'var(--tq-accent-glow)',
+    },
+  ] as const;
+
   return (
-    <div className="w-full max-w-sm">
-      <div className="w-full">
-        <motion.div
-          className="space-y-6 py-4 mt-2 ml-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.2, duration: 0.7 }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+        marginTop: '10px',
+        maxWidth: '148px',
+      }}
+    >
+      {bars.map(({ key, value, label, color, glow }) => (
+        <div
+          key={key}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
         >
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span
-                className="text-sm font-medium"
-                style={{ color: 'var(--tq-text-secondary)' }}
-              >
-                Year in progress
-              </span>
-              <span
-                className="text-sm font-medium"
-                style={{ color: 'var(--tq-text-secondary)' }}
-              >
-                {progress.year}%
-              </span>
-            </div>
-            <div
-              className="h-2.5 w-full rounded-full border border-white/5 overflow-hidden shadow-inner"
+          {/* Hairline track */}
+          <div
+            style={{
+              flex: 1,
+              height: '1.5px',
+              borderRadius: '9999px',
+              background: 'rgba(255,255,255,.06)',
+              overflow: 'hidden',
+            }}
+          >
+            <motion.div
               style={{
-                backgroundColor: 'rgba(0,0,0,0.25)',
-                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
+                height: '100%',
+                borderRadius: '9999px',
+                background: color,
+                boxShadow: `0 0 5px ${glow}`,
               }}
-            >
-              <motion.div
-                className="h-2.5 rounded-full transition-all duration-500"
-                style={{
-                  width: `${progress.year}%`,
-                  backgroundColor: 'var(--tq-progress-year)',
-                  boxShadow: '0 0 12px var(--tq-accent-glow)',
-                }}
-                initial={{ width: 0 }}
-                animate={{ width: `${progress.year}%` }}
-                transition={{ duration: 1 }}
-              />
-            </div>
+              initial={{ width: 0 }}
+              animate={{ width: `${value}%` }}
+              transition={{ duration: 1.6, ease: [0.23, 1, 0.32, 1] }}
+            />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span
-                className="text-sm font-medium"
-                style={{ color: 'var(--tq-text-secondary)' }}
-              >
-                Day in progress
-              </span>
-              <span
-                className="text-sm font-medium"
-                style={{ color: 'var(--tq-text-secondary)' }}
-              >
-                {progress.day}%
-              </span>
-            </div>
-            <div
-              className="h-3 w-full rounded-full border border-white/5 overflow-hidden shadow-inner"
-              style={{
-                backgroundColor: 'rgba(0,0,0,0.25)',
-                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
-              }}
-            >
-              <motion.div
-                className="h-3 rounded-full transition-all duration-500"
-                style={{
-                  width: `${progress.day}%`,
-                  backgroundColor: 'var(--tq-progress-day)',
-                  boxShadow: `0 0 12px rgba(var(--tq-accent-sec-rgb), 0.25)`,
-                }}
-                initial={{ width: 0 }}
-                animate={{ width: `${progress.day}%` }}
-                transition={{ duration: 1 }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
+          {/* Compact label */}
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 400,
+              fontVariantNumeric: 'tabular-nums',
+              color: 'rgba(255,255,255,.24)',
+              minWidth: '3.8ch',
+              letterSpacing: '0.01em',
+            }}
+          >
+            {label} {Math.round(value)}%
+          </span>
+        </div>
+      ))}
+    </motion.div>
   );
 };
 

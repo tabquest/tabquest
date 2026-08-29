@@ -29,7 +29,6 @@ import {
   updateSearchPreferences,
   updateSocialProfiles,
   updateBookmarks,
-  updateTheme,
   updateBackground,
 } from '../utils/redux/settingsSlice';
 import {
@@ -42,14 +41,13 @@ import {
 } from '../utils/redux/taskSlice';
 import { setNotes } from '../utils/redux/notesSlice';
 import type { BackgroundConfig, BackgroundType } from '../types/domain';
-import { FEEDBACK_PROMPT_INTERVAL, initialState } from '../utils/constants';
+import { FEEDBACK_PROMPT_INTERVAL } from '../utils/constants';
 
 import type { Settings as SettingsType, BookmarkLink } from '../types/domain';
 
 import { APP_VERSION } from '../utils/version';
 import { FeedbackForm } from '../features';
 import TabQuestLogo from '../images/TabQuest.png';
-import { THEME_LIST } from '../utils/themes';
 
 type TabId = 'profile' | 'appearance' | 'widgets' | 'data';
 
@@ -302,9 +300,6 @@ const SettingsPanel = () => {
         use12Hour: formState.use12Hour || false,
       }),
     );
-    dispatch(
-      updateTheme(formState.theme || settings.theme || initialState.theme),
-    );
     if (formState.socialProfiles)
       dispatch(updateSocialProfiles(formState.socialProfiles));
     if (formState.bookmarks) dispatch(updateBookmarks(formState.bookmarks));
@@ -441,7 +436,6 @@ const SettingsPanel = () => {
             userPortfolioUrl: data.settings.userPortfolioUrl,
           }),
         );
-        dispatch(updateTheme(data.settings.theme));
         dispatch(
           updateSearchPreferences({
             searchEngine: data.settings.searchEngine,
@@ -626,372 +620,303 @@ const SettingsPanel = () => {
     </div>
   );
 
-  const renderAppearance = () => (
-    <div style={{ padding: '16px 0' }}>
-      <p style={{ ...sectionHeaderStyle, marginTop: 0 }}>Theme</p>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
-          gap: '8px',
-        }}
-      >
-        {THEME_LIST.map((theme) => {
-          const isSelected =
-            (formState.theme || initialState.theme) === theme.key;
-          return (
+  const renderAppearance = () => {
+    return (
+      <div style={{ padding: '16px 0' }}>
+        <p style={{ ...sectionHeaderStyle, marginTop: 0 }}>Background</p>
+
+        {/* Theme vs Image toggle */}
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+          {(['theme', 'image'] as BackgroundType[]).map((type) => (
             <button
-              key={theme.key}
+              key={type}
               type="button"
               onClick={() => {
-                setFormState({ ...formState, theme: theme.key });
-                dispatch(updateTheme(theme.key));
+                dispatch(
+                  updateBackground(
+                    type === 'image'
+                      ? {
+                          type: 'image',
+                          imageUrl: '/backgrounds/city-night.jpg',
+                          overlayOpacity: 0.3,
+                          blur: 0,
+                        }
+                      : { type: 'theme' },
+                  ),
+                );
               }}
-              title={`Switch to ${theme.label} theme`}
               style={{
-                borderRadius: '10px',
-                padding: '8px',
+                padding: '5px 14px',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: 500,
                 cursor: 'pointer',
-                border: isSelected
-                  ? '2px solid var(--tq-accent)'
-                  : '1px solid var(--tq-border-1)',
-                background: isSelected
-                  ? 'var(--tq-surface-elevated)'
-                  : 'var(--tq-surface-3)',
-                boxShadow: isSelected
-                  ? '0 0 12px var(--tq-accent-glow)'
-                  : 'none',
+                textTransform: 'capitalize',
+                background: 'transparent',
+                border:
+                  currentBackground.type === type
+                    ? '1px solid var(--tq-accent)'
+                    : '1px solid var(--tq-border-1)',
+                color:
+                  currentBackground.type === type
+                    ? 'var(--tq-accent)'
+                    : 'var(--tq-text-muted)',
                 transition: 'all 0.15s ease',
               }}
             >
-              <div
-                style={{
-                  height: '32px',
-                  borderRadius: '6px',
-                  background: `linear-gradient(to right, ${theme.preview[0]}, ${theme.preview[1]}, ${theme.preview[2]})`,
-                }}
-              />
-              <p
-                style={{
-                  marginTop: '4px',
-                  fontSize: '10px',
-                  fontWeight: 500,
-                  color: 'var(--tq-text-secondary)',
-                  textAlign: 'center',
-                }}
-              >
-                {theme.label}
-                {theme.isDefault && (
+              {type === 'theme' ? 'Default' : 'Custom'}
+            </button>
+          ))}
+        </div>
+
+        {currentBackground.type === 'image' && (
+          <div>
+            <p
+              style={{
+                fontSize: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'var(--tq-text-muted)',
+                opacity: 0.6,
+                marginBottom: '8px',
+              }}
+            >
+              Built-in wallpapers
+            </p>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: '8px',
+                marginBottom: '12px',
+              }}
+            >
+              {WALLPAPERS.map((bg) => (
+                <button
+                  key={bg.path}
+                  type="button"
+                  title={bg.label}
+                  onClick={() =>
+                    dispatch(
+                      updateBackground({
+                        ...currentBackground,
+                        type: 'image',
+                        imageUrl: bg.path,
+                      }),
+                    )
+                  }
+                  style={{
+                    position: 'relative',
+                    height: '52px',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    cursor: 'pointer',
+                    backgroundImage: `url(${bg.path})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    border:
+                      currentBackground.imageUrl === bg.path
+                        ? '2px solid var(--tq-accent)'
+                        : '2px solid transparent',
+                    transform:
+                      currentBackground.imageUrl === bg.path
+                        ? 'scale(1.03)'
+                        : 'scale(1)',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {currentBackground.imageUrl === bg.path && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'var(--tq-accent)',
+                        opacity: 0.18,
+                      }}
+                    />
+                  )}
                   <span
                     style={{
-                      marginLeft: '3px',
-                      fontSize: '7px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
-                      background: 'rgba(var(--tq-accent-rgb),.15)',
-                      color: 'var(--tq-accent)',
-                      border: '1px solid rgba(var(--tq-accent-rgb),.3)',
-                      borderRadius: '4px',
-                      padding: '1px 3px',
+                      position: 'absolute',
+                      bottom: '2px',
+                      left: 0,
+                      right: 0,
+                      textAlign: 'center',
+                      fontSize: '8px',
+                      color: 'rgba(255,255,255,0.75)',
+                      fontWeight: 500,
                     }}
                   >
-                    Default
+                    {bg.label}
                   </span>
-                )}
-              </p>
-            </button>
-          );
-        })}
-      </div>
+                </button>
+              ))}
+            </div>
 
-      <p style={sectionHeaderStyle}>Background</p>
+            <p
+              style={{
+                fontSize: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: 'var(--tq-text-muted)',
+                opacity: 0.6,
+                marginBottom: '8px',
+              }}
+            >
+              Or upload your own
+            </p>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="bg-image-upload"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                if (file.size > 3 * 1024 * 1024) {
+                  alert('Image must be under 3MB');
+                  return;
+                }
+                const reader = new FileReader();
+                reader.onload = (ev) =>
+                  dispatch(
+                    updateBackground({
+                      type: 'image',
+                      imageUrl: ev.target?.result as string,
+                      overlayOpacity: currentBackground.overlayOpacity ?? 0.3,
+                      blur: currentBackground.blur ?? 0,
+                    }),
+                  );
+                reader.readAsDataURL(file);
+              }}
+            />
+            <label
+              htmlFor="bg-image-upload"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '7px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                border: '1px solid var(--tq-border-1)',
+                color: 'var(--tq-text-secondary)',
+                marginBottom: '16px',
+                transition: 'opacity 0.15s ease',
+              }}
+            >
+              <Upload size={13} />
+              {currentBackground.imageUrl &&
+              !currentBackground.imageUrl.startsWith('/backgrounds/')
+                ? 'Change custom image'
+                : 'Upload custom image (max 3MB)'}
+            </label>
 
-      {/* Theme vs Image toggle */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-        {(['theme', 'image'] as BackgroundType[]).map((type) => (
-          <button
-            key={type}
-            type="button"
-            onClick={() => {
-              dispatch(
-                updateBackground(
-                  type === 'image'
-                    ? {
-                        type: 'image',
-                        imageUrl: '/backgrounds/city-night.jpg',
-                        overlayOpacity: 0.3,
-                        blur: 0,
-                      }
-                    : { type: 'theme' },
-                ),
-              );
-            }}
-            style={{
-              padding: '5px 14px',
-              borderRadius: '20px',
-              fontSize: '12px',
-              fontWeight: 500,
-              cursor: 'pointer',
-              textTransform: 'capitalize',
-              background: 'transparent',
-              border:
-                currentBackground.type === type
-                  ? '1px solid var(--tq-accent)'
-                  : '1px solid var(--tq-border-1)',
-              color:
-                currentBackground.type === type
-                  ? 'var(--tq-accent)'
-                  : 'var(--tq-text-muted)',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            {type === 'theme' ? 'Default' : 'Custom'}
-          </button>
-        ))}
-      </div>
-
-      {currentBackground.type === 'image' && (
-        <div>
-          <p
-            style={{
-              fontSize: '10px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              color: 'var(--tq-text-muted)',
-              opacity: 0.6,
-              marginBottom: '8px',
-            }}
-          >
-            Built-in wallpapers
-          </p>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '8px',
-              marginBottom: '12px',
-            }}
-          >
-            {WALLPAPERS.map((bg) => (
-              <button
-                key={bg.path}
-                type="button"
-                title={bg.label}
-                onClick={() =>
+            {/* Overlay slider */}
+            <div style={{ marginBottom: '12px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '4px',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '12px',
+                    color: 'var(--tq-text-secondary)',
+                  }}
+                >
+                  <ImageIcon
+                    size={12}
+                    style={{
+                      display: 'inline',
+                      marginRight: '4px',
+                      verticalAlign: 'middle',
+                    }}
+                  />
+                  Overlay
+                </span>
+                <span
+                  style={{
+                    fontSize: '10px',
+                    fontFamily: 'monospace',
+                    color: 'var(--tq-text-muted)',
+                  }}
+                >
+                  {Math.round((currentBackground.overlayOpacity ?? 0.3) * 100)}%
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="0.85"
+                step="0.05"
+                value={currentBackground.overlayOpacity ?? 0.3}
+                onChange={(e) =>
                   dispatch(
                     updateBackground({
                       ...currentBackground,
-                      type: 'image',
-                      imageUrl: bg.path,
+                      overlayOpacity: parseFloat(e.target.value),
                     }),
                   )
                 }
+                style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
+              />
+            </div>
+
+            {/* Blur slider */}
+            <div>
+              <div
                 style={{
-                  position: 'relative',
-                  height: '52px',
-                  borderRadius: '10px',
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  backgroundImage: `url(${bg.path})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  border:
-                    currentBackground.imageUrl === bg.path
-                      ? '2px solid var(--tq-accent)'
-                      : '2px solid transparent',
-                  transform:
-                    currentBackground.imageUrl === bg.path
-                      ? 'scale(1.03)'
-                      : 'scale(1)',
-                  transition: 'all 0.15s ease',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '4px',
                 }}
               >
-                {currentBackground.imageUrl === bg.path && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      background: 'var(--tq-accent)',
-                      opacity: 0.18,
-                    }}
-                  />
-                )}
                 <span
                   style={{
-                    position: 'absolute',
-                    bottom: '2px',
-                    left: 0,
-                    right: 0,
-                    textAlign: 'center',
-                    fontSize: '8px',
-                    color: 'rgba(255,255,255,0.75)',
-                    fontWeight: 500,
+                    fontSize: '12px',
+                    color: 'var(--tq-text-secondary)',
                   }}
                 >
-                  {bg.label}
+                  Blur
                 </span>
-              </button>
-            ))}
-          </div>
-
-          <p
-            style={{
-              fontSize: '10px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              color: 'var(--tq-text-muted)',
-              opacity: 0.6,
-              marginBottom: '8px',
-            }}
-          >
-            Or upload your own
-          </p>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            id="bg-image-upload"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              if (file.size > 3 * 1024 * 1024) {
-                alert('Image must be under 3MB');
-                return;
-              }
-              const reader = new FileReader();
-              reader.onload = (ev) =>
-                dispatch(
-                  updateBackground({
-                    type: 'image',
-                    imageUrl: ev.target?.result as string,
-                    overlayOpacity: currentBackground.overlayOpacity ?? 0.3,
-                    blur: currentBackground.blur ?? 0,
-                  }),
-                );
-              reader.readAsDataURL(file);
-            }}
-          />
-          <label
-            htmlFor="bg-image-upload"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '7px 12px',
-              borderRadius: '8px',
-              fontSize: '12px',
-              cursor: 'pointer',
-              border: '1px solid var(--tq-border-1)',
-              color: 'var(--tq-text-secondary)',
-              marginBottom: '16px',
-              transition: 'opacity 0.15s ease',
-            }}
-          >
-            <Upload size={13} />
-            {currentBackground.imageUrl &&
-            !currentBackground.imageUrl.startsWith('/backgrounds/')
-              ? 'Change custom image'
-              : 'Upload custom image (max 3MB)'}
-          </label>
-
-          {/* Overlay slider */}
-          <div style={{ marginBottom: '12px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '4px',
-              }}
-            >
-              <span
-                style={{ fontSize: '12px', color: 'var(--tq-text-secondary)' }}
-              >
-                <ImageIcon
-                  size={12}
+                <span
                   style={{
-                    display: 'inline',
-                    marginRight: '4px',
-                    verticalAlign: 'middle',
+                    fontSize: '10px',
+                    fontFamily: 'monospace',
+                    color: 'var(--tq-text-muted)',
                   }}
-                />
-                Overlay
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontFamily: 'monospace',
-                  color: 'var(--tq-text-muted)',
-                }}
-              >
-                {Math.round((currentBackground.overlayOpacity ?? 0.3) * 100)}%
-              </span>
+                >
+                  {currentBackground.blur ?? 0}px
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                value={currentBackground.blur ?? 0}
+                onChange={(e) =>
+                  dispatch(
+                    updateBackground({
+                      ...currentBackground,
+                      blur: parseInt(e.target.value),
+                    }),
+                  )
+                }
+                style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
+              />
             </div>
-            <input
-              type="range"
-              min="0"
-              max="0.85"
-              step="0.05"
-              value={currentBackground.overlayOpacity ?? 0.3}
-              onChange={(e) =>
-                dispatch(
-                  updateBackground({
-                    ...currentBackground,
-                    overlayOpacity: parseFloat(e.target.value),
-                  }),
-                )
-              }
-              style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
-            />
           </div>
-
-          {/* Blur slider */}
-          <div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '4px',
-              }}
-            >
-              <span
-                style={{ fontSize: '12px', color: 'var(--tq-text-secondary)' }}
-              >
-                Blur
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontFamily: 'monospace',
-                  color: 'var(--tq-text-muted)',
-                }}
-              >
-                {currentBackground.blur ?? 0}px
-              </span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="20"
-              step="1"
-              value={currentBackground.blur ?? 0}
-              onChange={(e) =>
-                dispatch(
-                  updateBackground({
-                    ...currentBackground,
-                    blur: parseInt(e.target.value),
-                  }),
-                )
-              }
-              style={{ width: '100%', accentColor: 'var(--tq-accent)' }}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   const renderWidgets = () => (
     <div style={{ padding: '16px 0' }}>

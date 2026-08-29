@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { resolveThemeKey } from '../themes';
+import { migrateThemeKey } from '../themes';
 import type {
   Settings,
   SocialProfiles,
@@ -32,7 +32,7 @@ const defaultSettings: SettingsState = {
   userName: 'user_name',
   userRole: 'developer',
   userPortfolioUrl: '',
-  theme: 'midnight_default',
+  theme: 'dark',
   searchEngine: 'Google',
   weatherLocation: 'Chennai',
   hideSeconds: false,
@@ -65,8 +65,10 @@ const initialState: SettingsState = {
   ...(storedSettings || {}),
 };
 
+/* Migrate: any v1 theme key (midnight_default, aurora_borealis, …) → 'dark'.
+   'system' / 'dark' / 'light' pass through unchanged. */
 if (initialState.theme) {
-  initialState.theme = resolveThemeKey(initialState.theme);
+  initialState.theme = migrateThemeKey(initialState.theme);
 }
 
 const settingsSlice = createSlice({
@@ -118,7 +120,7 @@ const settingsSlice = createSlice({
       saveToLocalStorage(state);
     },
     updateTheme(state, action: PayloadAction<string>) {
-      state.theme = resolveThemeKey(action.payload || defaultSettings.theme);
+      state.theme = migrateThemeKey(action.payload || defaultSettings.theme);
       saveToLocalStorage(state);
     },
     updateBackground(state, action: PayloadAction<BackgroundConfig>) {

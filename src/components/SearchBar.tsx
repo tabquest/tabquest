@@ -13,233 +13,233 @@ interface SearchBarProps {
   onFocusChange: (_focused: boolean) => void;
 }
 
+type EngineKey = 'webSearch' | 'youtube';
+
+const PILL_H = 'h-[56px]';
+
 const SearchBar = ({ onFocusChange }: SearchBarProps) => {
   const SearchEngineName = useSelector(
     (state: RootState) => state.settings.searchEngine,
   );
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchEngine, setSearchEngine] = useState('webSearch');
-  const [isTyping, setIsTyping] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [engine, setEngine] = useState<EngineKey>('webSearch');
+  const [focused, setFocused] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
+    const handler = (e: MouseEvent) => {
+      if (!dropdownRef.current?.contains(e.target as Node)) {
+        setDropdownOpen(false);
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  useEffect(() => {
-    onFocusChange?.(isTyping);
-  }, [isTyping, onFocusChange]);
+  const handleFocus = () => {
+    setFocused(true);
+    onFocusChange(true);
+  };
+  const handleBlur = () => {
+    setTimeout(() => {
+      setFocused(false);
+      onFocusChange(false);
+    }, 150);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchTerm.trim()) return;
-
-    const searchQuery = encodeURIComponent(searchTerm);
+    if (!query.trim()) return;
+    const q = encodeURIComponent(query);
     const url =
-      searchEngine === 'webSearch'
-        ? SearchEngineName === 'Google'
-          ? `https://www.google.com/search?q=${searchQuery}`
+      engine === 'youtube'
+        ? `https://www.youtube.com/results?search_query=${q}`
+        : SearchEngineName === 'Google'
+          ? `https://www.google.com/search?q=${q}`
           : SearchEngineName === 'DuckDuckGo'
-            ? `https://duckduckgo.com/?q=${searchQuery}`
-            : `https://www.bing.com/search?q=${searchQuery}`
-        : `https://www.youtube.com/results?search_query=${searchQuery}`;
+            ? `https://duckduckgo.com/?q=${q}`
+            : `https://www.bing.com/search?q=${q}`;
     window.location.href = url;
   };
 
-  const getAlternateOption = () => {
-    const alternateIcon =
-      SearchEngineName === 'Google' ? (
-        <FaGoogle size={16} />
-      ) : SearchEngineName === 'DuckDuckGo' ? (
-        <SiDuckduckgo size={16} />
-      ) : (
-        <BiLogoBing size={16} />
-      );
+  /* Engine icon helpers — icon only, no label */
+  const webIcon =
+    SearchEngineName === 'Google' ? (
+      <FaGoogle size={15} />
+    ) : SearchEngineName === 'DuckDuckGo' ? (
+      <SiDuckduckgo size={15} />
+    ) : (
+      <BiLogoBing size={17} />
+    );
 
-    return searchEngine === 'webSearch'
-      ? {
-          icon: <FaYoutube size={16} />,
-          text: 'YouTube' as const,
-          value: 'youtube' as const,
-        }
-      : {
-          icon: alternateIcon,
-          text: SearchEngineName,
-          value: 'webSearch' as const,
-        };
-  };
+  const activeIcon = engine === 'webSearch' ? webIcon : <FaYoutube size={15} />;
+
+  const altEngine: { key: EngineKey; label: string; icon: React.ReactNode } =
+    engine === 'webSearch'
+      ? { key: 'youtube', label: 'YouTube', icon: <FaYoutube size={15} /> }
+      : { key: 'webSearch', label: SearchEngineName, icon: webIcon };
 
   return (
-    <motion.div
-      className="relative w-full"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="relative w-full">
+      {/* ── Backdrop blur overlay when focused ── */}
       <AnimatePresence>
-        {isTyping && (
+        {focused && (
           <motion.div
+            key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[65]"
             style={{
-              backgroundColor: 'var(--tq-glass-bg)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
+              backdropFilter: 'blur(32px) saturate(140%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(140%)',
+              background: 'rgba(0,0,0,.4)',
             }}
+            onClick={() => inputRef.current?.blur()}
           />
         )}
       </AnimatePresence>
 
-      <div className="relative w-full max-w-3xl mx-auto px-4 mt-16 sm:mt-28 z-[70] space-y-4">
+      {/* ── Search panel ── */}
+      <div
+        className="relative z-[70] w-full"
+        style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+      >
+        {/* Glass pill */}
         <motion.div
-          className="relative rounded-2xl p-4 sm:p-6 shadow-2xl tq-glass"
+          className={`relative w-full rounded-[18px] overflow-hidden`}
+          animate={{
+            boxShadow: focused
+              ? `inset 0 1px 0 rgba(255,255,255,.10), 0 0 0 1px var(--tq-accent), 0 0 32px var(--tq-accent-glow), 0 16px 48px rgba(0,0,0,.65)`
+              : `inset 0 1px 0 rgba(255,255,255,.07), 0 8px 32px rgba(0,0,0,.5)`,
+          }}
+          transition={{ duration: 0.2 }}
           style={{
             background: 'var(--tq-search-bg)',
+            border: '1px solid var(--tq-search-border)',
+            backdropFilter: 'blur(48px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(48px) saturate(180%)',
           }}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
         >
-          <div
-            className="absolute inset-0 rounded-2xl pointer-events-none"
-            style={{ background: 'var(--tq-gradient-glass)' }}
-          />
-
           <form
             onSubmit={handleSearch}
-            className="relative flex flex-col sm:flex-row gap-2 sm:gap-0"
-            onFocus={() => setIsTyping(true)}
-            onBlur={() => {
-              setTimeout(() => setIsTyping(false), 200);
-            }}
+            className={`flex items-stretch ${PILL_H}`}
           >
-            <div
-              className="relative w-full sm:min-w-[185px] sm:w-auto"
-              ref={dropdownRef}
-            >
-              <motion.button
+            {/* Engine selector — icon + chevron only */}
+            <div ref={dropdownRef} className="relative shrink-0">
+              <button
                 type="button"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="h-full w-full px-4 py-3 sm:py-4 flex items-center justify-between rounded-xl sm:rounded-l-xl sm:rounded-r-none transition-all duration-200 border-r border-transparent"
+                onClick={() => setDropdownOpen((o) => !o)}
+                className={`${PILL_H} flex items-center gap-1.5 pl-4 pr-3 cursor-pointer transition-colors`}
                 style={{
-                  background: 'var(--tq-surface-3)',
-                  borderRightColor: 'var(--tq-border-1)',
-                  color: 'var(--tq-text-primary)',
+                  borderRight: '1px solid var(--tq-border-1)',
+                  color: focused
+                    ? 'var(--tq-text-secondary)'
+                    : 'var(--tq-text-muted)',
+                  background: 'transparent',
                 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
-                <div className="flex items-center gap-2">
-                  {searchEngine === 'webSearch' ? (
-                    SearchEngineName === 'Google' ? (
-                      <FaGoogle size={18} />
-                    ) : SearchEngineName === 'DuckDuckGo' ? (
-                      <SiDuckduckgo size={18} />
-                    ) : (
-                      <BiLogoBing size={20} />
-                    )
-                  ) : (
-                    <FaYoutube size={18} />
-                  )}
-                  <span className="text-[16px] font-medium">
-                    {searchEngine === 'webSearch'
-                      ? SearchEngineName
-                      : 'YouTube'}
-                  </span>
-                </div>
-                <motion.div
-                  animate={{ rotate: isDropdownOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
+                <span>{activeIcon}</span>
+                <motion.span
+                  animate={{ rotate: dropdownOpen ? 180 : 0 }}
+                  transition={{ duration: 0.15 }}
+                  style={{ color: 'var(--tq-text-muted)', display: 'flex' }}
                 >
-                  <ChevronDown size={16} />
-                </motion.div>
-              </motion.button>
+                  <ChevronDown size={11} strokeWidth={2} />
+                </motion.span>
+              </button>
 
+              {/* Dropdown */}
               <AnimatePresence>
-                {isDropdownOpen && (
+                {dropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 mt-3 w-full rounded-xl overflow-hidden shadow-2xl z-50 tq-glass tq-surface-overlay"
+                    initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute top-full left-0 mt-1.5 w-40 rounded-xl overflow-hidden z-50"
                     style={{
+                      background: 'var(--tq-surface-overlay)',
                       border: '1px solid var(--tq-border-2)',
-                      backdropFilter: 'blur(32px)',
+                      boxShadow: '0 20px 48px rgba(0,0,0,.7)',
+                      backdropFilter: 'blur(48px)',
                     }}
                   >
-                    <motion.button
-                      whileHover={{ backgroundColor: 'var(--tq-hover-bg)' }}
+                    <button
                       type="button"
                       onClick={() => {
-                        setSearchEngine(getAlternateOption().value);
-                        setIsDropdownOpen(false);
+                        setEngine(altEngine.key);
+                        setDropdownOpen(false);
                       }}
-                      className="flex text-[15px] items-center gap-3 w-full px-4 py-3.5 transition-all duration-200 cursor-pointer"
-                      style={{ color: 'var(--tq-text-primary)' }}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm cursor-pointer"
+                      style={{
+                        color: 'var(--tq-text-primary)',
+                        background: 'transparent',
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background =
+                          'var(--tq-hover-bg)')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = 'transparent')
+                      }
                     >
-                      <div className="p-1.5 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
-                        {getAlternateOption().icon}
-                      </div>
-                      <span className="font-medium">
-                        {getAlternateOption().text}
-                      </span>
-                    </motion.button>
+                      {altEngine.icon}
+                      <span className="font-medium">{altEngine.label}</span>
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
+            {/* Text input */}
             <input
+              ref={inputRef}
               type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search..."
-              className="flex-1 text-[17px] px-4 py-3 sm:py-4 backdrop-blur-md rounded-xl sm:rounded-none focus:outline-none focus:ring-0 border-x border-transparent"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              placeholder="Search anything..."
+              className="flex-1 min-w-0 px-5 bg-transparent focus:outline-none"
               style={{
-                background: 'var(--tq-surface-3)',
                 color: 'var(--tq-text-primary)',
-                borderLeftColor: 'var(--tq-border-1)',
-                borderRightColor: 'var(--tq-border-1)',
+                fontSize: 'clamp(0.9rem, 1.4vw, 1rem)',
+                fontWeight: 300,
               }}
+              autoComplete="off"
               data-no-theme-transition="true"
             />
 
+            {/* Submit */}
             <motion.button
               type="submit"
-              className="px-6 py-3 sm:py-0 backdrop-blur-md rounded-xl sm:rounded-l-none sm:rounded-r-xl transition-all duration-200 border-l border-transparent"
+              className="px-5 flex items-center cursor-pointer"
               style={{
-                background: 'var(--tq-surface-3)',
-                borderLeftColor: 'var(--tq-border-1)',
-                color: 'var(--tq-text-primary)',
+                borderLeft: '1px solid var(--tq-border-1)',
+                color: focused ? 'var(--tq-accent)' : 'var(--tq-text-muted)',
+                background: 'transparent',
+                transition: 'color 0.2s ease',
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              title="Search"
             >
-              <Search size={20} />
+              <Search size={17} strokeWidth={2} />
             </motion.button>
           </form>
         </motion.div>
 
+        {/* Weather — compact row below pill */}
         <ErrorBoundary componentName="Weather">
           <Weather />
         </ErrorBoundary>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

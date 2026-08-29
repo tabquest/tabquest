@@ -2,7 +2,7 @@
 @font-face {
   font-family: 'Outfit';
   font-style: normal;
-  font-weight: 300 800;
+  font-weight: 100 900;
   font-display: swap;
   src: url('/fonts/outfit-latin.woff2') format('woff2');
   unicode-range:
@@ -35,7 +35,7 @@
   --color-blue-800: #1e3a8a;
 }
 
-/* ── Base ─────────────────────────────────────────────────── */
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 html {
   user-select: none;
   font-family:
@@ -51,53 +51,78 @@ html {
     'Segoe UI Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: black;
+  background: #000;
 }
 
 body::-webkit-scrollbar {
   display: none;
 }
 
-/* ── Custom Scrollbar (theme-aware) ──────────────────────── */
+/* ── Custom Scrollbar ─────────────────────────────────────────────────────── */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--tq-scrollbar-thumb, rgba(255, 255, 255, 0.1))
-    var(--tq-scrollbar-track, rgba(0, 0, 0, 0.2));
+  scrollbar-color: var(--tq-scrollbar-thumb, rgba(255, 255, 255, 0.09))
+    var(--tq-scrollbar-track, transparent);
   scroll-behavior: smooth;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: var(--tq-scrollbar-track, rgba(0, 0, 0, 0.2));
-  border-radius: 4px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--tq-scrollbar-thumb, rgba(255, 255, 255, 0.1));
+  background: rgba(255, 255, 255, 0.09);
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--tq-accent, rgba(255, 255, 255, 0.3));
-  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* ── Theme-Aware Utility Classes ─────────────────────────── */
+/* ── "Void" Background ────────────────────────────────────────────────────── */
+/*
+  Pure black with two ultra-subtle radial halos:
+    top-center: indigo haze (depth, not colour)
+    bottom-right: emerald whisper (the accent breathing)
+  No gradient bands, no banding artefacts.
+*/
+.tq-bg-void {
+  background:
+    radial-gradient(
+      ellipse 90% 55% at 50% -5%,
+      rgba(99, 102, 241, 0.09) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 85% 105%,
+      rgba(16, 185, 129, 0.06) 0%,
+      transparent 65%
+    ),
+    #000000;
+}
 
-/* Glass panels */
+/* ── Utility — Token Bridges ──────────────────────────────────────────────── */
+
+/*
+  Apple Liquid Glass — paper-thin, barely-there surfaces.
+  Three-layer depth:
+    1. ultra-translucent tinted background
+    2. strong blur + saturation (the glass physics)
+    3. top-edge highlight + drop shadow (the depth)
+*/
 @utility tq-glass {
   background: var(--tq-glass-bg);
   border: 1px solid var(--tq-glass-border);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow: var(--tq-glass-sheen, none);
+  backdrop-filter: blur(48px) saturate(180%);
+  -webkit-backdrop-filter: blur(48px) saturate(180%);
+  box-shadow: var(--tq-glass-sheen);
 }
 
-/* Surface levels */
 @utility tq-surface-1 {
   background-color: var(--tq-surface-1);
 }
@@ -114,7 +139,6 @@ body::-webkit-scrollbar {
   background-color: var(--tq-surface-overlay);
 }
 
-/* Borders */
 @utility tq-border-1 {
   border-color: var(--tq-border-1);
 }
@@ -122,7 +146,6 @@ body::-webkit-scrollbar {
   border-color: var(--tq-border-2);
 }
 
-/* Text levels */
 @utility tq-text-primary {
   color: var(--tq-text-primary);
 }
@@ -133,7 +156,6 @@ body::-webkit-scrollbar {
   color: var(--tq-text-muted);
 }
 
-/* Accent & Semantic */
 @utility tq-accent {
   color: var(--tq-accent);
 }
@@ -163,27 +185,122 @@ body::-webkit-scrollbar {
   background-color: var(--tq-warning);
 }
 
-/* Gradient overlays */
-@utility tq-gradient-subtle {
-  background: var(--tq-gradient-subtle);
+/* ── Shell Layout ─────────────────────────────────────────────────────────── */
+/*
+  Two-row grid:
+    Row 1 (auto): header   — Clock/Progress (left)  ·  Social (right)
+    Row 2 (1fr):  center   — Greeting → Search → Bookmarks, vertically centered
+  Fluid padding; generous on desktop, tight on small viewports.
+*/
+.tq-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100dvh;
+  min-height: 100dvh;
+  padding: clamp(1rem, 2.5dvh, 2rem) clamp(1.25rem, 3.5vw, 3.5rem);
+  gap: clamp(0.5rem, 1dvh, 1rem);
+  overflow: hidden;
 }
 
-@utility tq-gradient-glass {
-  background: var(--tq-gradient-glass);
+.tq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  min-height: 0;
 }
 
-/* ── Smooth theme transition ─────────────────────────────── */
-.tabquest-app,
-.tabquest-app * {
-  transition-property:
-    background-color, border-color, color, box-shadow, backdrop-filter;
-  transition-duration: 0.4s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+/*
+  Center stage: golden-ratio offset — content sits slightly above true center,
+  evoking macOS Spotlight and high-end launcher apps.
+*/
+.tq-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: clamp(2rem, 6dvh, 6rem);
+  gap: clamp(0.75rem, 1.5dvh, 1.25rem);
 }
 
-/* Exclude elements where transition causes jank */
-.tabquest-app input,
-.tabquest-app textarea,
-.tabquest-app [data-no-theme-transition] {
-  transition-property: none;
+/* ── Fluid Type Scale ─────────────────────────────────────────────────────── */
+/*
+  Clock is the visual ANCHOR of the page — it earns the most space.
+  Everything else defers to it typographically.
+*/
+@utility tq-clock-hours {
+  font-size: clamp(4.5rem, min(13vw, 17dvh), 13rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+@utility tq-clock-minutes {
+  font-size: clamp(4.5rem, min(13vw, 17dvh), 13rem);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+@utility tq-clock-colon {
+  font-size: clamp(4.5rem, min(13vw, 17dvh), 13rem);
+  font-weight: 100;
+  line-height: 1;
+}
+
+@utility tq-date {
+  font-size: clamp(0.72rem, min(1.3vw, 1.9dvh), 1rem);
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+}
+
+@utility tq-greeting {
+  font-size: clamp(1.3rem, min(2.8vw, 4dvh), 2.4rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 200;
+}
+
+@utility tq-sub {
+  font-size: clamp(0.75rem, min(1.2vw, 1.7dvh), 0.95rem);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+/* ── Component Tokens ─────────────────────────────────────────────────────── */
+
+@utility tq-input-row {
+  height: clamp(3rem, 6dvh, 3.75rem);
+}
+
+@utility tq-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    opacity 0.12s ease;
+}
+
+@utility tq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Focus-ring helper ────────────────────────────────────────────────────── */
+@utility tq-focus-ring {
+  box-shadow:
+    0 0 0 1.5px var(--tq-accent),
+    0 0 20px var(--tq-accent-glow);
 }

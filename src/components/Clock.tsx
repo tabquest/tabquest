@@ -11,78 +11,122 @@ const Clock = () => {
   const use12Hour = useSelector((state: RootState) => state.settings.use12Hour);
 
   useEffect(() => {
-    const timerInterval = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-    return () => clearInterval(timerInterval);
+    const id = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(id);
   }, []);
 
-  const formatHours = (hours: number) => {
-    if (use12Hour) {
-      const period = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-      return { hours, period };
-    }
-    return { hours, period: '' as const };
+  const rawH = time.getHours();
+  const period = rawH >= 12 ? 'PM' : 'AM';
+  const displayH = use12Hour ? rawH % 12 || 12 : rawH;
+  const mm = String(time.getMinutes()).padStart(2, '0');
+  const hh = String(displayH).padStart(2, '0');
+  const ss = String(time.getSeconds()).padStart(2, '0');
+
+  /* Shared typographic sizing — hours and minutes sit at the same baseline */
+  const heroSize: React.CSSProperties = {
+    fontSize: 'clamp(4.5rem, min(13vw, 17dvh), 13rem)',
+    lineHeight: 1,
+    letterSpacing: '-0.05em',
+    fontVariantNumeric: 'tabular-nums',
   };
 
-  const { hours, period } = formatHours(time.getHours());
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeInOut' }}
-    >
-      <h1 className="text-4xl sm:text-6xl font-semibold relative z-0 tracking-tight flex items-baseline tabular-nums">
-        <span style={{ color: 'var(--tq-accent)' }}>
-          {String(hours).padStart(2, '0')}
-        </span>
+    <div>
+      {/* ── Main time row ── */}
+      <div
+        className="flex items-baseline select-none"
+        aria-label={time.toLocaleTimeString()}
+      >
+        {/* Hours — bold, accent coloured */}
         <span
-          className="animate-pulse font-normal"
-          style={{ color: 'var(--tq-text-muted)' }}
+          style={{
+            ...heroSize,
+            fontWeight: 800,
+            color: 'var(--tq-accent)',
+          }}
+        >
+          {hh}
+        </span>
+
+        {/* Colon — hair-thin, very slow pulse */}
+        <motion.span
+          animate={{ opacity: [1, 0.12, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden
+          style={{
+            ...heroSize,
+            fontWeight: 100,
+            color: 'rgba(255,255,255,.18)',
+            margin: '0 0.03em',
+          }}
         >
           :
+        </motion.span>
+
+        {/* Minutes — thin weight, near-white, strong contrast to bold hours */}
+        <span
+          style={{
+            ...heroSize,
+            fontWeight: 200,
+            color: 'rgba(255,255,255,.92)',
+          }}
+        >
+          {mm}
         </span>
-        <span style={{ color: 'var(--tq-text-primary)' }}>
-          {String(time.getMinutes()).padStart(2, '0')}
-        </span>
+
+        {/* Seconds — tiny, pinned to baseline */}
         {!hideSeconds && (
-          <>
-            <span
-              className="animate-pulse font-normal"
-              style={{ color: 'var(--tq-text-muted)' }}
-            >
-              :
-            </span>
-            <span style={{ color: 'var(--tq-text-secondary)' }}>
-              {String(time.getSeconds()).padStart(2, '0')}
-            </span>
-          </>
+          <span
+            style={{
+              fontSize: 'clamp(1rem, min(2.4vw, 3dvh), 2.2rem)',
+              fontWeight: 300,
+              lineHeight: 1,
+              color: 'rgba(255,255,255,.22)',
+              letterSpacing: '-0.02em',
+              alignSelf: 'flex-end',
+              paddingBottom: '0.2em',
+              marginLeft: '0.2em',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+            aria-hidden
+          >
+            :{ss}
+          </span>
         )}
+
+        {/* AM/PM badge */}
         {use12Hour && (
           <span
-            className="pl-3 text-lg sm:text-2xl font-light w-[3ch] inline-block"
-            style={{ color: 'var(--tq-text-muted)' }}
+            style={{
+              fontSize: 'clamp(0.7rem, min(1.4vw, 2dvh), 1.3rem)',
+              fontWeight: 400,
+              lineHeight: 1,
+              color: 'rgba(255,255,255,.28)',
+              letterSpacing: '0.06em',
+              alignSelf: 'flex-end',
+              paddingBottom: '0.25em',
+              marginLeft: '0.3em',
+            }}
+            aria-hidden
           >
             {period}
           </span>
         )}
-      </h1>
-      <h2
-        className="pt-4 pl-2 text-base sm:text-xl"
-        style={{ color: 'var(--tq-text-secondary)' }}
+      </div>
+
+      {/* ── Date line — thin, muted ── */}
+      <p
+        className="tq-date font-light mt-1 pl-[0.04em]"
+        style={{ color: 'var(--tq-text-muted)' }}
       >
-        <span>
-          {time.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            weekday: 'short',
-            year: 'numeric',
-          })}
-        </span>
-      </h2>
-    </motion.div>
+        {time.toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+        })}
+      </p>
+    </div>
   );
 };
 

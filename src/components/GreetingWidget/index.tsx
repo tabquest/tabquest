@@ -8,14 +8,12 @@ const MAX_NAME_DISPLAY_LEN = 20;
 const getGreeting = (hour: number): string => {
   if (hour >= 5 && hour < 12) return 'Good morning';
   if (hour >= 12 && hour < 17) return 'Good afternoon';
-  if (hour >= 17) return 'Good evening';
   return 'Good evening';
 };
 
 const capitalize = (str: string): string =>
   str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
-// dayOfWeek: 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 const getSubMessage = (hour: number, dayOfWeek: number): string => {
   const mondayMessages = [
     "New week, new wins. Let's make it count.",
@@ -127,33 +125,20 @@ const getSubMessage = (hour: number, dayOfWeek: number): string => {
 
   let subset: string[] = [];
 
-  // Add day-of-week specific messages
-  if (dayOfWeek === 1) {
-    subset = subset.concat(mondayMessages);
-  } else if (dayOfWeek === 3) {
+  if (dayOfWeek === 1) subset = subset.concat(mondayMessages);
+  else if (dayOfWeek === 3)
     subset = subset.concat(wednesdayMessages, midweekMessages);
-  } else if (dayOfWeek === 5) {
-    subset = subset.concat(fridayMessages);
-  } else if (dayOfWeek === 0 || dayOfWeek === 6) {
+  else if (dayOfWeek === 5) subset = subset.concat(fridayMessages);
+  else if (dayOfWeek === 0 || dayOfWeek === 6)
     subset = subset.concat(weekendMessages);
-  } else {
-    // Tuesday (2), Thursday (4)
-    subset = subset.concat(midweekMessages);
-  }
+  else subset = subset.concat(midweekMessages);
 
-  // Add time-of-day specific messages
-  if (hour >= 5 && hour < 12) {
-    subset = subset.concat(morningMessages);
-  } else if (hour >= 12 && hour < 17) {
-    subset = subset.concat(afternoonMessages);
-  } else {
-    subset = subset.concat(eveningMessages);
-  }
+  if (hour >= 5 && hour < 12) subset = subset.concat(morningMessages);
+  else if (hour >= 12 && hour < 17) subset = subset.concat(afternoonMessages);
+  else subset = subset.concat(eveningMessages);
 
-  // Always include universal messages
   subset = subset.concat(universalMessages);
 
-  // Rotate hourly so it changes but doesn't shift on every render
   const index = Math.floor(Date.now() / (1000 * 60 * 60)) % subset.length;
   return subset[index];
 };
@@ -163,37 +148,42 @@ const GreetingWidget = () => {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(interval);
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
   }, []);
 
   const hour = now.getHours();
   const dayOfWeek = now.getDay();
   const greeting = getGreeting(hour);
+
   const isDefaultName = !userName || userName === DEFAULT_USERNAME;
   const nameTooLong = userName && userName.length > MAX_NAME_DISPLAY_LEN;
   const displayName =
     isDefaultName || nameTooLong ? null : capitalize(userName);
   const greetingText = displayName
     ? `${greeting}, ${displayName}.`
-    : `${greeting}!`;
+    : `${greeting}.`;
   const subMessage = getSubMessage(hour, dayOfWeek);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, duration: 0.6 }}
+      transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+      className="text-center"
     >
-      <h1
-        className="text-3xl md:text-4xl font-light tracking-wide"
+      <h2
+        className="tq-greeting tracking-tight"
         style={{ color: 'var(--tq-text-primary)' }}
       >
         {greetingText}
-      </h1>
+      </h2>
       <p
-        className="mt-1.5 text-sm md:text-base font-light tracking-wide"
-        style={{ color: 'var(--tq-text-secondary)', opacity: 0.8 }}
+        className="tq-sub mt-2 mx-auto"
+        style={{
+          color: 'var(--tq-text-muted)',
+          maxWidth: '48ch',
+        }}
       >
         {subMessage}
       </p>

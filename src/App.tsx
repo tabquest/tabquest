@@ -35,6 +35,13 @@ interface Notification {
   body: string;
 }
 
+/* ─── Stagger spring shared config ───────────────────────── */
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.55, ease: [0.23, 1, 0.32, 1] as const },
+});
+
 const AppContent = () => {
   const dispatch = useDispatch();
   const { tasks } = useSelector((state: RootState) => state.tasks);
@@ -47,10 +54,7 @@ const AppContent = () => {
     const dueReminders = checkDueReminders(tasks);
     if (dueReminders.length > 0) {
       const task = dueReminders[0];
-      setNotification({
-        title: `Task Reminder!`,
-        body: task.title,
-      });
+      setNotification({ title: 'Task Reminder!', body: task.title });
 
       const audio = new Audio('/notification.mp3');
       audio.play().catch(() => {});
@@ -77,14 +81,13 @@ const AppContent = () => {
   }, [focusMode, dispatch]);
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    return <MobileView />;
-  }
+  if (isMobile) return <MobileView />;
 
   const isChrome = import.meta.env.VITE_BROWSER === 'chrome';
 
   return (
     <ThemeProvider>
+      {/* Fixed overlays — outside grid flow */}
       <VersionChecker />
       {CHRISTMAS_MODE && <ChristmasSnowfall />}
 
@@ -105,109 +108,141 @@ const AppContent = () => {
         </motion.button>
       )}
 
+      {/* ── Row 1: Header ─────────────────────────────────── */}
       <ErrorBoundary componentName="Header">
-        <div
-          className={`flex mt-2 justify-between shrink-0 relative ${isSearchActive ? 'z-10' : 'z-30'}`}
+        <header
+          className={`tq-header relative ${isSearchActive ? 'z-10' : 'z-30'}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Clock />
-          </motion.div>
+          {/* Left: Clock + Progress stacked */}
+          <div className="flex flex-col gap-2 min-w-0">
+            <motion.div
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <ErrorBoundary componentName="Clock">
+                <Clock />
+              </ErrorBoundary>
+            </motion.div>
+
+            {!focusMode && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+              >
+                <ErrorBoundary componentName="Progress Bars">
+                  <ProgressBars />
+                </ErrorBoundary>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Right: Social */}
           {!focusMode && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: 0.2,
+                duration: 0.55,
+                ease: [0.23, 1, 0.32, 1],
+              }}
+              className="shrink-0 self-start"
             >
-              <SocialPopover />
+              <ErrorBoundary componentName="Social">
+                <SocialPopover />
+              </ErrorBoundary>
             </motion.div>
           )}
-        </div>
+        </header>
       </ErrorBoundary>
 
-      {!focusMode && (
-        <ErrorBoundary componentName="Progress Bars">
-          <div className="w-full px-2 relative z-10">
-            <ProgressBars />
-          </div>
-        </ErrorBoundary>
-      )}
-
-      <ErrorBoundary componentName="Search & Bookmarks">
-        <motion.div
-          className={`flex-1 flex flex-col justify-center gap-4 md:gap-6 relative ${isSearchActive ? 'z-50' : 'z-10'} max-w-4xl mx-auto w-full`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+      {/* ── Row 2: Center Stage ───────────────────────────── */}
+      <ErrorBoundary componentName="Center Stage">
+        <main
+          className={`tq-center relative ${isSearchActive ? 'z-50' : 'z-10'}`}
         >
+          {/* Christmas seasonal header */}
           {CHRISTMAS_MODE && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.6, type: 'spring', stiffness: 100 }}
-              className="text-center py-2"
-            >
+            <motion.div {...fadeUp(0.3)} className="text-center mb-1">
               <h2
-                className="text-3xl md:text-5xl font-bold tracking-wide leading-tight"
-                style={{ fontFamily: "'Mountains of Christmas', cursive" }}
+                className="font-bold tracking-wide leading-tight"
+                style={{
+                  fontFamily: "'Mountains of Christmas', cursive",
+                  fontSize: 'clamp(1.8rem, 5vw, 3.5rem)',
+                }}
               >
-                <span className="text-red-500 drop-shadow-[0_2px_4px_rgba(220,38,38,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-red-400 to-red-600">
+                <span className="text-red-500 drop-shadow-[0_2px_4px_rgba(220,38,38,0.5)]">
                   Merry
                 </span>{' '}
-                <span className="text-white drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">
+                <span className="text-white drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
                   Christmas
                 </span>{' '}
-                <span className="text-green-500 drop-shadow-[0_2px_4px_rgba(34,197,94,0.5)] bg-clip-text text-transparent bg-gradient-to-b from-green-400 to-green-600">
+                <span className="text-green-500 drop-shadow-[0_2px_4px_rgba(34,197,94,0.5)]">
                   !
                 </span>{' '}
                 🎄
               </h2>
               <p
-                className="text-sm font-light mt-1 tracking-widest uppercase text-[10px]"
+                className="mt-1 text-[10px] font-light tracking-widest uppercase"
                 style={{ color: 'var(--tq-text-muted)' }}
               >
-                Wishing you joy & peace
+                Wishing you joy &amp; peace
               </p>
             </motion.div>
           )}
 
-          <div className="text-center mb-2">
-            <GreetingWidget />
-          </div>
-
-          <div className="space-y-4">
-            {isChrome ? (
-              <ChromeSearchBar onFocusChange={setIsSearchActive} />
-            ) : (
-              <SearchBar onFocusChange={setIsSearchActive} />
-            )}
-            {!focusMode && <BookmarkBar />}
-          </div>
+          {/* Greeting */}
           {!focusMode && (
-            <div className="flex justify-center">
-              <QuickCaptureHint />
-            </div>
+            <motion.div {...fadeUp(0.25)} className="w-full text-center">
+              <ErrorBoundary componentName="Greeting">
+                <GreetingWidget />
+              </ErrorBoundary>
+            </motion.div>
           )}
-        </motion.div>
+
+          {/* Search bar — fills available width, constrained by inner max-width */}
+          <motion.div
+            {...fadeUp(0.35)}
+            className="w-full"
+            style={{ maxWidth: 'clamp(440px, 55vw, 720px)' }}
+          >
+            <ErrorBoundary componentName="Search">
+              {isChrome ? (
+                <ChromeSearchBar onFocusChange={setIsSearchActive} />
+              ) : (
+                <SearchBar onFocusChange={setIsSearchActive} />
+              )}
+            </ErrorBoundary>
+          </motion.div>
+
+          {/* Quick bookmarks */}
+          {!focusMode && (
+            <motion.div {...fadeUp(0.45)}>
+              <ErrorBoundary componentName="Bookmark Bar">
+                <BookmarkBar />
+              </ErrorBoundary>
+            </motion.div>
+          )}
+
+          {/* QuickCapture hint */}
+          {!focusMode && (
+            <motion.div {...fadeUp(0.5)}>
+              <QuickCaptureHint />
+            </motion.div>
+          )}
+        </main>
       </ErrorBoundary>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
-        className={`mt-auto shrink-0 relative ${isSearchActive ? 'z-10' : 'z-40'}`}
-      />
-
+      {/* Fixed panels */}
       {!focusMode && (
         <ErrorBoundary componentName="Settings Panel">
           <SettingsPanel />
         </ErrorBoundary>
       )}
       {!focusMode && (
-        <ErrorBoundary componentName="Pro Tools">
+        <ErrorBoundary componentName="Tools Panel">
           <ToolsPanel />
         </ErrorBoundary>
       )}
